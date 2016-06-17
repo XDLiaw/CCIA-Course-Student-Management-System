@@ -1,0 +1,7 @@
+﻿@using CCIA2.Models
+
+<h3>Home - Index</h3>
+@{
+    var user = @Session["user"] as SysUser;
+}
+<h4>Welcome @user.name</h4>

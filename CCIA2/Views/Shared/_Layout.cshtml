@@ -33,71 +33,75 @@
         }
     </style>
 </head>
-<body data-feedly-mini="yes">
-    <div>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="visible-xs col-xs-1">
+            </div>
+            <div class="col-sm-7 col-xs-4">
+                <div class="logo_width_03">
+                    <a href="http://www.moc.gov.tw/">
+                        <img src="~/Content/images/logo_01.jpg" class="img-responsive" alt="alt"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu -->
+    <div class="menu_bg hidden-xs">
         <div class="container">
             <div class="row">
-                <div class="visible-xs col-xs-1">
-                </div>
-                <div class="col-sm-7 col-xs-4">
-                    <div class="logo_width_03">
-                        <a href="http://www.moc.gov.tw/">
-                            <img src="Content/images/logo_01.jpg" class="img-responsive" alt="alt"/>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="menu_bg hidden-xs">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 nopadding text-center">
-
-                        <div class="menu_hover linev_left linev_right dropdown"><a href="About.aspx" class="menu_link">首頁</a></div><div class="menu linev_left">
-                            <a href="http://140.92.10.114:1348/JoinStep0.aspx" class="menu_link">會員註冊</a>
-                        </div>
-                        <div class="menu linev_left"><a href="http://140.92.10.114:1348/MemberLogIn.aspx" class="menu_link">會員登入</a></div>
-
-                    </div>
+                <div class="col-md-12 nopadding text-center">
+                    <div class="menu_hover linev_left ">@Html.ActionLink("首頁", "Index", "Home", null, new { @class = "menu_link" })</div>
+                    <div class="menu linev_left">@Html.ActionLink("人員", "Index", "SysUser", null, new { @class = "menu_link" })</div>
+                    
+                    @{
+                        var user = Session["user"] as CCIA2.Models.SysUser;
+                        if (user == null)
+                        {
+                            <div class="menu linev_left">@Html.ActionLink("人員登入", "Login", "Account", new { @class = "menu_link" })</div>
+                        }
+                        else
+                        {
+                            <div class="menu linev_left">@Html.ActionLink("登出", "Logout", "Account", null, new { @class = "menu_link" })</div>
+                        }
+                    }                   
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="container">
-            @RenderBody()
-        </div>
+    <div class="container">
+        @RenderBody()
+    </div>
    
-        <div class="footer_bg01 top30">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-5 col-sm-5 col-xs-12">
-                        <div class="footer_content">Tel:02-6631-1384&nbsp;&nbsp;Fax : 02-6631-1350</div>
-                    </div>
-                    <div class="col-md-7 col-sm-7 col-xs-12">
-                        <div class="footer_content">
-                            Market Intelligence &amp; Consulting Institute is a division of Institute for Information Industry<br>
-                            © Copyright 2015 Market Intelligence &amp; Consulting Institute. All Rights Reserved.
-                        </div>
-                    </div>
+    <div class="footer_bg01 top30">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5 col-sm-5 col-xs-12">
+                    <div class="footer_content">Tel:02-6631-1384&nbsp;&nbsp;Fax : 02-6631-1350</div>
                 </div>
-            </div>
-        </div>
-
-        <div class="footer_bg02">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12 text-center footer_content">
-
+                <div class="col-md-7 col-sm-7 col-xs-12">
+                    <div class="footer_content">
+                        Market Intelligence &amp; Consulting Institute is a division of Institute for Information Industry<br>
+                        © Copyright 2015 Market Intelligence &amp; Consulting Institute. All Rights Reserved.
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="footer_bg02">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center footer_content">
 
+                </div>
+            </div>
+        </div>
+    </div>
 
-    
 
     @RenderSection("scripts", required: false)
 </body>
