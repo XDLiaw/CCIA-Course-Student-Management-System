@@ -151,10 +151,51 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CCIAContext.cs" />
+    <Compile Include="Models\Member.cs" />
+    <Compile Include="Models\MemberAttchFile.cs" />
+    <Compile Include="Models\MemberGroupApply.cs" />
+    <Compile Include="Models\MemberGroupResult.cs" />
     <Compile Include="Models\SysUser.cs" />
+    <Compile Include="Models\TableCulture.cs" />
+    <Compile Include="Models\TableGroup.cs" />
+    <Compile Include="Models\TableMemberType.cs" />
+    <Compile Include="Models\TableNation.cs" />
+    <Compile Include="Models\TableNumber.cs" />
+    <Compile Include="Models\TablePlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap-3.3.4.css" />
+    <Content Include="Content\default.css" />
+    <Content Include="Content\images\2015CoursesSch_2.png" />
+    <Content Include="Content\images\banner_01.jpg" />
+    <Content Include="Content\images\banner_02.jpg" />
+    <Content Include="Content\images\banner_03.jpg" />
+    <Content Include="Content\images\banner_400_180.jpg" />
+    <Content Include="Content\images\Carousel_Placeholder.png" />
+    <Content Include="Content\images\demo_01.jpg" />
+    <Content Include="Content\images\demo_02.jpg" />
+    <Content Include="Content\images\demo_03.jpg" />
+    <Content Include="Content\images\demo_04.jpg" />
+    <Content Include="Content\images\demo_05.jpg" />
+    <Content Include="Content\images\fb.jpg" />
+    <Content Include="Content\images\icon_join.png" />
+    <Content Include="Content\images\index_title_01.png" />
+    <Content Include="Content\images\index_title_02.png" />
+    <Content Include="Content\images\link01.jpg" />
+    <Content Include="Content\images\link02.jpg" />
+    <Content Include="Content\images\link03.jpg" />
+    <Content Include="Content\images\link04.jpg" />
+    <Content Include="Content\images\logo_01.jpg" />
+    <Content Include="Content\images\logo_02.jpg" />
+    <Content Include="Content\images\page_title_01.png" />
+    <Content Include="Content\images\photo_01.jpg" />
+    <Content Include="Content\images\sbanner_01.jpg" />
+    <Content Include="Content\images\sbanner_02.jpg" />
+    <Content Include="Content\images\sbanner_03.jpg" />
+    <Content Include="Content\images\sbanner_04.jpg" />
+    <Content Include="Content\images\sbanner_05.jpg" />
+    <Content Include="Content\images\sbanner_06.jpg" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -212,6 +253,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Scripts\bootstrap-3.3.4.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.js" />

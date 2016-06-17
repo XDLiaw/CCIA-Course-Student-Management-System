@@ -3,14 +3,102 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+    <title>文創產業中介經紀人培育</title>
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
-</head>
-<body>
-    @RenderBody()
-
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <style type="text/css">
+        input[type=checkbox] {
+            width: 26px;
+            height: 26px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+    </style>
+    <style id="style-1-cropbar-clipper">
+        /* Copyright 2014 Evernote Corporation. All rights reserved. */
+        .en-markup-crop-options {
+            top: 18px !important;
+            left: 50% !important;
+            margin-left: -100px !important;
+            width: 200px !important;
+            border: 2px rgba(255,255,255,.38) solid !important;
+            border-radius: 4px !important;
+        }
+
+        .en-markup-crop-options div div:first-of-type {
+            margin-left: 0px !important;
+        }
+    </style>
+</head>
+<body data-feedly-mini="yes">
+    <div>
+        <div class="container">
+            <div class="row">
+                <div class="visible-xs col-xs-1">
+                </div>
+                <div class="col-sm-7 col-xs-4">
+                    <div class="logo_width_03">
+                        <a href="http://www.moc.gov.tw/">
+                            <img src="Content/images/logo_01.jpg" class="img-responsive" alt="alt"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu_bg hidden-xs">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 nopadding text-center">
+
+                        <div class="menu_hover linev_left linev_right dropdown"><a href="About.aspx" class="menu_link">首頁</a></div><div class="menu linev_left">
+                            <a href="http://140.92.10.114:1348/JoinStep0.aspx" class="menu_link">會員註冊</a>
+                        </div>
+                        <div class="menu linev_left"><a href="http://140.92.10.114:1348/MemberLogIn.aspx" class="menu_link">會員登入</a></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            @RenderBody()
+        </div>
+   
+        <div class="footer_bg01 top30">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-5 col-sm-5 col-xs-12">
+                        <div class="footer_content">Tel:02-6631-1384&nbsp;&nbsp;Fax : 02-6631-1350</div>
+                    </div>
+                    <div class="col-md-7 col-sm-7 col-xs-12">
+                        <div class="footer_content">
+                            Market Intelligence &amp; Consulting Institute is a division of Institute for Information Industry<br>
+                            © Copyright 2015 Market Intelligence &amp; Consulting Institute. All Rights Reserved.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer_bg02">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 text-center footer_content">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    
+
     @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -1,0 +1,106 @@
+﻿@charset "UTF-8";
+/* 全體通用 */
+html body { margin:0; padding:0;}
+body { font-family:  sans-serif, Helvetica, Arial, "微軟正黑體" !important;}
+.row.no-gutter {  margin-left: 0;  margin-right: 0;}
+.row.no-gutter [class*='col-']:not(:first-child),
+.row.no-gutter [class*='col-']:not(:last-child) { padding-right: 0;  padding-left: 0;}
+.nopadding {   padding: 0 !important;   margin: 0 !important;}
+
+.dotline { border-bottom: 1px dotted #999;}
+
+.linev_left { border-left: 1px solid #FFF; }
+.linev_right { border-right: 1px solid #FFF; }
+.line5px { border-bottom: 5px solid #dcdcdc; padding-bottom:10px; }
+
+.bottom20 { margin-bottom: 20px;}
+.bottom30 { margin-bottom: 30px;}
+
+.top5 { margin-top: 5px;}
+.top10 { margin-top: 10px;}
+.top15 { margin-top: 15px;}
+.top20 { margin-top: 20px;}
+.top30 { margin-top: 30px;}
+
+.left5 { margin-left: 5px;}
+.right5 { margin-right: 5px;}
+
+.img-center { margin: 0 auto;}
+.img-right { margin-left: auto;}
+
+/* 首頁 */
+@media only screen and (min-width:768px) 
+{ /* for電腦版 */
+.logo_width { max-width:190px;}
+.logo_width_02 { max-width:99px;}
+.logo_width_03 { max-width:500px;}
+}
+@media only screen and (max-width:768px) 
+{ /* for手機版 */
+.logo_width { margin-left:10px; padding:8px 0;}
+.logo_width_02 { margin-left:10px;}
+}
+
+.event_bg { background-color:#F1F1F1; padding: 30px 0;}
+
+.footer_bg01 { background-color:#5bbde6; padding: 20px 0;}
+.footer_bg02 { background-color:#444; padding: 10px 0;}
+.footer_content { font-size:12px; color:#FFF; line-height:1.8em; letter-spacing:1px;}
+
+.list_li { margin:8px 5px; padding-bottom:5px;}
+.list_arrow { color:#AAA; margin:0 5px 5px 5px;}
+
+.menu_bg { background-color:#1fa8da; border-bottom: 1px solid #FFF; }
+.menu { display: inline-block; width: 16%; text-align: center;padding:8px 0; }
+.menu_hover { background-color:#3bc4f6;display: inline-block; width: 16%; text-align: center;padding:8px 0;}
+.menu:hover { background-color:#3bc4f6;display: inline-block; width: 16%; text-align: center;padding:8px 0;}
+
+a.menu_link:link {		font-size: 22px;	color: #FFF;	text-decoration: none; }
+a.menu_link:visited {	font-size: 22px;	color: #FFF;	text-decoration: none; }
+a.menu_link:hover {		font-size: 22px;	color: #FFF;	text-decoration: underline; }
+a.menu_link:active {	font-size: 22px;	color: #FFF;	text-decoration: underline; }
+
+a.footer_link:link {	font-size: 12px;	color: #FFF;	text-decoration: none; }
+a.footer_link:visited {	font-size: 12px;	color: #FFF;	text-decoration: none; }
+a.footer_link:hover {	font-size: 12px;	color: #FFF;	text-decoration: underline; }
+a.footer_link:active {	font-size: 12px;	color: #FFF;	text-decoration: underline; }
+
+a.list_link:link {		font-size: 14px; color: #666;	 line-height:1.8em;text-decoration: none; }
+a.list_link:visited {	font-size: 14px; color: #666;	 line-height:1.8em;text-decoration: none; }
+a.list_link:hover {		font-size: 14px; color: #337ab7;	 line-height:1.8em;text-decoration: underline; }
+a.list_link:active {	font-size: 14px; color: #337ab7;	 line-height:1.8em;text-decoration: underline; }
+
+/* 內頁 */
+.member_bg { background-color:#FFF; padding:30px 20px; border:solid 1px #DDD; border-top:none;font-size: 16px;}
+
+.title_icon { font-size:10px; color:#5bbde6; margin:0 5px 5px 0;}
+
+.page_list_icon { width:7%; height:30px; line-height:1.8em;}
+
+.list_num { margin-left : 32px; text-indent : -32px }
+
+/* 文字設定 */
+.brackets { font-size:60px; color:#5bbde6; font-family:"Times New Roman"; font-style:italic; height:150px; line-height:150px;}
+
+.content_01 { font-size: 16px; color: #666; line-height:1.8em;}
+.content_02 { font-size: 16px; color: #FF3333; line-height:1.8em;}
+
+.class_title { font-size: 24px; color: #333; line-height:1.6em;}
+
+.list_title_01 { font-size: 18px; color: #41bfe3; letter-spacing:2px; font-weight:bold;}
+.list_title_02 { font-size: 11px; color: #666;position:absolute; margin-top:-3px; }
+
+
+.list_content_01 { font-size: 14px; color: #666; line-height:1.8em;}
+
+.lecturer { font-size: 14px; color: #666; }
+.lecturer_name { font-size: 24px; color: #333; letter-spacing:1px; }
+
+.title_01 { font-size: 32px; color: #333; line-height:1.8em;}
+.title_02 { font-size: 20px; color: #333; line-height:1.8em;}
+.title_03 { font-size: 14px; color: #333; line-height:1.8em; font-weight:bold;}
+
+a.title_link:link {		font-size:18px; color: #337ab7;	 line-height:1.5em; text-decoration: none; }
+a.title_link:visited {	font-size:18px; color: #337ab7;	 line-height:1.5em; text-decoration: none; }
+a.title_link:hover {	font-size:18px; color: #337ab7;	 line-height:1.5em; text-decoration: underline; }
+a.title_link:active {	font-size:18px; color: #337ab7;	 line-height:1.5em; text-decoration: underline; }
