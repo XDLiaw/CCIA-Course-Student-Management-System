@@ -24,6 +24,10 @@
                     @Html.ValidationMessageFor(model => model.password, null, new { @class = "help-inline" })
                 </div>
             </div>
+            <div class="logintype">
+                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                <div class="g-recaptcha" data-sitekey="6LeA1iITAAAAAMN5CUD2_fPIgxz25TSePr8QBqJT"></div>
+            </div>
 
             <div class="logintype">
                 @TempData["Error"]

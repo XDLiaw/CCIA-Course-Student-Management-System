@@ -54,19 +54,22 @@
             <div class="row">
                 <div class="col-md-12 nopadding text-center">
                     <div class="menu_hover linev_left ">@Html.ActionLink("首頁", "Index", "Home", null, new { @class = "menu_link" })</div>
-                    <div class="menu linev_left">@Html.ActionLink("人員", "Index", "SysUser", null, new { @class = "menu_link" })</div>
+                    <div class="menu linev_left ">@Html.ActionLink("人員", "Index", "SysUser", null, new { @class = "menu_link" })</div>
                     
                     @{
-                        var user = Session["user"] as CCIA2.Models.SysUser;
-                        if (user == null)
+                        if (Request.IsAuthenticated)
                         {
-                            <div class="menu linev_left">@Html.ActionLink("人員登入", "Login", "Account", new { @class = "menu_link" })</div>
+                            <div class="menu linev_left linev_right">
+                                @Html.ActionLink("登出", "Logout", "Account", null, new { @class = "menu_link" })
+                            </div>
                         }
                         else
                         {
-                            <div class="menu linev_left">@Html.ActionLink("登出", "Logout", "Account", null, new { @class = "menu_link" })</div>
+                            <div class="menu linev_left linev_right">
+                                @Html.ActionLink("人員登入", "Login", "Account", new { @class = "menu_link" })
+                            </div>
                         }
-                    }                   
+                    }               
                 </div>
             </div>
         </div>
