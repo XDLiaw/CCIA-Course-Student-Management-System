@@ -6,26 +6,16 @@ namespace CCIA2.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("SysUser")]
-    public partial class SysUser
+    [Table("TableApplyStep")]
+    public partial class TableApplyStep
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int sqno { get; set; }
 
-        [Required]
-        [StringLength(50)]
-        public string accountNo { get; set; }
-
-        [Required]
-        [StringLength(50)]
-        public string password { get; set; }
-
-        public int role { get; set; }
+        public int applystep { get; set; }
 
         [StringLength(50)]
         public string name { get; set; }
-
-        public DateTime? createDate { get; set; }
     }
 }

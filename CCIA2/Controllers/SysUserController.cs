@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace CCIA2.Controllers
 {
+    [Authorize]
     public class SysUserController : Controller
     {
         private CCIAContext db = new CCIAContext();
@@ -18,6 +19,15 @@ namespace CCIA2.Controllers
         public ActionResult Index()
         {
             return View(db.SysUser.ToList());
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
     }

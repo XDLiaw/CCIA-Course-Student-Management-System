@@ -12,12 +12,20 @@ namespace CCIA2.Models
         {
         }
 
-        public virtual DbSet<SysUser> SysUser { get; set; }
-
+        public virtual DbSet<Course> Course { get; set; }
+        public virtual DbSet<CourseDay> CourseDay { get; set; }
+        public virtual DbSet<LogMemberLog> LogMemberLog { get; set; }
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<MemberAttchFile> MemberAttchFile { get; set; }
+        public virtual DbSet<MemberBackGroup> MemberBackGroup { get; set; }
+        public virtual DbSet<MemberCourseAttchFile> MemberCourseAttchFile { get; set; }
         public virtual DbSet<MemberGroupApply> MemberGroupApply { get; set; }
         public virtual DbSet<MemberGroupResult> MemberGroupResult { get; set; }
+        public virtual DbSet<MemberSupport> MemberSupport { get; set; }
+        public virtual DbSet<SYS_ErrorLog> SYS_ErrorLog { get; set; }
+        public virtual DbSet<SysUser> SysUser { get; set; }
+        public virtual DbSet<TableApplyStep> TableApplyStep { get; set; }
+        public virtual DbSet<TableBackGroup> TableBackGroup { get; set; }
         public virtual DbSet<TableCulture> TableCulture { get; set; }
         public virtual DbSet<TableGroup> TableGroup { get; set; }
         public virtual DbSet<TableMemberType> TableMemberType { get; set; }
@@ -25,9 +33,28 @@ namespace CCIA2.Models
         public virtual DbSet<TableNumber> TableNumber { get; set; }
         public virtual DbSet<TablePlan> TablePlan { get; set; }
 
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<CourseDay>()
+                .Property(e => e.CourseDay1)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<LogMemberLog>()
+                .Property(e => e.sessionid)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<LogMemberLog>()
+                .Property(e => e.mrIP)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<LogMemberLog>()
+                .Property(e => e.mrPages)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<LogMemberLog>()
+                .Property(e => e.mrQuery)
+                .IsUnicode(false);
+
             modelBuilder.Entity<Member>()
                 .Property(e => e.mrNumber)
                 .IsUnicode(false);
@@ -147,15 +174,15 @@ namespace CCIA2.Models
                 .WithOptional(e => e.Member)
                 .HasForeignKey(e => e.mrSqno);
 
-            modelBuilder.Entity<Member>()
-                .HasMany(e => e.MemberGroupResult1)
-                .WithOptional(e => e.Member1)
-                .HasForeignKey(e => e.mrSqno);
+            //modelBuilder.Entity<Member>()
+            //    .HasMany(e => e.MemberGroupResult1)
+            //    .WithOptional(e => e.Member1)
+            //    .HasForeignKey(e => e.mrSqno);
 
-            modelBuilder.Entity<Member>()
-                .HasMany(e => e.MemberGroupApply1)
-                .WithOptional(e => e.Member1)
-                .HasForeignKey(e => e.mrSqno);
+            //modelBuilder.Entity<Member>()
+            //    .HasMany(e => e.MemberGroupApply1)
+            //    .WithOptional(e => e.Member1)
+            //    .HasForeignKey(e => e.mrSqno);
 
             modelBuilder.Entity<MemberAttchFile>()
                 .Property(e => e.mrNumber)
@@ -171,6 +198,26 @@ namespace CCIA2.Models
 
             modelBuilder.Entity<MemberAttchFile>()
                 .Property(e => e.mrAttchFileType)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<MemberBackGroup>()
+                .Property(e => e.mrMemberNo)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<MemberBackGroup>()
+                .Property(e => e.BackGroupYear)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<MemberBackGroup>()
+                .Property(e => e.BacmGroupSqno)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<MemberCourseAttchFile>()
+                .Property(e => e.mrNumber)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<MemberCourseAttchFile>()
+                .Property(e => e.MemberAttchFileName)
                 .IsUnicode(false);
 
             modelBuilder.Entity<MemberGroupApply>()
@@ -209,6 +256,88 @@ namespace CCIA2.Models
                 .Property(e => e.AppraiseNo)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<MemberSupport>()
+                .Property(e => e.mrNumber)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<MemberSupport>()
+                .Property(e => e.SupportYear)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.CreateBy)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.LoginType)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.URL)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.QString)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.IP)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.code)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.src)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.cat)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.xfile)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.xdesc)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.adesc)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.form_data)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.form_method)
+                .IsFixedLength()
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SYS_ErrorLog>()
+                .Property(e => e.session_data)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SysUser>()
+                .Property(e => e.accountNo)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SysUser>()
+                .Property(e => e.password)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<SysUser>()
+                .Property(e => e.name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<TableBackGroup>()
+                .Property(e => e.backGroupName)
+                .IsUnicode(false);
+
             modelBuilder.Entity<TableCulture>()
                 .Property(e => e.CultureName)
                 .IsUnicode(false);
@@ -231,18 +360,6 @@ namespace CCIA2.Models
 
             modelBuilder.Entity<TablePlan>()
                 .Property(e => e.PlanName)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<SysUser>()
-                .Property(e => e.accountNo)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<SysUser>()
-                .Property(e => e.password)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<SysUser>()
-                .Property(e => e.name)
                 .IsUnicode(false);
         }
     }

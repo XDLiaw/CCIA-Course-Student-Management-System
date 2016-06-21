@@ -6,8 +6,8 @@ namespace CCIA2.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("MemberGroupResult")]
-    public partial class MemberGroupResult
+    [Table("MemberSupport")]
+    public partial class MemberSupport
     {
         [Key]
         public int sqno { get; set; }
@@ -17,22 +17,14 @@ namespace CCIA2.Models
         [StringLength(50)]
         public string mrNumber { get; set; }
 
-        public int AppraiseStep { get; set; }
-
-        [StringLength(1)]
-        public string AppraiseResult { get; set; }
+        public int? PlanSqno { get; set; }
 
         [StringLength(50)]
-        public string AppraiseGroup { get; set; }
-
-        public string AppraiseDesc { get; set; }
-
-        public DateTime? AppraiseCreateDt { get; set; }
+        public string SupportName { get; set; }
 
         [StringLength(50)]
-        public string AppraiseNo { get; set; }
+        public string SupportYear { get; set; }
 
-        public virtual Member Member { get; set; }
-
+        public DateTime? CreateDate { get; set; }
     }
 }
