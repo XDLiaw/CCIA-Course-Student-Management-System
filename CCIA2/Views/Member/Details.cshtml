@@ -1,0 +1,233 @@
+﻿@model CCIA2.Models.Member
+
+<div class="member_bg container">
+    <div class="row">
+        @Html.LabelFor(model => model.mrJoinYear, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrJoinYear)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrMemberTypesqno, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.memberType.membertypename)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.MemberGroupApply, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-2">
+            第一組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().First)
+        </div>
+        <div class="col-sm-2">
+            第二組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().Second)
+        </div>
+        <div class="col-sm-2">
+            第三組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().Third)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrName, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrName)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrId, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrId)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrBirth, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrBirth)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrMobile, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrMobile)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrTel, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrTel)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrMainEmail, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrMainEmail)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrOtherEmail, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrOtherEmail)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrAddress, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrAddress)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrNation, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrNation)
+        </div>
+    </div>
+    <div class="row">
+        <label class="text-right col-sm-3 control-label">語言能力</label>
+        <div class="col-sm-1">
+            中：@Html.DisplayFor(model => model.mrChineseLevel)
+        </div>
+        <div class="col-sm-1">
+            英：@Html.DisplayFor(model => model.mrEnglishLevel)
+        </div>
+        <div class="col-sm-1">
+            日：@Html.DisplayFor(model => model.mrJPLevel)
+        </div>
+        <div class="col-sm-1">
+            台：@Html.DisplayFor(model => model.mrTaiwanLevel)
+        </div>
+        <div class="col-sm-1">
+            客：@Html.DisplayFor(model => model.mrHakkaLevel)
+        </div>
+        <div class="col-sm-2">
+            其他：@Html.DisplayFor(model => model.mrOtLanguageLevel)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrRole, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.Raw(Int32.Parse(Model.mrRole) == 1 ? "社會人士" : "學生")
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrSocialEdu, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrSocialEdu)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrSocialComp, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrSocialComp)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrSocialTitle, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrSocialTitle)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrCateType, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.Raw(Model.mrCateType == "1" ? "文創產業 - " : Model.mrOtherCategory)
+            @if (Model.mrCateType == "1")
+            {
+                @Html.Raw(Model.mrCultureSqno == 16 ? Model.mrCultureOther : Model.culture.CultureName)
+            }
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.MemberSupport, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @if (Model.MemberSupport != null && Model.MemberSupport.Count > 0)
+            {
+                foreach (var support in Model.MemberSupport)
+                {
+                    <div class="row">
+                        <div class="col-sm-4">@Html.DisplayFor(x => support.plan.PlanName)</div>
+                        @Html.LabelFor(x => support.SupportName, htmlAttributes: new { @class = "text-right col-sm-2" })
+                        <div class="col-sm-3">@Html.DisplayFor(x => support.SupportName)</div>
+                        @Html.LabelFor(x => support.SupportYear, htmlAttributes: new { @class = "text-right col-sm-2" })
+                        <div class="col-sm-1">@Html.DisplayFor(x => support.SupportYear)</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrPro, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrPro)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrSkill, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrSkill)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrFuture, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrFuture)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrOther, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.mrOther)
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.mrIsOpen, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.Raw(Model.mrIsOpen == "Y" ? "是" : "否")
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.MemberAttchFile, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @if (Model.MemberAttchFile != null && Model.MemberAttchFile.Count > 0)
+            {
+                <div class="row">
+                    @foreach (var attachFile in Model.MemberAttchFile)
+                    {
+                        <div class="col-sm-4">
+                            @Html.ActionLink(attachFile.mrAttchFileName, "DownloadMemberAttchFile", new { sqno = attachFile.sqno }, new { target = "_blank" })
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<br />
+<div class="member_bg container">
+    <h3>個階段審核紀錄</h3>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>@Html.LabelFor(model => model.MemberGroupResult.FirstOrDefault().AppraiseStep)</th>
+                <th>@Html.LabelFor(model => model.MemberGroupResult.FirstOrDefault().AppraiseResult)</th>
+                <th>@Html.LabelFor(model => model.MemberGroupResult.FirstOrDefault().AppraiseGroup)</th>
+                <th>@Html.LabelFor(model => model.MemberGroupResult.FirstOrDefault().AppraiseDesc)</th>
+                <th>@Html.LabelFor(model => model.MemberGroupResult.FirstOrDefault().AppraiseNo)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.MemberGroupResult != null)
+            {
+                foreach (var item in Model.MemberGroupResult)
+                {
+                    <tr>
+                        <td>@item.currentStateString()</td>
+                        <td>@item.appraiseResultString()</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseGroup)</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseDesc)</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseNo)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+@Html.ActionLink("回上頁", "Index", null, htmlAttributes: new { @class = "btn btn-primary" })

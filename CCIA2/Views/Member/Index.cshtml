@@ -6,7 +6,6 @@
         <div class="container">
             <div class="col-md-3">
                 @Html.DropDownListFor(model => model.state, (IEnumerable<SelectListItem>)ViewBag.stateList, htmlAttributes: new { @class = "form-control" })
-                @*@Html.DropDownList("state", (IEnumerable<SelectListItem>)ViewBag.stateList, htmlAttributes: new { @class = "form-control" })*@
             </div>
             <div class="col-md-3">
                 <input type="submit" value="查詢" class="btn btn-primary btn-search" />
@@ -29,7 +28,7 @@
                     foreach (var item in Model.memberPagedList)
                     {
                         <tr>
-                            <td>@Html.DisplayFor(modelItem => item.mrName)</td>
+                            <td>@Html.ActionLink(item.mrName, "Details", new { sqno = item.sqno })</td>
                             <td>@Html.Raw(item.mrIsActive == "Y" ? "是" : "否")</td>
                             <td>@Html.Raw(item.mrIsFinish == "Y" ? "是" : "否")</td>
                             <td>@item.currentStateString()</td>

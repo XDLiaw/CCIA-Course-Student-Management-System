@@ -60,6 +60,20 @@ namespace CCIA2.Controllers
             return View(model);
         }
 
+        public ActionResult Details(int sqno)
+        {
+            Member member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            if (member == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(member);
+            }
+        }
+
         public ActionResult convertToGeneralMember(int memberSqno)
         {
             Member member = db.Member.Where(m => m.sqno == memberSqno).FirstOrDefault();
