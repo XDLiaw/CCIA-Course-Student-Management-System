@@ -8,6 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using MvcPaging;
 using System.Data.Entity;
+using System.Web.Configuration;
+using System.IO;
 
 namespace CCIA2.Controllers
 {
@@ -126,6 +128,46 @@ namespace CCIA2.Controllers
             ViewBag.AppraiseResultList = DropDownListHelper.getAppraiseResultList(model.newAppraiseResult.AppraiseStep);
             ViewBag.AppraiseGroupList = DropDownListHelper.getAppraiseGroupNameList();
             return View(model);
+        }
+
+        public FileContentResult DownloadMemberAttchFile(int sqno)
+        {
+            MemberAttchFile attachF = db.MemberAttchFile.Where(x => x.sqno == sqno).FirstOrDefault();
+            if (attachF == null)
+            {
+                return null;
+            }
+            else
+            {
+                string folder = WebConfigurationManager.AppSettings["MemberAttchFileDir"];
+                string filePath = System.IO.Path.Combine(folder, attachF.mrNumber, attachF.mrAttchFileName);
+                string contentType = GetContentTypeForFileName(attachF.mrAttchFileName);
+                if (System.IO.File.Exists(filePath) == false)
+                {
+                    return null;
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        byte[] bytes = new byte[fs.Length];
+                        fs.Read(bytes, 0, Convert.ToInt32(fs.Length));
+                        return new FileContentResult(bytes, contentType);
+                    }
+                }
+            }
+        }
+
+        private static string GetContentTypeForFileName(string fileName)
+        {
+            string ext = System.IO.Path.GetExtension(fileName);
+            using (Microsoft.Win32.RegistryKey registryKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext))
+            {
+                if (registryKey == null)
+                    return null;
+                var value = registryKey.GetValue("Content Type");
+                return (value == null) ? string.Empty : value.ToString();
+            }
         }
 
         protected override void Dispose(bool disposing)

@@ -184,6 +184,22 @@
             @Html.Raw(Model.member.mrIsOpen == "Y" ? "是" : "否")
         </div>
     </div>
+    <div class="row">
+        @Html.LabelFor(model => model.member.MemberAttchFile, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @if (Model.member.MemberAttchFile != null && Model.member.MemberAttchFile.Count > 0)
+            {
+                <div class="row">
+                    @foreach (var attachFile in Model.member.MemberAttchFile)
+                    {
+                        <div class="col-sm-4">
+                            @Html.ActionLink(attachFile.mrAttchFileName, "DownloadMemberAttchFile", new { sqno = attachFile.sqno }, new { target = "_blank" })
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
 </div>
 <br />
 <div class="member_bg container">
@@ -205,11 +221,11 @@
                 {
                     <tr>
                         <td>@item.currentStateString()</td>
-                    <td>@item.appraiseResultString()</td>
-                    <td>@Html.DisplayFor(modeItem => item.AppraiseGroup)</td>
-                    <td>@Html.DisplayFor(modeItem => item.AppraiseDesc)</td>
-                    <td>@Html.DisplayFor(modeItem => item.AppraiseNo)</td>
-                </tr>
+                        <td>@item.appraiseResultString()</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseGroup)</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseDesc)</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseNo)</td>
+                    </tr>
                 }
             }
         </tbody>
