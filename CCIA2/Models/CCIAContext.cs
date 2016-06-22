@@ -169,11 +169,6 @@ namespace CCIA2.Models
                 .WithOptional(e => e.Member)
                 .HasForeignKey(e => e.mrSqno);
 
-            //modelBuilder.Entity<Member>()
-            //    .HasMany(e => e.MemberGroupApply)
-            //    .WithOptional(e => e.Member)
-            //    .HasForeignKey(e => e.mrSqno);
-
             modelBuilder.Entity<MemberAttchFile>()
                 .Property(e => e.mrNumber)
                 .IsUnicode(false);

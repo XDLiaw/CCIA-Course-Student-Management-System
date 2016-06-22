@@ -15,7 +15,5 @@ namespace CCIA2.Models.ViewModels
 
         public MemberGroupResult newAppraiseResult { get; set; }
 
-        public List<SelectListItem> AppraiseResultList { get; set; }
-
     }
 }

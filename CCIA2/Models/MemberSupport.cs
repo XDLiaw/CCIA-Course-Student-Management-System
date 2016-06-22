@@ -12,16 +12,24 @@ namespace CCIA2.Models
         [Key]
         public int sqno { get; set; }
 
+        [ForeignKey("member")]
         public int? mrSqno { get; set; }
+
+        public virtual Member member { get; set; }
 
         [StringLength(50)]
         public string mrNumber { get; set; }
 
+        [ForeignKey("plan")]
         public int? PlanSqno { get; set; }
 
+        public virtual TablePlan plan { get; set; }
+
+        [Display(Name = "計畫名稱")]
         [StringLength(50)]
         public string SupportName { get; set; }
 
+        [Display(Name = "年度")]
         [StringLength(50)]
         public string SupportYear { get; set; }
 

@@ -15,7 +15,8 @@ namespace CCIA2.Models
         {
             MemberAttchFile = new HashSet<MemberAttchFile>();
             MemberGroupResult = new HashSet<MemberGroupResult>();
-            //MemberGroupApply = new HashSet<MemberGroupApply>();
+            MemberGroupApply = new HashSet<MemberGroupApply>();
+            MemberSupport = new HashSet<MemberSupport>();
         }
 
         [Key]
@@ -191,6 +192,9 @@ namespace CCIA2.Models
         [Display(Name = "報名組別")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MemberGroupApply> MemberGroupApply { get; set; }
+
+        [Display(Name = "曾經參加或獲得的文化部計畫補助")]
+        public virtual ICollection<MemberSupport> MemberSupport { get; set; }
 
         public string currentStateString()
         {

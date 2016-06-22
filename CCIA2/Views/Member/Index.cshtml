@@ -30,8 +30,8 @@
                     {
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.mrName)</td>
-                            <td>@Html.DisplayFor(modelItem => item.mrIsActive)</td>
-                            <td>@Html.DisplayFor(modelItem => item.mrIsFinish)</td>
+                            <td>@Html.Raw(item.mrIsActive == "Y" ? "是" : "否")</td>
+                            <td>@Html.Raw(item.mrIsFinish == "Y" ? "是" : "否")</td>
                             <td>@item.currentStateString()</td>
                             <td>
                                 @if (item.MemberGroupResult == null ||

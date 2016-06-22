@@ -137,6 +137,24 @@
         </div>
     </div>
     <div class="row">
+        @Html.LabelFor(model => model.member.MemberSupport, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @if (Model.member.MemberSupport != null && Model.member.MemberSupport.Count > 0)
+            {
+                foreach (var support in Model.member.MemberSupport)
+                {
+                    <div class="row">
+                        <div class="col-sm-4">@Html.DisplayFor(x => support.plan.PlanName)</div>
+                        @Html.LabelFor(x => support.SupportName, htmlAttributes: new { @class = "text-right col-sm-2" })
+                        <div class="col-sm-3">@Html.DisplayFor(x => support.SupportName)</div>
+                        @Html.LabelFor(x => support.SupportYear, htmlAttributes: new { @class = "text-right col-sm-2" })
+                        <div class="col-sm-1">@Html.DisplayFor(x => support.SupportYear)</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
         @Html.LabelFor(model => model.member.mrPro, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
             @Html.DisplayFor(model => model.member.mrPro)
