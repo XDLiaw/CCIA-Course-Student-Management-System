@@ -15,9 +15,7 @@ namespace CCIA2.Models
         {
             MemberAttchFile = new HashSet<MemberAttchFile>();
             MemberGroupResult = new HashSet<MemberGroupResult>();
-            MemberGroupApply = new HashSet<MemberGroupApply>();
-            //MemberGroupResult1 = new HashSet<MemberGroupResult>();
-            //MemberGroupApply1 = new HashSet<MemberGroupApply>();
+            //MemberGroupApply = new HashSet<MemberGroupApply>();
         }
 
         [Key]
@@ -27,7 +25,11 @@ namespace CCIA2.Models
         public int? mrJoinYear { get; set; }
 
         [Display(Name = "會員角色")]
+        [ForeignKey("memberType")]
         public int? mrMemberTypesqno { get; set; }
+
+        [Display(Name = "會員角色")]
+        public virtual TableMemberType memberType { get; set; }
 
         [Display(Name = "會員編號")]
         [StringLength(50)]
@@ -130,7 +132,11 @@ namespace CCIA2.Models
         public string mrCateType { get; set; }
 
         [Display(Name = "產業")]
+        [ForeignKey("culture")]
         public int? mrCultureSqno { get; set; }
+
+        [Display(Name = "產業")]
+        public virtual TableCulture culture { get; set; }
 
         [Display(Name = "其它經中央主管機關指定之產業")]
         [StringLength(50)]
@@ -235,11 +241,5 @@ namespace CCIA2.Models
             }
             return "";
         }
-
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<MemberGroupResult> MemberGroupResult1 { get; set; }
-
-        //[System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        //public virtual ICollection<MemberGroupApply> MemberGroupApply1 { get; set; }
     }
 }

@@ -12,7 +12,10 @@ namespace CCIA2.Models
         [Key]
         public int sqno { get; set; }
 
-        public int? mrSqno { get; set; }
+        [ForeignKey("Member")]
+        public int mrSqno { get; set; }
+
+        public Member Member { get; set; }
 
         [StringLength(50)]
         public string mrNumber { get; set; }
@@ -28,8 +31,7 @@ namespace CCIA2.Models
 
         public DateTime? CreateDate { get; set; }
 
-        public virtual Member Member { get; set; }
+        
 
-        public virtual Member Member1 { get; set; }
     }
 }

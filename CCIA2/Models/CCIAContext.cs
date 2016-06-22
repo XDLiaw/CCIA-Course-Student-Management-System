@@ -169,19 +169,9 @@ namespace CCIA2.Models
                 .WithOptional(e => e.Member)
                 .HasForeignKey(e => e.mrSqno);
 
-            modelBuilder.Entity<Member>()
-                .HasMany(e => e.MemberGroupApply)
-                .WithOptional(e => e.Member)
-                .HasForeignKey(e => e.mrSqno);
-
             //modelBuilder.Entity<Member>()
-            //    .HasMany(e => e.MemberGroupResult1)
-            //    .WithOptional(e => e.Member1)
-            //    .HasForeignKey(e => e.mrSqno);
-
-            //modelBuilder.Entity<Member>()
-            //    .HasMany(e => e.MemberGroupApply1)
-            //    .WithOptional(e => e.Member1)
+            //    .HasMany(e => e.MemberGroupApply)
+            //    .WithOptional(e => e.Member)
             //    .HasForeignKey(e => e.mrSqno);
 
             modelBuilder.Entity<MemberAttchFile>()

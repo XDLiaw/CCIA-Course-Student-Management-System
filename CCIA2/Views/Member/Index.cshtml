@@ -1,74 +1,76 @@
 ﻿@model CCIA2.Models.ViewModels.MemberViewModel
 
-@using (Html.BeginForm("Index", "Member", FormMethod.Post))
-{
-    <div class="container breadcrumb">
-        <div class="col-md-3">
-            @Html.DropDownListFor(model => model.state, (IEnumerable<SelectListItem>)ViewBag.stateList, htmlAttributes: new { @class = "form-control" })
-            @*@Html.DropDownList("state", (IEnumerable<SelectListItem>)ViewBag.stateList, htmlAttributes: new { @class = "form-control" })*@
+<div class="member_bg">
+    @using (Html.BeginForm("Index", "Member", FormMethod.Post))
+    {
+        <div class="container">
+            <div class="col-md-3">
+                @Html.DropDownListFor(model => model.state, (IEnumerable<SelectListItem>)ViewBag.stateList, htmlAttributes: new { @class = "form-control" })
+                @*@Html.DropDownList("state", (IEnumerable<SelectListItem>)ViewBag.stateList, htmlAttributes: new { @class = "form-control" })*@
+            </div>
+            <div class="col-md-3">
+                <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+            </div>
         </div>
-        <div class="col-md-3">
-            <input type="submit" value="查詢" class="btn btn-default btn-search" />
-        </div>
-    </div>
-
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrName)</th>
-                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsActive)</th>
-                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsFinish)</th>
-                <th>狀態</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.memberPagedList != null)
-            {
-                foreach (var item in Model.memberPagedList)
+        <br />
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrName)</th>
+                    <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsActive)</th>
+                    <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsFinish)</th>
+                    <th>狀態</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.memberPagedList != null)
                 {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.mrName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.mrIsActive)</td>
-                        <td>@Html.DisplayFor(modelItem => item.mrIsFinish)</td>
-                        <td>@item.currentStateString()</td>
-                        <td>
-                            @if (item.MemberGroupResult == null ||
+                    foreach (var item in Model.memberPagedList)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.mrName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.mrIsActive)</td>
+                            <td>@Html.DisplayFor(modelItem => item.mrIsFinish)</td>
+                            <td>@item.currentStateString()</td>
+                            <td>
+                                @if (item.MemberGroupResult == null ||
                                  item.MemberGroupResult.Count == 0 ||
                                 (item.MemberGroupResult.LastOrDefault().AppraiseStep <= 3 &&
                                  item.MemberGroupResult.LastOrDefault().AppraiseResult != "0")
                                 )
-                            {
-                                @Html.ActionLink("審核", "Appraise", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default" })
-                            }
-                            else if (item.MemberGroupResult.LastOrDefault().AppraiseResult == "0")
-                            {
-                                <input type="button" value="轉為一般會員" class="btn btn-default btn-convertToGeneralMember" sqno="@item.sqno"/>
-                            }
+                                {
+                                    @Html.ActionLink("審核", "Appraise", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default" })
+                                }
+                                else if (item.MemberGroupResult.LastOrDefault().AppraiseResult == "0")
+                                {
+                                    <input type="button" value="轉為一般會員" class="btn btn-default btn-convertToGeneralMember" sqno="@item.sqno" />
+                                }
 
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    }
                 }
-            }
-        </tbody>
+            </tbody>
 
-    </table>
-    
-    @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
-    <ul class="pagination">
-        @if (Model != null && Model.memberPagedList != null)
-        {
-            <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
-            for (int i = 1; i <= Model.memberPagedList.PageCount; i++)
+        </table>
+
+        @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
+        <ul class="pagination">
+            @if (Model != null && Model.memberPagedList != null)
             {
-                <li><input type="submit" value=@i class="btn-page" /></li>
+                <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+                for (int i = 1; i <= Model.memberPagedList.PageCount; i++)
+                {
+                    <li><input type="submit" value=@i class="btn-page" /></li>
+                }
+                <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+                <text>Displaying @Model.memberPagedList.ItemStart - @Model.memberPagedList.ItemEnd of @Model.memberPagedList.TotalItemCount item(s)</text>
             }
-            <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
-            <text>Displaying @Model.memberPagedList.ItemStart - @Model.memberPagedList.ItemEnd of @Model.memberPagedList.TotalItemCount item(s)</text>
-        }
 
-    </ul>
-}
+        </ul>
+    }
+</div>
 
 <script>
     $(document).ready(function () {

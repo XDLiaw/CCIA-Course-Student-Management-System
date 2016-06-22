@@ -79,7 +79,54 @@ namespace CCIA2.Controllers
             }
         }
 
+        public ActionResult Appraise(int sqno)
+        {
+            MemberAppraiseViewModel model = new MemberAppraiseViewModel();
+            model.sqno = sqno;
+            model.member =  db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            if (model.member != null)
+            {
+                model.newAppraiseResult = new MemberGroupResult();
+                model.newAppraiseResult.mrSqno = model.member.sqno;
+                model.newAppraiseResult.mrNumber = model.member.mrNumber;
+                if (model.member.MemberGroupResult != null && model.member.MemberGroupResult.Count > 0)
+                {
+                    model.newAppraiseResult.AppraiseStep = model.member.MemberGroupResult.LastOrDefault().AppraiseStep + 1;
+                }
+                else
+                {
+                    model.newAppraiseResult.AppraiseStep = 1;
+                }
+                var user = Session["user"] as SysUser;
+                model.newAppraiseResult.AppraiseNo = user.accountNo;
 
+                ViewBag.AppraiseResultList = DropDownListHelper.getAppraiseResultList(model.newAppraiseResult.AppraiseStep);
+                ViewBag.AppraiseGroupList = DropDownListHelper.getAppraiseGroupNameList();
+                return View(model);
+            }
+            else
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Appraise(MemberAppraiseViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.member = db.Member.Where(m => m.sqno == model.sqno).FirstOrDefault();
+                model.newAppraiseResult.AppraiseCreateDt = DateTime.Now;
+                model.member.MemberGroupResult.Add(model.newAppraiseResult);
+                db.Entry(model.member).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.AppraiseResultList = DropDownListHelper.getAppraiseResultList(model.newAppraiseResult.AppraiseStep);
+            ViewBag.AppraiseGroupList = DropDownListHelper.getAppraiseGroupNameList();
+            return View(model);
+        }
 
         protected override void Dispose(bool disposing)
         {
