@@ -60,7 +60,7 @@ namespace CCIA2.Helper
                 list.Add(new SelectListItem()
                 {
                     Text = "備取",
-                    Value = "1"
+                    Value = "2"
                 });
                 list.Add(new SelectListItem()
                 {
