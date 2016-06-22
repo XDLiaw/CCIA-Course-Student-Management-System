@@ -265,7 +265,15 @@
                 </tr>
             </tbody>
         </table>
-        <input type="submit" value="送出審查結果" class="btn btn-primary" />
+        <input type="submit" value="送出審查結果" class="btn btn-primary"/>
         @Html.ActionLink("回上頁", "Index", null, htmlAttributes: new { @class="btn btn-default" })
     }
 </div>
+
+<script>
+    $(document).ready(function () {
+        $("form").submit(function () {
+            return confirm("確定要送出? 送出後將無法再修改!");
+        });
+    });
+</script>

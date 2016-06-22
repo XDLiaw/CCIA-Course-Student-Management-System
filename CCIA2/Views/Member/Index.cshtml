@@ -64,7 +64,7 @@
                     <li><input type="submit" value=@i class="btn-page" /></li>
                 }
                 <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
-                <text>Displaying @Model.memberPagedList.ItemStart - @Model.memberPagedList.ItemEnd of @Model.memberPagedList.TotalItemCount item(s)</text>
+                <text>共 @Model.memberPagedList.TotalItemCount 筆資料</text>
             }
 
         </ul>
@@ -75,22 +75,25 @@
     $(document).ready(function () {
         paggingSetting();
 
-        $(".btn-convertToGeneralMember").click(function(){            
-            var data = {memberSqno : $(this).attr("sqno")};
-            $.post(
-               "@Url.Content("~/Member/convertToGeneralMember")",
-               data,
-               function (res) {
-                   //alert(JSON.stringify(res));
-                   if (typeof(res.errorMessage) != 'undefined') {
-                       alert(res.errorMessage);
-                   } else {
-                       alert("轉換完成");
-                       $("form").submit();
-                   }
-               },
-               "json"
-            );
+        $(".btn-convertToGeneralMember").click(function(){
+            if(confirm("確定要轉為一般會員?轉換後將無法再修改!"))
+            {
+                var data = {memberSqno : $(this).attr("sqno")};
+                $.post(
+                    "@Url.Content("~/Member/convertToGeneralMember")",
+                    data,
+                    function (res) {
+                        //alert(JSON.stringify(res));
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert("轉換完成");
+                            $("form").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
         });
     });
 
