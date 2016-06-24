@@ -21,5 +21,8 @@ namespace CCIA2.Models.ViewModels
         public string password { get; set; }
 
         public string ReturnUrl { get; set; }
+        
+        [Display(Name="驗證碼")]
+        public string captchaCode { get; set; }
     }
 }

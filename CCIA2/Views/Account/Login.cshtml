@@ -1,43 +1,60 @@
 ﻿@model CCIA2.Models.ViewModels.LoginViewModel
 
 
-<h2>後台登入</h2>
 
-@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
+<div class="member_bg">
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
 
-    <div class="container">
-        <div class="col-sm-2 col-md-2"></div>
-        <div class="col-sm-4 col-md-4">
-            <div class="logintype">
-                @Html.LabelFor(model => model.accountNo, new { @class = "control-label" })
-                <div class="controls">
-                    @Html.TextBoxFor(model => model.accountNo, new { @class = "form-control", placeholder = "請輸入登入帳號" })
-                    @Html.ValidationMessageFor(model => model.accountNo, null, new { @class = "help-inline" })
+        <h2>後台登入</h2>
+        <div class="container">
+            <div class="col-sm-2 col-md-2"></div>
+            <div class="col-sm-4 col-md-4">
+                <div class="logintype">
+                    @Html.LabelFor(model => model.accountNo, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.TextBoxFor(model => model.accountNo, new { @class = "form-control", placeholder = "請輸入登入帳號" })
+                        @Html.ValidationMessageFor(model => model.accountNo, null, new { @class = "help-inline" })
+                    </div>
                 </div>
-            </div>
-            <div class="logintype">
-                @Html.LabelFor(model => model.password, new { @class = "control-label" })
-                <div class="controls">
-                    @Html.PasswordFor(model => model.password, new { @class = "form-control", placeholder = "請輸入登入密碼" })
-                    @Html.ValidationMessageFor(model => model.password, null, new { @class = "help-inline" })
+                <div class="logintype">
+                    @Html.LabelFor(model => model.password, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.PasswordFor(model => model.password, new { @class = "form-control", placeholder = "請輸入登入密碼" })
+                        @Html.ValidationMessageFor(model => model.password, null, new { @class = "help-inline" })
+                    </div>
                 </div>
-            </div>
-            <div class="logintype">
-                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-                <div class="g-recaptcha" data-sitekey="@System.Configuration.ConfigurationManager.AppSettings["reCAPTCHASitekey"]"></div>
-            </div>
+                <div class="logintype">
+                    @Html.LabelFor(model => model.captchaCode, new { @class = "control-label" })
+                    <div class="controls">
+                        @Html.PasswordFor(model => model.captchaCode, new { @class = "form-control", placeholder = "請輸入驗證碼" })
+                        @Html.ValidationMessageFor(model => model.captchaCode, null, new { @class = "help-inline" })
+                        <img id="img-verify" src="@Url.Action("GenerateCaptchaImage")" alt="驗證碼" />
+                        <input type="image" id="btn-reload" src="~/Content/images/reload.png" alt="重整圖片" >
+                    </div>
+                </div>
+                @*<div class="logintype">
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <div class="g-recaptcha" data-sitekey="@System.Configuration.ConfigurationManager.AppSettings["reCAPTCHASitekey"]"></div>
+                </div>*@
 
-            <div class="logintype">
-                @TempData["Error"]
-            </div>
+                <div class="logintype">
+                    @TempData["Error"]
+                </div>
 
-            <input type="submit" name="button" value="登入" class="btn btn-primary">
+                <input type="submit" name="button" value="登入" class="btn btn-primary">
+            </div>
         </div>
-    </div>
+    }
+</div>
 
-
-
-    
-}   
+<script>
+    $(document).ready(function () {
+        $("#btn-reload").click(function (event) {
+            event.preventDefault();
+            $("#img-verify").prop("src", "/Account/GenerateCaptchaImage?random=" + new Date().getTime());
+            return false;
+        });
+    });
+</script>

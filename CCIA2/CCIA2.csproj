@@ -169,6 +169,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helper\CAPTCHAImageGenerater.cs" />
     <Compile Include="Helper\DropDownListHelper.cs" />
     <Compile Include="Models\CaptchaResponse.cs" />
     <Compile Include="Models\CCIAContext.cs" />
@@ -223,6 +224,7 @@
     <Content Include="Content\images\logo_02.jpg" />
     <Content Include="Content\images\page_title_01.png" />
     <Content Include="Content\images\photo_01.jpg" />
+    <Content Include="Content\images\reload.png" />
     <Content Include="Content\images\sbanner_01.jpg" />
     <Content Include="Content\images\sbanner_02.jpg" />
     <Content Include="Content\images\sbanner_03.jpg" />
@@ -264,6 +266,7 @@
     <Content Include="Content\themes\base\tooltip.css" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <None Include="Properties\PublishProfiles\MyExport.pubxml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\bootstrap-3.3.4.js" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
