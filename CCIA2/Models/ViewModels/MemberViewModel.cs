@@ -25,7 +25,7 @@ namespace CCIA2.Models.ViewModels
         public MemberViewModel()
         {
             this.pageNumber = 1;
-            this.pageSize = 5;
+            this.pageSize = 15;
         }
     }
 }

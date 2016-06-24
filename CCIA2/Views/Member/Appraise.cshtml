@@ -1,6 +1,74 @@
 ﻿@model CCIA2.Models.ViewModels.MemberAppraiseViewModel
 
 <div class="member_bg container">
+    <h3>審核</h3>
+    @using (Html.BeginForm("Appraise", "Member", FormMethod.Post))
+    {
+        @Html.HiddenFor(model => model.sqno)
+        @Html.HiddenFor(model => model.newAppraiseResult.mrSqno)
+        @Html.HiddenFor(model => model.newAppraiseResult.mrNumber)
+        @Html.HiddenFor(model => model.newAppraiseResult.AppraiseStep)
+        @Html.HiddenFor(model => model.newAppraiseResult.AppraiseNo)
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>@Html.LabelFor(model => model.newAppraiseResult.AppraiseStep)</th>
+                    <th>@Html.LabelFor(model => model.newAppraiseResult.AppraiseResult)</th>
+                    <th>@Html.LabelFor(model => model.newAppraiseResult.AppraiseGroup)</th>
+                    <th>@Html.LabelFor(model => model.newAppraiseResult.AppraiseDesc)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>@Model.newAppraiseResult.currentStateString()</td>
+                    <td>
+                        @Html.DropDownListFor(model => model.newAppraiseResult.AppraiseResult, (IEnumerable<SelectListItem>)ViewBag.AppraiseResultList, htmlAttributes: new { @class = "form-control" })
+                    </td>
+                    <td>
+                        @Html.DropDownListFor(model => model.newAppraiseResult.AppraiseGroup, (IEnumerable<SelectListItem>)ViewBag.AppraiseGroupList, htmlAttributes: new { @class = "form-control" })
+                    </td>
+                    <td class="col-sm-6">
+                        @Html.TextAreaFor(mode => Model.newAppraiseResult.AppraiseDesc, htmlAttributes: new { style = "width: 100%; max-width: 100%;" })
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <input type="submit" value="送出審查結果" class="btn btn-primary" />
+        @Html.ActionLink("回上頁", "Index", null, htmlAttributes: new { @class = "btn btn-default" })
+    }
+</div>
+<br />
+<div class="member_bg container">
+    <h3>個階段審核紀錄</h3>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseStep)</th>
+                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseResult)</th>
+                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseGroup)</th>
+                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseDesc)</th>
+                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseNo)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.member.MemberGroupResult != null)
+            {
+                foreach (var item in Model.member.MemberGroupResult)
+                {
+                    <tr>
+                        <td>@item.currentStateString()</td>
+                        <td>@item.appraiseResultString()</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseGroup)</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseDesc)</td>
+                        <td>@Html.DisplayFor(modeItem => item.AppraiseNo)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<br />
+<div class="member_bg container">
     <h3>會員基本資料</h3>
 
     <div class="row">
@@ -201,74 +269,7 @@
         </div>
     </div>
 </div>
-<br />
-<div class="member_bg container">
-    <h3>個階段審核紀錄</h3>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseStep)</th>
-                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseResult)</th>
-                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseGroup)</th>
-                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseDesc)</th>
-                <th>@Html.LabelFor(model => model.member.MemberGroupResult.FirstOrDefault().AppraiseNo)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model.member.MemberGroupResult != null)
-            {
-                foreach (var item in Model.member.MemberGroupResult)
-                {
-                    <tr>
-                        <td>@item.currentStateString()</td>
-                        <td>@item.appraiseResultString()</td>
-                        <td>@Html.DisplayFor(modeItem => item.AppraiseGroup)</td>
-                        <td>@Html.DisplayFor(modeItem => item.AppraiseDesc)</td>
-                        <td>@Html.DisplayFor(modeItem => item.AppraiseNo)</td>
-                    </tr>
-                }
-            }
-        </tbody>
-    </table>
-</div>
-<br />
-<div class="member_bg container">
-    <h3>審核</h3>
-    @using (Html.BeginForm("Appraise", "Member", FormMethod.Post))
-    {
-        @Html.HiddenFor(model => model.sqno)
-        @Html.HiddenFor(model => model.newAppraiseResult.mrSqno)
-        @Html.HiddenFor(model => model.newAppraiseResult.mrNumber)
-        @Html.HiddenFor(model => model.newAppraiseResult.AppraiseStep)
-        @Html.HiddenFor(model => model.newAppraiseResult.AppraiseNo)
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>@Html.LabelFor(model => model.newAppraiseResult.AppraiseStep)</th>
-                    <th>@Html.LabelFor(model => model.newAppraiseResult.AppraiseResult)</th>
-                    <th>@Html.LabelFor(model => model.newAppraiseResult.AppraiseGroup)</th>
-                    <th>@Html.LabelFor(model => model.newAppraiseResult.AppraiseDesc)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>@Model.newAppraiseResult.currentStateString()</td>
-                    <td>
-                        @Html.DropDownListFor(model => model.newAppraiseResult.AppraiseResult, (IEnumerable<SelectListItem>)ViewBag.AppraiseResultList, htmlAttributes: new { @class = "form-control" })
-                    </td>
-                    <td>
-                        @Html.DropDownListFor(model => model.newAppraiseResult.AppraiseGroup, (IEnumerable<SelectListItem>)ViewBag.AppraiseGroupList, htmlAttributes: new { @class = "form-control" })
-                    </td>
-                    <td class="col-sm-6">
-                        @Html.TextAreaFor(mode => Model.newAppraiseResult.AppraiseDesc, htmlAttributes: new { style = "width: 100%; max-width: 100%;" })
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <input type="submit" value="送出審查結果" class="btn btn-primary"/>
-        @Html.ActionLink("回上頁", "Index", null, htmlAttributes: new { @class="btn btn-default" })
-    }
-</div>
+
 
 <script>
     $(document).ready(function () {

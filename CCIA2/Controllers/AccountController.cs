@@ -70,12 +70,12 @@ namespace CCIA2.Controllers
                     }
                     else 
                     {
-                        ViewBag.ErrorMessage = "帳號或密碼錯誤登入失敗";
+                        ViewBag.ErrorMessage = "帳號或密碼錯誤!";
                     }
                 }
                 else 
                 {
-                    ViewBag.ErrorMessage = "驗證碼錯誤，請重新輸入";
+                    ViewBag.ErrorMessage = "驗證碼錯誤，請重新輸入!";
                 }
             }
             else

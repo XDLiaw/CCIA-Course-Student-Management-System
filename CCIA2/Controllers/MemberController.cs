@@ -24,7 +24,7 @@ namespace CCIA2.Controllers
             MemberViewModel model = new MemberViewModel();
             model.memberPagedList = db.Member
                 .Where(m => m.mrMemberTypesqno == 1) //經紀仲介學員
-                .OrderBy(r => r.mrName)
+                .OrderByDescending(r => r.mrCreateDt)
                 .ToPagedList(model.pageNumber - 1, model.pageSize);
             foreach (Member m in model.memberPagedList)
             {
@@ -49,7 +49,7 @@ namespace CCIA2.Controllers
                     ) : true
                 )
                 .Where(m => (model.state == 5) ? (m.MemberGroupResult.Count(res => res.AppraiseResult == "0") == 1) : true) //未通過
-                .OrderBy(m => m.mrName)
+                .OrderByDescending(r => r.mrCreateDt)
                 .ToPagedList(model.pageNumber - 1, model.pageSize);
             foreach (Member m in model.memberPagedList)
             {
