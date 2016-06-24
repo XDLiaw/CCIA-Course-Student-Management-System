@@ -137,7 +137,7 @@ namespace CCIA2.Controllers
                 model.member.MemberGroupResult.Add(model.newAppraiseResult);
                 db.Entry(model.member).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return View("Close");
             }
             ViewBag.AppraiseResultList = DropDownListHelper.getAppraiseResultList(model.newAppraiseResult.AppraiseStep);
             ViewBag.AppraiseGroupList = DropDownListHelper.getAppraiseGroupNameList();

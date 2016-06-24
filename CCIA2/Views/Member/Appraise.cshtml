@@ -34,7 +34,7 @@
             </tbody>
         </table>
         <input type="submit" value="送出審查結果" class="btn btn-primary" />
-        @Html.ActionLink("回上頁", "Index", null, htmlAttributes: new { @class = "btn btn-default" })
+        @*@Html.ActionLink("回上頁", "Index", null, htmlAttributes: new { @class = "btn btn-default" })*@
     }
 </div>
 <br />
@@ -176,52 +176,76 @@
             @Html.Raw(Int32.Parse(Model.member.mrRole) == 1 ? "社會人士" : "學生")
         </div>
     </div>
-    <div class="row">
-        @Html.LabelFor(model => model.member.mrSocialEdu, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
-        <div class="col-sm-9">
-            @Html.DisplayFor(model => model.member.mrSocialEdu)
+    @if (Int32.Parse(Model.member.mrRole) == 1) //社會人士
+    {
+        <div class="row">
+            @Html.LabelFor(model => model.member.mrSocialEdu, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.DisplayFor(model => model.member.mrSocialEdu)
+            </div>
         </div>
-    </div>
-    <div class="row">
-        @Html.LabelFor(model => model.member.mrSocialComp, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
-        <div class="col-sm-9">
-            @Html.DisplayFor(model => model.member.mrSocialComp)
+        <div class="row">
+            @Html.LabelFor(model => model.member.mrSocialComp, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.DisplayFor(model => model.member.mrSocialComp)
+            </div>
         </div>
-    </div>
-    <div class="row">
-        @Html.LabelFor(model => model.member.mrSocialTitle, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
-        <div class="col-sm-9">
-            @Html.DisplayFor(model => model.member.mrSocialTitle)
+        <div class="row">
+            @Html.LabelFor(model => model.member.mrSocialTitle, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.DisplayFor(model => model.member.mrSocialTitle)
+            </div>
         </div>
-    </div>
-    <div class="row">
-        @Html.LabelFor(model => model.member.mrCateType, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
-        <div class="col-sm-9">
-            @Html.Raw(Model.member.mrCateType == "1" ? "文創產業 - " : Model.member.mrOtherCategory)
-            @if (Model.member.mrCateType == "1")
-            {
-                @Html.Raw(Model.member.mrCultureSqno == 16 ? Model.member.mrCultureOther : Model.member.culture.CultureName)
-            }
-        </div>
-    </div>
-    <div class="row">
-        @Html.LabelFor(model => model.member.MemberSupport, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
-        <div class="col-sm-9">
-            @if (Model.member.MemberSupport != null && Model.member.MemberSupport.Count > 0)
-            {
-                foreach (var support in Model.member.MemberSupport)
+        <div class="row">
+            @Html.LabelFor(model => model.member.mrCateType, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.Raw(Model.member.mrCateType == "1" ? "文創產業 - " : Model.member.mrOtherCategory)
+                @if (Model.member.mrCateType == "1")
                 {
-                    <div class="row">
-                        <div class="col-sm-4">@Html.DisplayFor(x => support.plan.PlanName)</div>
-                        @Html.LabelFor(x => support.SupportName, htmlAttributes: new { @class = "text-right col-sm-2" })
-                        <div class="col-sm-3">@Html.DisplayFor(x => support.SupportName)</div>
-                        @Html.LabelFor(x => support.SupportYear, htmlAttributes: new { @class = "text-right col-sm-2" })
-                        <div class="col-sm-1">@Html.DisplayFor(x => support.SupportYear)</div>
-                    </div>
+                    @Html.Raw(Model.member.mrCultureSqno == 16 ? Model.member.mrCultureOther : Model.member.culture.CultureName)
                 }
-            }
+            </div>
         </div>
-    </div>
+        <div class="row">
+            @Html.LabelFor(model => model.member.MemberSupport, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @if (Model.member.MemberSupport != null && Model.member.MemberSupport.Count > 0)
+                {
+                    foreach (var support in Model.member.MemberSupport)
+                    {
+                        <div class="row">
+                            <div class="col-sm-4">@Html.DisplayFor(x => support.plan.PlanName)</div>
+                            @Html.LabelFor(x => support.SupportName, htmlAttributes: new { @class = "text-right col-sm-2" })
+                            <div class="col-sm-3">@Html.DisplayFor(x => support.SupportName)</div>
+                            @Html.LabelFor(x => support.SupportYear, htmlAttributes: new { @class = "text-right col-sm-2" })
+                            <div class="col-sm-1">@Html.DisplayFor(x => support.SupportYear)</div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+    else //學生
+    {
+        <div class="row">
+            @Html.LabelFor(model => model.member.mrStuSchool, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.DisplayFor(model => model.member.mrStuSchool)
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(model => model.member.mrStuDept, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.DisplayFor(model => model.member.mrStuDept)
+            </div>
+        </div>
+        <div class="row">
+            @Html.LabelFor(model => model.member.mrStuYear, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.DisplayFor(model => model.member.mrStuYear)
+            </div>
+        </div>
+    }
     <div class="row">
         @Html.LabelFor(model => model.member.mrPro, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">

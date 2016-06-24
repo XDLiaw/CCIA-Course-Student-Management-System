@@ -51,7 +51,7 @@ namespace CCIA2.Controllers
                         FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(1,
                             query[0].accountNo,//使用者ID
                             DateTime.Now,//核發日期
-                            DateTime.Now.AddMinutes(1800),//到期日期 30分鐘 
+                            
                             isPersistent,//永續性
                             userData,//使用者定義的資料
                             FormsAuthentication.FormsCookiePath);
