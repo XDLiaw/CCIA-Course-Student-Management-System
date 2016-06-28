@@ -1,80 +1,288 @@
 ﻿@model CCIA2.Models.ViewModels.MemberViewModel
 
-<div class="member_bg">
-    @using (Html.BeginForm("Index", "Member", FormMethod.Post))
-    {
-        <div class="container">
-            <div class="col-md-2">
-                @Html.DropDownListFor(model => model.state, (IEnumerable<SelectListItem>)ViewBag.stateList, htmlAttributes: new { @class = "form-control" })
-            </div>
-            <div class="col-md-2">
-                <input type="submit" value="查詢" class="btn btn-primary btn-search" />
-            </div>
-        </div>
-        <br />
-        <table class="table table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrName)</th>
-                    <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsActive)</th>
-                    <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsFinish)</th>
-                    <th>狀態</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model != null && Model.memberPagedList != null)
-                {
-                    foreach (var item in Model.memberPagedList)
-                    {
-                        <tr>
-                            <td>@Html.ActionLink(item.mrName, "Details", new { sqno = item.sqno })</td>
-                            <td>@Html.Raw(item.mrIsActive == "Y" ? "是" : "否")</td>
-                            <td>@Html.Raw(item.mrIsFinish == "Y" ? "是" : "否")</td>
-                            <td>@item.currentStateString()</td>
-                            <td>
-                                @if (item.MemberGroupResult == null ||
-                                 item.MemberGroupResult.Count == 0 ||
-                                (item.MemberGroupResult.LastOrDefault().AppraiseStep <= 3 &&
-                                 item.MemberGroupResult.LastOrDefault().AppraiseResult != "0")
-                                )
-                                {
-                                    @Html.ActionLink("審核", "Appraise", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default" })
-                                }
-                                else if (item.MemberGroupResult.LastOrDefault().AppraiseResult == "0")
-                                {
-                                    <input type="button" value="轉為一般會員" class="btn btn-default btn-convertToGeneralMember" sqno="@item.sqno" />
-                                }
-                            </td>
-                        </tr>
-                    }
-                }
-            </tbody>
-
-        </table>
-
-        @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
-        <ul class="pagination">
-            @if (Model != null && Model.memberPagedList != null)
+<div class="bs-component">
+    <ul class="nav nav-tabs">
+        <li class=""><a href="#tab_memberType1" id="li-memberType1" data-toggle="tab" aria-expanded="true">經紀仲介學員會員</a></li>
+        <li class=""><a href="#tab_memberType2" id="li-memberType2" data-toggle="tab" aria-expanded="true">歷屆會員</a></li>
+        <li class=""><a href="#tab_memberType3" id="li-memberType3" data-toggle="tab" aria-expanded="true">一般會員</a></li>
+    </ul>
+    <div class="tab-content  member_bg">
+        <div id="tab_memberType1" class="fade tab-pane ">
+            @using (Html.BeginForm("Index", "Member", FormMethod.Post, htmlAttributes: new { @id = "form-memberType1" }))
             {
-                <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
-                for (int i = 1; i <= Model.memberPagedList.PageCount; i++)
-                {
-                    <li><input type="submit" value=@i class="btn-page" /></li>
-                }
-                <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
-                <text>共 @Model.memberPagedList.TotalItemCount 筆資料</text>
-            }
+                <input type="hidden" name="memberTypeNo" value="1" />
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            @Html.DropDownListFor(model => model.state, (IEnumerable<SelectListItem>)ViewBag.stateList, htmlAttributes: new { @class = "form-control", id = "select-state" })
+                        </div>
+                        <div class="col-sm-7">
+                            @Html.TextBoxFor(model => model.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入會員編號, 姓名, Email, 或身分證字號" })
+                        </div>
+                    </div>
+                    <br />
+                    <div class="row">
+                        <div class="col-md-2">
+                            @Html.CheckBoxFor(m => m.isActive, htmlAttributes: new { @id = "checkBox-isActive" })
+                            <label for="checkBox-isActive">已啟動</label>
+                        </div>
+                        <div class="col-md-2">
+                            @Html.CheckBoxFor(m => m.isFinish, htmlAttributes: new { @id = "checkBox-isFinish" })
+                            <label for="checkBox-isFinish">已完成</label>
+                        </div>
+                        <div class="col-md-2 hidden" id="div-admission">
+                            @Html.CheckBoxFor(m => m.admission, htmlAttributes: new { @id = "checkBox-admission" })
+                            <label for="checkBox-admission">正取</label>
+                        </div>
+                        <div class="col-md-2 hidden" id="div-onWaitingList">
+                            @Html.CheckBoxFor(m => m.onWaitingList, htmlAttributes: new { @id = "checkBox-onWaitingList" })
+                            <label for="checkBox-onWaitingList">備取</label>
+                        </div>
+                        <div class="col-md-2 hidden" id="div-flunk">
+                            @Html.CheckBoxFor(m => m.flunk, htmlAttributes: new { @id = "checkBox-flunk" })
+                            <label for="checkBox-flunk">未錄取</label>
+                        </div>
+                        <div class="col-md-2 pull-right">
+                            <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+                        </div>
+                    </div>
+                </div>
 
-        </ul>
-    }
+                <br />
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrName)</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsActive)</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsFinish)</th>
+                            <th>狀態</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.memberPagedList != null)
+                        {
+                            foreach (var item in Model.memberPagedList)
+                            {
+                                if (item.mrMemberTypesqno != 1) { continue; }
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.mrNumber)
+                                        @Html.ActionLink(item.mrName, "Details", new { sqno = item.sqno }, htmlAttributes: new { target = "_blank" })
+                                    </td>
+                                    <td>@Html.Raw(item.mrIsActive == "Y" ? "是" : "否")</td>
+                                    <td>@Html.Raw(item.mrIsFinish == "Y" ? "是" : "否")</td>
+                                    <td>@item.currentStateString()</td>
+                                    <td>
+                                        @if (item.MemberGroupResult == null || item.MemberGroupResult.Count == 0 ||
+                                             (item.MemberGroupResult.LastOrDefault().AppraiseStep <= 3 && item.MemberGroupResult.LastOrDefault().AppraiseResult != "0"))
+                                        {
+                                            @Html.ActionLink("審核", "Appraise", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-Appraise" })
+                                        }
+                                        else if (item.MemberGroupResult.LastOrDefault().AppraiseResult == "0")
+                                        {
+                                            <input type="button" value="轉為一般會員" class="btn btn-default btn-convertToGeneralMember" sqno="@item.sqno" />
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                if (Model.memberTypeNo == 1)
+                {
+                    @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
+                    <ul class="pagination">
+                        @if (Model != null && Model.memberPagedList != null)
+                        {
+                            <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+                            for (int i = 1; i <= Model.memberPagedList.PageCount; i++)
+                            {
+                                <li><input type="submit" value=@i class="btn-page" /></li>
+                            }
+                            <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+                            <text>共 @Model.memberPagedList.TotalItemCount 筆資料</text>
+                        }
+                    </ul>
+                }
+            }
+        </div>
+        <div id="tab_memberType2" class="fade tab-pane ">
+            @using (Html.BeginForm("Index", "Member", FormMethod.Post, htmlAttributes: new { @id = "form-memberType2" }))
+            {
+                <input type="hidden" name="memberTypeNo" value="2" />
+                <div class="container">
+                    <div class="col-md-2">
+                        @Html.CheckBoxFor(m => m.isActive, htmlAttributes: new { @id = "checkBox-isActive" })
+                        <label for="checkBox-isActive">已啟動</label>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.CheckBoxFor(m => m.isFinish, htmlAttributes: new { @id = "checkBox-isFinish" })
+                        <label for="checkBox-isFinish">已完成</label>
+                    </div>
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(model => model.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入會員編號, 姓名, Email, 或身分證字號" })
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+                    </div>
+                </div>
+                <br />
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrName)</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsActive)</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsFinish)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.memberPagedList != null)
+                        {
+                            foreach (var item in Model.memberPagedList)
+                            {
+                                if (item.mrMemberTypesqno != 2) { continue; }
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.mrNumber)
+                                        @Html.ActionLink(item.mrName, "Details", new { sqno = item.sqno }, htmlAttributes: new { target = "_blank" })
+                                    </td>
+                                    <td>@Html.Raw(item.mrIsActive == "Y" ? "是" : "否")</td>
+                                    <td>@Html.Raw(item.mrIsFinish == "Y" ? "是" : "否")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                if (Model.memberTypeNo == 2)
+                {
+                    @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
+                    <ul class="pagination">
+                        @if (Model != null && Model.memberPagedList != null)
+                        {
+                            <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+                            for (int i = 1; i <= Model.memberPagedList.PageCount; i++)
+                            {
+                                <li><input type="submit" value=@i class="btn-page" /></li>
+                            }
+                            <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+                            <text>共 @Model.memberPagedList.TotalItemCount 筆資料</text>
+                        }
+                    </ul>
+                }
+            }
+        </div>
+        <div id="tab_memberType3" class="fade tab-pane ">
+            @using (Html.BeginForm("Index", "Member", FormMethod.Post, htmlAttributes: new { @id = "form-memberType3" }))
+            {
+                <input type="hidden" name="memberTypeNo" value="3" />
+                <div class="container">
+                    <div class="col-md-2">
+                        @Html.CheckBoxFor(m => m.isActive, htmlAttributes: new { @id = "checkBox-isActive" })
+                        <label for="checkBox-isActive">已啟動</label>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.CheckBoxFor(m => m.isFinish, htmlAttributes: new { @id = "checkBox-isFinish" })
+                        <label for="checkBox-isFinish">已完成</label>
+                    </div>
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(model => model.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入會員編號, 姓名, Email, 或身分證字號" })
+                    </div>
+                    <div class="col-md-2 pull-right">
+                        <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+                    </div>
+                </div>
+                <br />
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrName)</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsActive)</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrIsFinish)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.memberPagedList != null)
+                        {
+                            foreach (var item in Model.memberPagedList)
+                            {
+                                if (item.mrMemberTypesqno != 3) { continue; }
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.mrNumber)
+                                        @Html.ActionLink(item.mrName, "Details", new { sqno = item.sqno }, htmlAttributes: new { target = "_blank" })
+                                    </td>
+                                    <td>@Html.Raw(item.mrIsActive == "Y" ? "是" : "否")</td>
+                                    <td>@Html.Raw(item.mrIsFinish == "Y" ? "是" : "否")</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                if (Model.memberTypeNo == 3)
+                {
+                    @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
+                    <ul class="pagination">
+                        @if (Model != null && Model.memberPagedList != null)
+                        {
+                            <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+                            for (int i = 1; i <= Model.memberPagedList.PageCount; i++)
+                            {
+                                <li><input type="submit" value=@i class="btn-page" /></li>
+                            }
+                            <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+                            <text>共 @Model.memberPagedList.TotalItemCount 筆資料</text>
+                        }
+                    </ul>
+                }
+            }
+        </div>
+    </div>
 </div>
+
 
 <script>
     $(document).ready(function () {
         paggingSetting();
 
-        $(".btn-convertToGeneralMember").click(function(){
+        // 決定要顯示的頁籤
+        $("#li-memberType"+@Model.memberTypeNo).trigger("click");
+
+        // 當審查popup視窗關閉時，重新搜尋
+        $("#form-memberType1").find("a.btn-Appraise").click(function(event) {
+            event.preventDefault();
+            var popup = window.open($(this).prop("href"), "_blank");
+            //var popup = window.open($(this).prop("href"), "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
+            var loop = setInterval(function() {
+                if(popup.closed) {
+                    clearInterval(loop);
+                    $("#form-memberType1").submit();
+                }
+            }, 500);
+
+            return false;
+        });
+
+        // 控制顯示checkbox 正取/備取/未錄取
+        $("#form-memberType1").find("#select-state").on('change', function() {
+            var selectState = $("#form-memberType1").find("#select-state").val();
+            if (selectState == 3) {
+                $("#form-memberType1").find("#div-admission").removeClass("hidden");
+                $("#form-memberType1").find("#div-onWaitingList").removeClass("hidden");
+                $("#form-memberType1").find("#div-flunk").removeClass("hidden");
+            } else {
+                $("#form-memberType1").find("#div-admission").addClass("hidden");
+                $("#form-memberType1").find("#div-onWaitingList").addClass("hidden");
+                $("#form-memberType1").find("#div-flunk").addClass("hidden");
+            }
+        });
+        $("#form-memberType1").find("#select-state").trigger("change");
+
+        //轉為一般會員
+        $(".btn-convertToGeneralMember").on('click', function() {
             if(confirm("確定要轉為一般會員?轉換後將無法再修改!"))
             {
                 var data = {memberSqno : $(this).attr("sqno")};
@@ -87,7 +295,7 @@
                             alert(res.errorMessage);
                         } else {
                             alert("轉換完成");
-                            $("form").submit();
+                            $("#form-memberType1").submit();
                         }
                     },
                     "json"
@@ -102,7 +310,8 @@
             $("#PageNumber").val($(this).attr("value"));
             return true;
         });
-        $("ul > li > input.btn-page:eq(@Model.memberPagedList.PageIndex)").addClass("active");
+
+        $("ul > li > input.btn-page").eq(@Model.memberPagedList.PageIndex).addClass("active");
         $("ul > li > input.btn-previous-page").click(function () {
             if (@Model.memberPagedList.PageIndex > 0) {
                 $("#PageNumber").val(@Model.memberPagedList.PageNumber -1);
@@ -121,6 +330,7 @@
                 return false;
             }
         });
+
         $("input.btn-search").click(function(){
             $("#PageNumber").val(1);
             return true;

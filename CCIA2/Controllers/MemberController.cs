@@ -22,38 +22,73 @@ namespace CCIA2.Controllers
         public ActionResult Index()
         {
             MemberViewModel model = new MemberViewModel();
-            model.memberPagedList = db.Member
-                .Where(m => m.mrMemberTypesqno == 1) //經紀仲介學員
-                .OrderByDescending(r => r.mrCreateDt)
-                .ToPagedList(model.pageNumber - 1, model.pageSize);
-            foreach (Member m in model.memberPagedList)
-            {
-                m.MemberGroupResult = m.MemberGroupResult.OrderBy(r => r.AppraiseStep).ToList();
-            }
-
-            ViewBag.stateList = DropDownListHelper.getApplyStepListWithAll();
-            return View(model);
+            model.memberTypeNo = 1;
+            model.state = null;
+            model.isActive = true;
+            model.isFinish = true;
+            model.admission = true;
+            model.onWaitingList = true;
+            model.flunk = true;
+            model.searchText = null;
+            return Index(model);
         }
 
         [HttpPost]
         public ActionResult Index(MemberViewModel model)
         {
-            model.memberPagedList = db.Member
-                .Where(m => m.mrMemberTypesqno == 1) //經紀仲介學員
-                .Where(m => (model.state == 0) ? (m.MemberGroupResult.Count() == 0) : true)  //待審核
-                .Where
-                (m => (1 <= model.state && model.state <= 4) ? //已通過某階段
-                    (
-                        m.MemberGroupResult.Count(res => res.AppraiseStep > model.state) == 0 && 
-                        m.MemberGroupResult.Count(res => res.AppraiseStep == model.state && res.AppraiseResult != "0") == 1                        
-                    ) : true
-                )
-                .Where(m => (model.state == 5) ? (m.MemberGroupResult.Count(res => res.AppraiseResult == "0") == 1) : true) //未通過
-                .OrderByDescending(r => r.mrCreateDt)
-                .ToPagedList(model.pageNumber - 1, model.pageSize);
-            foreach (Member m in model.memberPagedList)
+            if (model.memberTypeNo == 1) //經紀仲介學員
             {
-                m.MemberGroupResult = m.MemberGroupResult.OrderBy(r => r.AppraiseStep).ToList();
+                IQueryable<Member> memberQuery = db.Member                 
+                    .Where(m => m.mrMemberTypesqno == model.memberTypeNo)
+                    .Where(m => model.isActive ? m.mrIsActive == "Y" : m.mrIsActive != "Y")
+                    .Where(m => model.isFinish ? m.mrIsFinish == "Y" : m.mrIsFinish != "Y")
+                    .Where(m => model.searchText == null ? true : m.mrName.Contains(model.searchText)
+                        || model.searchText == null ? true : m.mrMainEmail.Equals(model.searchText)
+                        || model.searchText == null ? true : m.mrOtherEmail.Equals(model.searchText)
+                        || model.searchText == null ? true : m.mrNumber.Equals(model.searchText)
+                        || model.searchText == null ? true : m.mrId.Equals(model.searchText));
+                if (model.state == 0) //待審核 
+                { 
+                    memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count() == 0);
+                } 
+                else if (model.state == 1 || model.state == 2 || model.state == 4)  //通過資格審 or 通過初審 or 已通過
+                {
+                    memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.state) == 0 && 
+                        m.MemberGroupResult.Count(res => res.AppraiseStep == model.state && res.AppraiseResult != "0") == 1);
+                }
+                else if (model.state == 3) //正取/備取階段 TODO
+                {
+                    memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.state) == 0)
+                        .Where(m => 
+                            m.MemberGroupResult.Count(res => res.AppraiseStep == model.state && (model.admission ? res.AppraiseResult == "1" : false)) == 1 || 
+                            m.MemberGroupResult.Count(res => res.AppraiseStep == model.state && (model.onWaitingList ? res.AppraiseResult == "2" : false)) == 1 ||
+                            m.MemberGroupResult.Count(res => res.AppraiseStep == model.state && (model.flunk ? res.AppraiseResult == "0" : false)) == 1
+                        );
+                }
+                else if (model.state == 5) { //未通過
+                    memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseResult == "0") == 1);
+                }                
+      
+                model.memberPagedList = memberQuery.OrderByDescending(r => r.mrCreateDt).ToPagedList(model.pageNumber - 1, model.pageSize);
+                // 重新排序各會員的歷史審查紀錄
+                foreach (Member m in model.memberPagedList)
+                {
+                    m.MemberGroupResult = m.MemberGroupResult.OrderBy(r => r.AppraiseStep).ToList();
+                }
+            }
+            else if (model.memberTypeNo == 2 || model.memberTypeNo == 3) //歷屆會員 or 一般會員
+            {
+                model.memberPagedList = db.Member
+                    .Where(m => m.mrMemberTypesqno == model.memberTypeNo)
+                    .Where(m => model.isActive ? m.mrIsActive == "Y" : m.mrIsActive != "Y")
+                    .Where(m => model.isFinish ? m.mrIsFinish == "Y" : m.mrIsFinish != "Y")
+                    .Where(m => model.searchText == null ? true : m.mrName.Contains(model.searchText)
+                        || model.searchText == null ? true : m.mrMainEmail.Equals(model.searchText)
+                        || model.searchText == null ? true : m.mrOtherEmail.Equals(model.searchText)
+                        || model.searchText == null ? true : m.mrNumber.Equals(model.searchText)
+                        || model.searchText == null ? true : m.mrId.Equals(model.searchText))
+                    .OrderByDescending(r => r.mrCreateDt)
+                    .ToPagedList(model.pageNumber - 1, model.pageSize);
             }
 
             ViewBag.stateList = DropDownListHelper.getApplyStepListWithAll();
