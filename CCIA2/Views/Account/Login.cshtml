@@ -30,8 +30,8 @@
                     <div class="controls">
                         @Html.TextBoxFor(model => model.captchaCode, new { @class = "form-control", placeholder = "請輸入驗證碼" })
                         @Html.ValidationMessageFor(model => model.captchaCode, null, new { @class = "help-inline" })
-                        <img id="img-verify" src="@Url.Action("GenerateCaptchaImage")" alt="驗證碼" />
-                        <input type="image" id="btn-reload" src="~/Content/images/reload.png" alt="重整圖片" >
+                        <img id="img-verify" src="@Url.Action("GenerateCaptchaImage")"/>
+                        <img id="btn-reload" border="0" alt="重整圖片" src="~/Content/images/reload.png">
                     </div>
                 </div>
                 @*<div class="logintype">
