@@ -148,7 +148,7 @@ namespace CCIA2.Controllers
                 {
                     model.newAppraiseResult.AppraiseStep = 1;
                 }
-                var user = Session["user"] as SysUser;
+                var user = Session[SessionKey.USER] as SysUser;
                 model.newAppraiseResult.AppraiseNo = user.accountNo;
 
                 ViewBag.AppraiseResultList = DropDownListHelper.getAppraiseResultList(model.newAppraiseResult.AppraiseStep);

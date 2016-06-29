@@ -17,7 +17,7 @@ namespace CCIA2.Controllers
 
         public ActionResult Index()
         {
-            if (Session["user"] == null)
+            if (Session[SessionKey.USER] == null)
             {
                 FormsAuthentication.SignOut();
                 Session.Clear();

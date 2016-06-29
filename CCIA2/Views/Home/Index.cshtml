@@ -2,6 +2,6 @@
 
 <h3>Home - Index</h3>
 @{
-    var user = @Session["user"] as SysUser;
+    var user = @Session[SessionKey.USER] as SysUser;
 }
 <h4>Welcome @user.name</h4>

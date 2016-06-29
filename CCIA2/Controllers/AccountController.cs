@@ -40,7 +40,7 @@ namespace CCIA2.Controllers
                     List<SysUser> query = db.SysUser.Where(r => r.accountNo == form.accountNo && r.password == form.password).ToList();
                     if (query.Count() == 1)
                     {
-                        Session["user"] = query[0];
+                        Session[SessionKey.USER] = query[0];
 
                         bool isPersistent = false;//如果票證將存放於持續性 Cookie 中 (跨瀏覽器工作階段儲存)，則為 true，否則為 false。 如果票證是存放於 URL 中，則忽略這個值。
                         string userData = "";//可放使用者自訂的內容
@@ -126,7 +126,7 @@ namespace CCIA2.Controllers
 
         private bool validateCaptchaImg(string inputCode)
         {
-            string code = Session["CAPTCHA"] as string;
+            string code = Session[SessionKey.CAPTCHA] as string;
             return string.Equals(code, inputCode, StringComparison.OrdinalIgnoreCase);
         }
 
@@ -134,7 +134,7 @@ namespace CCIA2.Controllers
         {
             CAPTCHAImageGenerater generater = new CAPTCHAImageGenerater();
             string code = generater.generateCode();
-            Session["CAPTCHA"] = code;
+            Session[SessionKey.CAPTCHA] = code;
             Bitmap bitmap = generater.createCodeImage(code);
             bitmap.Save(Response.OutputStream, ImageFormat.Gif);
             Response.End();
@@ -144,7 +144,7 @@ namespace CCIA2.Controllers
         {
             FormsAuthentication.SignOut();
             Session.Clear();
-            //or Session["user"] = null;
+            //or Session[SessionKey.USER] = null;
             return RedirectToAction("Index", "Home");
         }
 

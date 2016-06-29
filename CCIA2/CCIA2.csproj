@@ -183,6 +183,7 @@
     <Compile Include="Models\MemberGroupApply.cs" />
     <Compile Include="Models\MemberGroupResult.cs" />
     <Compile Include="Models\MemberSupport.cs" />
+    <Compile Include="Models\SessionKey.cs" />
     <Compile Include="Models\SysUser.cs" />
     <Compile Include="Models\SYS_ErrorLog.cs" />
     <Compile Include="Models\TableApplyStep.cs" />
