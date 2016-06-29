@@ -14,6 +14,7 @@ using System.IO;
 namespace CCIA2.Controllers
 {
     [Authorize]
+    [SessionExpire]
     public class MemberController : Controller
     {
         private CCIAContext db = new CCIAContext();

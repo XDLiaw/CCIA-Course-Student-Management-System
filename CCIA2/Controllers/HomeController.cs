@@ -9,6 +9,7 @@ using System.Web.Security;
 namespace CCIA2.Controllers
 {
     [Authorize]
+    [SessionExpire]
     public class HomeController : Controller
     {
         private CCIAContext db = new CCIAContext();

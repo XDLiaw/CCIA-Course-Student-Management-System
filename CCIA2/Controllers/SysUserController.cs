@@ -8,6 +8,7 @@ using System.Web.Mvc;
 namespace CCIA2.Controllers
 {
     [Authorize]
+    [SessionExpire]
     public class SysUserController : Controller
     {
         private CCIAContext db = new CCIAContext();
