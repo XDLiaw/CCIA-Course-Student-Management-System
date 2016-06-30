@@ -28,6 +28,14 @@ namespace CCIA2.Models
         [StringLength(50)]
         public string AppraiseGroup { get; set; }
 
+        [Display(Name = "狀態")]
+        [StringLength(50)]
+        public string AppraiseState { get; set; }
+
+        [Display(Name="分數")]
+        [DisplayFormat(DataFormatString = "{0:F1}")]
+        public double? AppraiseScore { get; set; }
+
         [Display(Name="審查員意見")]
         public string AppraiseDesc { get; set; }
 
@@ -40,44 +48,5 @@ namespace CCIA2.Models
 
         public virtual Member Member { get; set; }
 
-        public string currentStateString()
-        {
-            if (this.AppraiseStep == 1)
-            {
-                return "資格審";
-            }
-            else if (this.AppraiseStep == 2)
-            {
-                return "初審";
-            }
-            else if (this.AppraiseStep == 3)
-            {
-                return "錄取";
-            }
-            else if (this.AppraiseStep == 4)
-            {
-                return "繳交保證金";
-            }
-            return "";
-        }
-
-        public string appraiseResultString()
-        {
-            if (this.AppraiseStep == 1 || this.AppraiseStep == 2)
-            {
-                return Int32.Parse(this.AppraiseResult) > 0 ? "通過" : "未通過";
-            }
-            if (this.AppraiseStep == 3)
-            {
-                if (Int32.Parse(this.AppraiseResult) == 1) return "正取";
-                else if (Int32.Parse(this.AppraiseResult) == 2) return "備取";
-                else return "未錄取";
-            }
-            if (this.AppraiseStep == 4)
-            {
-                return Int32.Parse(this.AppraiseResult) > 0 ? "是" : "否";
-            }
-            return "";
-        }
     }
 }

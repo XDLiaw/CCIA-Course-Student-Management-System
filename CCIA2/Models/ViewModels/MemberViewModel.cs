@@ -9,28 +9,20 @@ namespace CCIA2.Models.ViewModels
 {
     public class MemberViewModel
     {
+        [Display(Name = "會員編號, 姓名, Email, 或身分證字號")]
+        public string searchText { get; set; }
 
+        [Display(Name = "會員角色")]
         public int memberTypeNo { get; set; }
 
-        [Display(Name = "狀態")]
-        public int? state { get; set; }
+        [Display(Name = "階段")]
+        public int? step { get; set; }
 
-        [Display(Name="已啟動")]
-        public bool isActive { get; set; }
+        [Display(Name="組別")]
+        public string group { get; set; }
 
-        [Display(Name = "已完成")]
-        public bool isFinish { get; set; }
-
-        [Display(Name = "正取")]
-        public bool admission { get; set; }
-
-        [Display(Name = "備取")]
-        public bool onWaitingList { get; set; }
-
-        [Display(Name = "未錄取")]
-        public bool flunk { get; set; }
-
-        public string searchText { get; set; }
+        [Display(Name="全部/正取/備取")]
+        public string enrollType { get; set; }
 
         [Display(Name = "頁碼")]
         public int pageNumber { get; set; }

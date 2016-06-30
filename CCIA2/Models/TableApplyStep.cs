@@ -17,5 +17,11 @@ namespace CCIA2.Models
 
         [StringLength(50)]
         public string name { get; set; }
+
+        public bool role1Auth { get; set; }
+
+        public bool role2Auth { get; set; }
+
+        public bool role3Auth { get; set; }
     }
 }

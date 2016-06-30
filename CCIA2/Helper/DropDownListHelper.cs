@@ -14,15 +14,22 @@ namespace CCIA2.Helper
         public static List<SelectListItem> getApplyStepListWithAll()
         {
             List<SelectListItem> list = new List<SelectListItem>();
-            list.Add(new SelectListItem()
+            SysUser user = HttpContext.Current.Session[SessionKey.USER] as SysUser;
+            if (user.role == 1 || user.role == 3)
             {
-                Text = "全部",
-                Value = ""
-            });
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = ""
+                });
+            }
 
             var items = 
             (
                 from tas in db.TableApplyStep 
+                where user.role == 1 ? tas.role1Auth : true
+                where user.role == 2 ? tas.role2Auth : true
+                where user.role == 3 ? tas.role3Auth : true
                 select new SelectListItem 
                 {
                     Text = tas.name,
@@ -36,8 +43,9 @@ namespace CCIA2.Helper
 
         public static List<SelectListItem> getAppraiseResultList(int AppraiseStep)
         {
+            //TODO 可能要取消掉這個method
             List<SelectListItem> list = new List<SelectListItem>();
-            if (AppraiseStep == 1 || AppraiseStep == 2)
+            if (AppraiseStep == 1) //資格審
             {
                 list.Add(new SelectListItem()
                 {
@@ -50,6 +58,12 @@ namespace CCIA2.Helper
                     Value = "0"
                 });
             }
+            else if (AppraiseStep == 2) //外評初審
+            {
+                // nothing;
+            }
+
+
             else if (AppraiseStep == 3)
             {
                 list.Add(new SelectListItem()
@@ -85,26 +99,17 @@ namespace CCIA2.Helper
             return list;
         }
 
-        public static List<SelectListItem> getAppraiseGroupList()
+        public static List<SelectListItem> getAppraiseGroupNameList(bool withSelectAllOption)
         {
             List<SelectListItem> list = new List<SelectListItem>();
-            var items =
-            (
-                from tg in db.TableGroup
-                select new SelectListItem
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
                 {
-                    Text = tg.GroupName,
-                    Value = tg.GroupNo
-                }
-            );
-            list.AddRange(items);
-
-            return list;
-        }
-
-        public static List<SelectListItem> getAppraiseGroupNameList()
-        {
-            List<SelectListItem> list = new List<SelectListItem>();
+                    Text = "全部",
+                    Value = ""
+                });
+            }
             var items =
             (
                 from tg in db.TableGroup
@@ -118,6 +123,27 @@ namespace CCIA2.Helper
 
             return list;
         }
-        
+
+        public static List<SelectListItem> getEnrollTypeList()
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            list.Add(new SelectListItem()
+            {
+                Text = "全部",
+                Value = ""
+            });
+            list.Add(new SelectListItem()
+            {
+                Text = "正取",
+                Value = "1"
+            });
+            list.Add(new SelectListItem()
+            {
+                Text = "備取",
+                Value = "2"
+            });
+
+            return list;
+        }
     }
 }

@@ -6,6 +6,7 @@ namespace CCIA2.Models
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
+    using System.Web;
 
     [Table("Member")]
     public partial class Member
@@ -185,9 +186,60 @@ namespace CCIA2.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MemberAttchFile> MemberAttchFile { get; set; }
 
-        [Display(Name = "狀態")]
+        [Display(Name = "個階段結果")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MemberGroupResult> MemberGroupResult { get; set; }
+
+        //[Display(Name = "現階段結果")]
+        //[NotMapped]
+        //public MemberGroupResult currentMemberGroupResult { 
+        //    get
+        //    { 
+        //        if (this.MemberGroupResult == null || this.MemberGroupResult.Count == 0)
+        //        {
+        //            return null;
+        //        }
+        //        else 
+        //        {
+        //            return this.MemberGroupResult.OrderBy(m => m.AppraiseStep).LastOrDefault();
+        //        }
+        //    }
+        //}
+
+        [Display(Name="初審分數")]
+        [NotMapped]
+        public double? firstTrailScore
+        {
+            get
+            {
+                try
+                {
+                    return this.MemberGroupResult.Where(res => res.AppraiseStep == 2).FirstOrDefault().AppraiseScore;
+                }
+                catch (NullReferenceException e)
+                {
+                    return null;
+                }
+            }
+        }
+
+        [Display(Name = "複審平均分數")]
+        [DisplayFormat(DataFormatString = "{0:F1}")]
+        [NotMapped]
+        public double? secondTrailAvgScore
+        {
+            get
+            {
+                try
+                {
+                    return this.MemberGroupResult.Where(res => res.AppraiseStep == 4).Average(res => res.AppraiseScore);
+                }
+                catch (NullReferenceException e)
+                {
+                    return null;
+                }
+            }
+        }
 
         [Display(Name = "報名組別")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
@@ -198,52 +250,22 @@ namespace CCIA2.Models
 
         public string currentStateString()
         {
-            
+            SysUser user = HttpContext.Current.Session[SessionKey.USER] as SysUser;
             if (this.MemberGroupResult == null || this.MemberGroupResult.Count == 0)
             {
                 return "待審核";
             }
             else
             {
-                MemberGroupResult currentRes = this.MemberGroupResult.OrderBy(r => r.AppraiseStep).ToList().LastOrDefault();
-                if (currentRes.AppraiseStep == 1 && Int32.Parse(currentRes.AppraiseResult) == 0)
+                if (user.role == 1 || user.role == 2)
                 {
-                    return "未通過資格審";
+                    if (this.MemberGroupResult.Count(res => res.AppraiseStep == 3 && res.AppraiseNo == user.accountNo) == 1 && 
+                        this.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) {
+                        return this.MemberGroupResult.Where(res => res.AppraiseStep == 3).LastOrDefault().AppraiseState;
+                    } 
                 }
-                else if (currentRes.AppraiseStep == 1 && Int32.Parse(currentRes.AppraiseResult) == 1)
-                {
-                    return "已通過資格審";
-                }
-                else if (currentRes.AppraiseStep == 2 && Int32.Parse(currentRes.AppraiseResult) == 0)
-                {
-                    return "未通過初審";
-                }
-                else if (currentRes.AppraiseStep == 2 && Int32.Parse(currentRes.AppraiseResult) == 1)
-                {
-                    return "已通過初審";
-                }
-                else if (currentRes.AppraiseStep == 3 && Int32.Parse(currentRes.AppraiseResult) == 0)
-                {
-                    return "未錄取";
-                }
-                else if (currentRes.AppraiseStep == 3 && Int32.Parse(currentRes.AppraiseResult) == 1)
-                {
-                    return "正取";
-                }
-                else if (currentRes.AppraiseStep == 3 && Int32.Parse(currentRes.AppraiseResult) == 2)
-                {
-                    return "備取";
-                }
-                else if (currentRes.AppraiseStep == 4 && Int32.Parse(currentRes.AppraiseResult) == 0)
-                {
-                    return "未繳保證金";
-                }
-                else if (currentRes.AppraiseStep == 4 && Int32.Parse(currentRes.AppraiseResult) == 1)
-                {
-                    return "已繳保證金";
-                }
+                return this.MemberGroupResult.OrderBy(m => m.AppraiseStep).LastOrDefault().AppraiseState;
             }
-            return "";
         }
     }
 }
