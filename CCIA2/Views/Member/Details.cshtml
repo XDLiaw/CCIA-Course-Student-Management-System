@@ -30,7 +30,7 @@
     </table>
 </div>
 <br />
-<div class="member_bg container">
+<div class="member_bg container table table-striped table-hover">
     <h3>會員基本資料</h3>
 
     <div class="row">
@@ -214,30 +214,35 @@
             </div>
         </div>
     }
+    <br />
     <div class="row">
         @Html.LabelFor(model => model.mrPro, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
             @Html.DisplayFor(model => model.mrPro)
         </div>
     </div>
+    <br />
     <div class="row">
         @Html.LabelFor(model => model.mrSkill, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
             @Html.DisplayFor(model => model.mrSkill)
         </div>
     </div>
+    <br />
     <div class="row">
         @Html.LabelFor(model => model.mrFuture, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
             @Html.DisplayFor(model => model.mrFuture)
         </div>
     </div>
+    <br />
     <div class="row">
         @Html.LabelFor(model => model.mrOther, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
             @Html.DisplayFor(model => model.mrOther)
         </div>
     </div>
+    <br />
     <div class="row">
         @Html.LabelFor(model => model.mrIsOpen, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
@@ -261,6 +266,7 @@
         </div>
     </div>
 </div>
+
 <br />
 
 @*@Html.ActionLink("回上頁", "Index", null, htmlAttributes: new { @class = "btn btn-primary" })*@

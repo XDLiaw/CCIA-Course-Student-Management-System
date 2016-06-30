@@ -13,7 +13,7 @@
       <publishTime>06/16/2016 17:58:34</publishTime>
     </File>
     <File Include="bin/CCIA2.dll">
-      <publishTime>06/24/2016 11:10:19</publishTime>
+      <publishTime>06/30/2016 17:37:55</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>06/16/2016 18:00:16</publishTime>
@@ -379,19 +379,28 @@
       <publishTime>06/16/2016 17:58:55</publishTime>
     </File>
     <File Include="Views/Account/Login.cshtml">
-      <publishTime>06/24/2016 11:09:24</publishTime>
+      <publishTime>06/30/2016 17:21:23</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>06/17/2016 14:54:03</publishTime>
+      <publishTime>06/28/2016 16:07:29</publishTime>
     </File>
     <File Include="Views/Member/Appraise.cshtml">
-      <publishTime>06/22/2016 16:59:40</publishTime>
+      <publishTime>06/30/2016 10:41:02</publishTime>
+    </File>
+    <File Include="Views/Member/ChangeGroup.cshtml">
+      <publishTime>06/30/2016 17:11:32</publishTime>
+    </File>
+    <File Include="Views/Member/Close.cshtml">
+      <publishTime>06/24/2016 16:37:56</publishTime>
     </File>
     <File Include="Views/Member/Details.cshtml">
-      <publishTime>06/22/2016 16:41:30</publishTime>
+      <publishTime>06/30/2016 16:25:23</publishTime>
     </File>
     <File Include="Views/Member/Index.cshtml">
-      <publishTime>06/22/2016 16:52:24</publishTime>
+      <publishTime>06/30/2016 16:16:25</publishTime>
+    </File>
+    <File Include="Views/Member/QualificationVerify.cshtml">
+      <publishTime>06/30/2016 17:03:57</publishTime>
     </File>
     <File Include="Views/Shared/Error.cshtml">
       <publishTime>06/16/2016 16:17:24</publishTime>
