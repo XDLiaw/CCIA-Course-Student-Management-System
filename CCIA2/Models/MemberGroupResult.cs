@@ -12,10 +12,13 @@ namespace CCIA2.Models
         [Key]
         public int sqno { get; set; }
 
-        public int? mrSqno { get; set; }
+        [ForeignKey("member")]
+        public int mrSqno { get; set; }
 
         [StringLength(50)]
         public string mrNumber { get; set; }
+
+        public virtual Member member { get; set; }
 
         [Display(Name="¶¥¬q")]
         public int AppraiseStep { get; set; }
@@ -46,7 +49,7 @@ namespace CCIA2.Models
         [StringLength(50)]
         public string AppraiseNo { get; set; }
 
-        public virtual Member Member { get; set; }
+
 
     }
 }

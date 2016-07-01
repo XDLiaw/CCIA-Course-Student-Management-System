@@ -12,10 +12,10 @@ namespace CCIA2.Models
         [Key]
         public int sqno { get; set; }
 
-        [ForeignKey("Member")]
+        [ForeignKey("member")]
         public int mrSqno { get; set; }
 
-        public Member Member { get; set; }
+        public Member member { get; set; }
 
         [StringLength(50)]
         public string mrNumber { get; set; }

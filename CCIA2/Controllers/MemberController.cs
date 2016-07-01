@@ -217,7 +217,7 @@ namespace CCIA2.Controllers
                 MemberGroupResult newResult = new MemberGroupResult();
                 newResult.mrSqno = model.member.sqno;
                 newResult.mrNumber = model.member.mrNumber;
-                newResult.Member = model.member;
+                newResult.member = model.member;
                 if (model.isPass)
                 {
                     newResult.AppraiseStep = 1;

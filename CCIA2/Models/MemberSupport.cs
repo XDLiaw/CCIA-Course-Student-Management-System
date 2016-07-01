@@ -13,7 +13,7 @@ namespace CCIA2.Models
         public int sqno { get; set; }
 
         [ForeignKey("member")]
-        public int? mrSqno { get; set; }
+        public int mrSqno { get; set; }
 
         public virtual Member member { get; set; }
 

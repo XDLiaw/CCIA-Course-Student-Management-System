@@ -12,7 +12,7 @@ namespace CCIA2.Models
         [Key]
         public int sqno { get; set; }
 
-        public int? mrSqno { get; set; }
+        public int mrSqno { get; set; }
 
         [StringLength(50)]
         public string mrMemberNo { get; set; }

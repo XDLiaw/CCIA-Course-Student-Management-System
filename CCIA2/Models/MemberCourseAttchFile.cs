@@ -14,7 +14,7 @@ namespace CCIA2.Models
 
         public int? CourseSqno { get; set; }
 
-        public int? mrSqno { get; set; }
+        public int mrSqno { get; set; }
 
         [StringLength(50)]
         public string mrNumber { get; set; }

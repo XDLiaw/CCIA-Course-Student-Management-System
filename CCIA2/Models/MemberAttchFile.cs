@@ -12,10 +12,13 @@ namespace CCIA2.Models
         [Key]
         public int sqno { get; set; }
 
-        public int? mrSqno { get; set; }
+        [ForeignKey("member")]
+        public int mrSqno { get; set; }
 
         [StringLength(50)]
         public string mrNumber { get; set; }
+
+        public virtual Member member { get; set; }
 
         public string mrShowFileName { get; set; }
 
@@ -25,6 +28,5 @@ namespace CCIA2.Models
 
         public DateTime? CreateDate { get; set; }
 
-        public virtual Member Member { get; set; }
     }
 }

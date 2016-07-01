@@ -159,15 +159,15 @@ namespace CCIA2.Models
                 .Property(e => e.mrIsOpen)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<Member>()
-                .HasMany(e => e.MemberAttchFile)
-                .WithOptional(e => e.Member)
-                .HasForeignKey(e => e.mrSqno);
+            //modelBuilder.Entity<Member>()
+            //    .HasMany(e => e.MemberAttchFile)
+            //    .WithOptional(e => e.Member)
+            //    .HasForeignKey(e => e.mrSqno);
 
-            modelBuilder.Entity<Member>()
-                .HasMany(e => e.MemberGroupResult)
-                .WithOptional(e => e.Member)
-                .HasForeignKey(e => e.mrSqno);
+            //modelBuilder.Entity<Member>()
+            //    .HasMany(e => e.MemberGroupResult)
+            //    .WithOptional(e => e.Member)
+            //    .HasForeignKey(e => e.mrSqno);
 
             modelBuilder.Entity<MemberAttchFile>()
                 .Property(e => e.mrNumber)
