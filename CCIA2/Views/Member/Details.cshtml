@@ -255,10 +255,10 @@
             @if (Model.MemberAttchFile != null && Model.MemberAttchFile.Count > 0)
             {
                 <div class="row">
-                    @foreach (var attachFile in Model.MemberAttchFile)
+                    @foreach (var attachFile in Model.MemberAttchFile.OrderByDescending(att => att.CreateDate))
                     {
                         <div class="col-sm-4">
-                            @Html.ActionLink(attachFile.mrAttchFileName, "DownloadMemberAttchFile", new { sqno = attachFile.sqno }, new { target = "_blank" })
+                            @Html.ActionLink(attachFile.mrShowFileName, "DownloadMemberAttchFile", new { sqno = attachFile.sqno }, new { target = "_blank" })
                         </div>
                     }
                 </div>

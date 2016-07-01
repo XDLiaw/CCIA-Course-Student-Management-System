@@ -46,7 +46,7 @@ namespace CCIA2.Controllers
             SysUser user = Session[SessionKey.USER] as SysUser;
             if (model.memberTypeNo == 1) //經紀仲介學員
             {
-                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo);
+                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo && m.mrIsActive == "Y" && m.mrIsFinish == "Y");
                 if (model.searchText != null && model.searchText.Trim().Length > 0) //只要這內容不為空就忽略其他條件
                 {
                     memberQuery = memberQuery
