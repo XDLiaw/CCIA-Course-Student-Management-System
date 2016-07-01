@@ -28,7 +28,7 @@
                 <div class="logintype">
                     @Html.LabelFor(model => model.captchaCode, new { @class = "control-label" })
                     <div class="controls">
-                        @Html.TextBoxFor(model => model.captchaCode, new { @class = "form-control", placeholder = "請輸入驗證碼" })
+                        @Html.TextBoxFor(model => model.captchaCode, new { @class = "form-control", placeholder = "請輸入驗證碼", autocomplete = "off" })
                         @Html.ValidationMessageFor(model => model.captchaCode, null, new { @class = "help-inline" })
                         <img id="img-verify" src="@Url.Action("GenerateCaptchaImage")"/>
                         <img id="btn-reload" border="0" alt="重整圖片" src="~/Content/images/reload.png">
