@@ -177,7 +177,7 @@ namespace CCIA2.Controllers
             ViewBag.stepList = DropDownListHelper.getApplyStepListWithAll();
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(true);
             ViewBag.enrollTypeList = DropDownListHelper.getEnrollTypeList();
-            return View(model);
+            return View("Index", model);
         }
 
         public ActionResult Details(int sqno)
@@ -199,11 +199,13 @@ namespace CCIA2.Controllers
         {
             MemberQualificationVerifyViewModel model = new MemberQualificationVerifyViewModel();
             model.sqno = sqno;
-            model.member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            model.member = db.Member.Where(m => m.sqno == sqno && m.MemberGroupResult.Count() == 0).FirstOrDefault();
             if (model.member == null)
             {
                 ViewBag.ErrorMessage = "找不到資料";
+                return Index();
             }
+
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(false);
             return View(model);
         }
@@ -212,30 +214,42 @@ namespace CCIA2.Controllers
         [HttpPost]
         public ActionResult QualificationVerify(MemberQualificationVerifyViewModel model)
         {
-            model.member = db.Member.Where(m => m.sqno == model.sqno).FirstOrDefault();
-            if (ModelState.IsValid)
+            try
             {
-                MemberGroupResult newResult = new MemberGroupResult(model.member);
-                if (model.isPass)
+                model.member = db.Member.Where(m => m.sqno == model.sqno && m.MemberGroupResult.Count() == 0).FirstOrDefault();
+                if (model.member == null)
                 {
-                    newResult.AppraiseStep = 1;
-                    newResult.AppraiseGroup = model.group;
-                    newResult.AppraiseState = "通過資格審";
-                    newResult.AppraiseDesc = model.desc;
+                    ViewBag.ErrorMessage = "找不到資料";
+                    return Index();
                 }
-                else
+                if (ModelState.IsValid)
                 {
-                    newResult.AppraiseStep = 7;
-                    newResult.AppraiseState = "資格審未錄取";
-                    newResult.AppraiseDesc = model.desc;
-                }
+                    MemberGroupResult newResult = new MemberGroupResult(model.member);
+                    if (model.isPass)
+                    {
+                        newResult.AppraiseStep = 1;
+                        newResult.AppraiseGroup = model.group;
+                        newResult.AppraiseState = "通過資格審";
+                        newResult.AppraiseDesc = model.desc;
+                    }
+                    else
+                    {
+                        newResult.AppraiseStep = 7;
+                        newResult.AppraiseState = "資格審未錄取";
+                        newResult.AppraiseDesc = model.desc;
+                    }
 
-                db.Entry(model.member).State = EntityState.Modified;
-                db.SaveChanges();
-                return View("Close");
+                    db.Entry(model.member).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return View("Close");
+                }
+                ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(false);
+                return View(model);
             }
-            ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(false);
-            return View(model);
+            catch (Exception e)
+            {
+                return QualificationVerify(model.sqno);
+            }
         }
 
         // 變更資格審組別
@@ -274,10 +288,15 @@ namespace CCIA2.Controllers
         {
             MemberFirstTrailViewModel model = new MemberFirstTrailViewModel();
             model.sqno = sqno;
-            model.member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            model.member = db.Member
+                .Where(m => m.sqno == sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1)
+                .FirstOrDefault();
             if (model.member == null)
             {
                 ViewBag.ErrorMessage = "找不到資料";
+                return Index();
             }
             return View(model);
         }
@@ -286,7 +305,16 @@ namespace CCIA2.Controllers
         [HttpPost]
         public ActionResult FirstTrail(MemberFirstTrailViewModel model)
         {
-            model.member = db.Member.Where(m => m.sqno == model.sqno).FirstOrDefault();
+            model.member = db.Member
+                .Where(m => m.sqno == model.sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1)
+                .FirstOrDefault();
+            if (model.member == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return Index();
+            }
             if (ModelState.IsValid)
             {
                 MemberGroupResult newResult = new MemberGroupResult(model.member);
@@ -305,7 +333,11 @@ namespace CCIA2.Controllers
         // 初審直接正取
         public ActionResult Admission(int sqno)
         {
-            Member member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            Member member = db.Member
+                .Where(m => m.sqno == sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 2) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 2) == 1)
+                .FirstOrDefault();
             if (member == null)
             {
                 var result = new
@@ -342,7 +374,11 @@ namespace CCIA2.Controllers
         // 進入複審
         public ActionResult IntoSecondTrail(int sqno)
         {
-            Member member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            Member member = db.Member
+                .Where(m => m.sqno == sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 2) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 2) == 1)
+                .FirstOrDefault();
             if (member == null)
             {
                 var result = new
@@ -376,7 +412,10 @@ namespace CCIA2.Controllers
         // 未錄取
         public ActionResult Flunk(int sqno)
         {
-            Member member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            Member member = db.Member
+                .Where(m => m.sqno == sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 7) == 0)
+                .FirstOrDefault();
             if (member == null)
             {
                 var result = new
@@ -416,55 +455,6 @@ namespace CCIA2.Controllers
                     return Json(result);
                 }
             }
-        }
-
-        public ActionResult Appraise(int sqno)
-        {
-            MemberAppraiseViewModel model = new MemberAppraiseViewModel();
-            model.sqno = sqno;
-            model.member =  db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
-            if (model.member != null)
-            {
-                model.newAppraiseResult = new MemberGroupResult();
-                model.newAppraiseResult.mrSqno = model.member.sqno;
-                model.newAppraiseResult.mrNumber = model.member.mrNumber;
-                if (model.member.MemberGroupResult != null && model.member.MemberGroupResult.Count > 0)
-                {
-                    model.newAppraiseResult.AppraiseStep = model.member.MemberGroupResult.LastOrDefault().AppraiseStep + 1;
-                }
-                else
-                {
-                    model.newAppraiseResult.AppraiseStep = 1;
-                }
-                var user = Session[SessionKey.USER] as SysUser;
-                model.newAppraiseResult.AppraiseNo = user.accountNo;
-
-                ViewBag.AppraiseResultList = DropDownListHelper.getAppraiseResultList(model.newAppraiseResult.AppraiseStep);
-                ViewBag.AppraiseGroupList = DropDownListHelper.getAppraiseGroupNameList(false);
-                return View(model);
-            }
-            else
-            {
-                ViewBag.ErrorMessage = "找不到資料";
-                return RedirectToAction("Index");
-            }
-        }
-
-        [HttpPost]
-        public ActionResult Appraise(MemberAppraiseViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                model.member = db.Member.Where(m => m.sqno == model.sqno).FirstOrDefault();
-                model.newAppraiseResult.AppraiseCreateDt = DateTime.Now;
-                model.member.MemberGroupResult.Add(model.newAppraiseResult);
-                db.Entry(model.member).State = EntityState.Modified;
-                db.SaveChanges();
-                return View("Close");
-            }
-            ViewBag.AppraiseResultList = DropDownListHelper.getAppraiseResultList(model.newAppraiseResult.AppraiseStep);
-            ViewBag.AppraiseGroupList = DropDownListHelper.getAppraiseGroupNameList(false);
-            return View(model);
         }
 
         // 轉為一般會員
