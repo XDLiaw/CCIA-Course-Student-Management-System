@@ -91,7 +91,7 @@
                                             {
                                                 <input type="button" value="正取" class="btn btn-default btn-Admission" sqno="@item.sqno" />
                                                 <input type="button" value="進入複審" class="btn btn-default btn-SecondTrail" sqno="@item.sqno" />
-                                                <input type="button" value="初審未錄取" class="btn btn-default btn-FirstTrailFlunk" sqno="@item.sqno" />
+                                                <input type="button" value="未錄取" class="btn btn-default btn-Flunk" sqno="@item.sqno" />
                                             }
                                             else if (item.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) // 進行複審
                                             {
@@ -100,7 +100,7 @@
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 4) // 完成複審
                                             {
                                                 @Html.ActionLink("正/備取", "Admit", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-Admit a-newWindow" })
-                                                <input type="button" value="複審未錄取" class="btn btn-default btn-SecondTrailFlunk" sqno="@item.sqno" />
+                                                <input type="button" value="未錄取" class="btn btn-default btn-Flunk" sqno="@item.sqno" />
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 5) // 正/備取名單
                                             {
@@ -306,8 +306,71 @@
         });
         $("#form-memberType1").find("#select-step").trigger("change");
 
+        // 初審直接正取
+        $("#form-memberType1").find(".btn-Admission").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno")};
+                $.post(
+                    "@Url.Content("~/Member/Admission")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+
+        // 進入複審
+        $("#form-memberType1").find(".btn-SecondTrail").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno")};
+                $.post(
+                    "@Url.Content("~/Member/IntoSecondTrail")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+
+        // 未錄取
+        $("#form-memberType1").find(".btn-Flunk").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno")};
+                $.post(
+                    "@Url.Content("~/Member/Flunk")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+
         //轉為一般會員
-        $(".btn-convertToGeneralMember").on('click', function() {
+        $("#form-memberType1").find(".btn-convertToGeneralMember").on('click', function() {
             if(confirm("確定要轉為一般會員?轉換後將無法再修改!"))
             {
                 var data = {memberSqno : $(this).attr("sqno")};

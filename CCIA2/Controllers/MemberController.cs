@@ -215,10 +215,7 @@ namespace CCIA2.Controllers
             model.member = db.Member.Where(m => m.sqno == model.sqno).FirstOrDefault();
             if (ModelState.IsValid)
             {
-                MemberGroupResult newResult = new MemberGroupResult();
-                newResult.mrSqno = model.member.sqno;
-                newResult.mrNumber = model.member.mrNumber;
-                newResult.member = model.member;
+                MemberGroupResult newResult = new MemberGroupResult(model.member);
                 if (model.isPass)
                 {
                     newResult.AppraiseStep = 1;
@@ -232,10 +229,6 @@ namespace CCIA2.Controllers
                     newResult.AppraiseState = "資格審未錄取";
                     newResult.AppraiseDesc = model.desc;
                 }
-                newResult.AppraiseCreateDt = DateTime.Now;
-                SysUser user = Session[SessionKey.USER] as SysUser;
-                newResult.AppraiseNo = user.accountNo;
-                model.member.MemberGroupResult.Add(newResult);
 
                 db.Entry(model.member).State = EntityState.Modified;
                 db.SaveChanges();
@@ -296,18 +289,11 @@ namespace CCIA2.Controllers
             model.member = db.Member.Where(m => m.sqno == model.sqno).FirstOrDefault();
             if (ModelState.IsValid)
             {
-                MemberGroupResult newResult = new MemberGroupResult();
-                newResult.mrSqno = model.member.sqno;
-                newResult.mrNumber = model.member.mrNumber;
-                newResult.member = model.member;
+                MemberGroupResult newResult = new MemberGroupResult(model.member);
                 newResult.AppraiseStep = 2;
                 newResult.AppraiseState = "完成初審";
                 newResult.AppraiseScore = model.score;
                 newResult.AppraiseDesc = model.desc;
-                newResult.AppraiseCreateDt = DateTime.Now;
-                SysUser user = Session[SessionKey.USER] as SysUser;
-                newResult.AppraiseNo = user.accountNo;
-                model.member.MemberGroupResult.Add(newResult);
 
                 db.Entry(model.member).State = EntityState.Modified;
                 db.SaveChanges();
@@ -316,7 +302,121 @@ namespace CCIA2.Controllers
             return View(model);
         }
 
+        // 初審直接正取
+        public ActionResult Admission(int sqno)
+        {
+            Member member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            if (member == null)
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "找不到資料"
+                };
+                return Json(result);
+            }
+            else
+            {
+                try
+                {
+                    MemberGroupResult newResult = new MemberGroupResult(member);
+                    newResult.AppraiseStep = 5;
+                    newResult.AppraiseState = "正取";
+                    newResult.AppraiseResult = "1";
+                    newResult.AppraiseGroup = member.MemberGroupResult.Where(res => res.AppraiseStep == 1).FirstOrDefault().AppraiseGroup;
 
+                    db.Entry(member).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    var result = new { success = true, message = "已將會員 "+member.mrName+" 加入正取名單!" };
+                    return Json(result);
+                }
+                catch (Exception e)
+                {
+                    var result = new { success = false, errorMessages = e.Message };
+                    return Json(result);
+                }
+            }
+        }
+
+        // 進入複審
+        public ActionResult IntoSecondTrail(int sqno)
+        {
+            Member member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            if (member == null)
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "找不到資料"
+                };
+                return Json(result);
+            }
+            else
+            {
+                try
+                {
+                    MemberGroupResult newResult = new MemberGroupResult(member);
+                    newResult.AppraiseStep = 3;
+                    newResult.AppraiseState = "進行複審";
+                    db.Entry(member).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    var result = new { success = true, message = "已將會員 " + member.mrName + " 加入複審名單!" };
+                    return Json(result);
+                }
+                catch (Exception e)
+                {
+                    var result = new { success = false, errorMessages = e.Message };
+                    return Json(result);
+                }
+            }
+        }
+
+        // 未錄取
+        public ActionResult Flunk(int sqno)
+        {
+            Member member = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            if (member == null)
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "找不到資料"
+                };
+                return Json(result);
+            }
+            else
+            {
+                try
+                {
+                    member.MemberGroupResult = member.MemberGroupResult.OrderBy(res => res.AppraiseStep).ToList();
+                    if (member.MemberGroupResult.LastOrDefault().AppraiseStep == 2)
+                    {
+                        MemberGroupResult newResult = new MemberGroupResult(member);
+                        newResult.AppraiseStep = 7;
+                        newResult.AppraiseState = "初審未錄取";
+                    }
+                    else if (member.MemberGroupResult.LastOrDefault().AppraiseStep == 4)
+                    {
+                        MemberGroupResult newResult = new MemberGroupResult(member);
+                        newResult.AppraiseStep = 7;
+                        newResult.AppraiseState = "複審未錄取";
+                    }
+
+                    db.Entry(member).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    var result = new { success = true, message = "已將會員 " + member.mrName + " 加入未錄取名單!" };
+                    return Json(result);
+                }
+                catch (Exception e)
+                {
+                    var result = new { success = false, errorMessages = e.Message };
+                    return Json(result);
+                }
+            }
+        }
 
         public ActionResult Appraise(int sqno)
         {
