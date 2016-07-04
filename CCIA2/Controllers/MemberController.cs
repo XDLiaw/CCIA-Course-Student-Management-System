@@ -286,7 +286,7 @@ namespace CCIA2.Controllers
         // 初審
         public ActionResult FirstTrail(int sqno)
         {
-            MemberFirstTrailViewModel model = new MemberFirstTrailViewModel();
+            MemberTrailViewModel model = new MemberTrailViewModel();
             model.sqno = sqno;
             model.member = db.Member
                 .Where(m => m.sqno == sqno)
@@ -303,7 +303,7 @@ namespace CCIA2.Controllers
 
         // 初審
         [HttpPost]
-        public ActionResult FirstTrail(MemberFirstTrailViewModel model)
+        public ActionResult FirstTrail(MemberTrailViewModel model)
         {
             model.member = db.Member
                 .Where(m => m.sqno == model.sqno)
@@ -457,6 +457,55 @@ namespace CCIA2.Controllers
             }
         }
 
+        // 複審
+        public ActionResult SecondTrail(int sqno)
+        {
+            SysUser user = Session[SessionKey.USER] as SysUser;
+            MemberTrailViewModel model = new MemberTrailViewModel();
+            model.sqno = sqno;
+            model.member = db.Member
+                .Where(m => m.sqno == sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1)
+                .FirstOrDefault();
+            if (model.member == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return Index();
+            }
+            return View(model);
+        }
+
+        //複審
+        [HttpPost]
+        public ActionResult SecondTrail(MemberTrailViewModel model)
+        {
+            SysUser user = Session[SessionKey.USER] as SysUser;
+            model.member = db.Member
+                .Where(m => m.sqno == model.sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1)
+                .FirstOrDefault();
+            if (model.member == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return Index();
+            }
+            if (ModelState.IsValid)
+            {
+                MemberGroupResult newResult = new MemberGroupResult(model.member);
+                newResult.AppraiseStep = 4;
+                newResult.AppraiseState = "完成複審";
+                newResult.AppraiseScore = model.score;
+                newResult.AppraiseDesc = model.desc;
+
+                db.Entry(model.member).State = EntityState.Modified;
+                db.SaveChanges();
+                return View("Close");
+            }
+            return View(model);
+        }
+
         // 轉為一般會員
         public ActionResult convertToGeneralMember(int memberSqno)
         {
@@ -502,7 +551,10 @@ namespace CCIA2.Controllers
                     {
                         byte[] bytes = new byte[fs.Length];
                         fs.Read(bytes, 0, Convert.ToInt32(fs.Length));
-                        return new FileContentResult(bytes, contentType);
+                        return new FileContentResult(bytes, contentType)
+                        {
+                            FileDownloadName = attachF.mrShowFileName
+                        };
                     }
                 }
             }

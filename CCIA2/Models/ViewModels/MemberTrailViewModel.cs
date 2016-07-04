@@ -6,7 +6,7 @@ using System.Web;
 
 namespace CCIA2.Models.ViewModels
 {
-    public class MemberFirstTrailViewModel
+    public class MemberTrailViewModel
     {
         public int sqno { get; set; }
 

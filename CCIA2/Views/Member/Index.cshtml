@@ -80,12 +80,12 @@
                                         {
                                             if (item.MemberGroupResult == null || item.MemberGroupResult.Count == 0) // 待審核
                                             {
-                                                @Html.ActionLink("資格審", "QualificationVerify", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-QualificationVerify a-newWindow" })
+                                                @Html.ActionLink("資格審", "QualificationVerify", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 1) // 通過資格審
                                             {
-                                                @Html.ActionLink("變更組別", "ChangeGroup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-ChangeGroup a-newWindow" })
-                                                @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-FirstTrail a-newWindow" })
+                                                @Html.ActionLink("變更組別", "ChangeGroup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
+                                                @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 2) // 完成初審
                                             {
@@ -95,11 +95,11 @@
                                             }
                                             else if (item.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) // 進行複審
                                             {
-                                                @Html.ActionLink("複審", "SecondTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-SecondTrail a-newWindow" })
+                                                @Html.ActionLink("複審", "SecondTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 4) // 完成複審
                                             {
-                                                @Html.ActionLink("正/備取", "Admit", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-Admit a-newWindow" })
+                                                @Html.ActionLink("正/備取", "Admit", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                                 <input type="button" value="未錄取" class="btn btn-default btn-Flunk" sqno="@item.sqno" />
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 5) // 正/備取名單
@@ -116,11 +116,11 @@
                                         {
                                             if (item.MemberGroupResult != null && item.MemberGroupResult.LastOrDefault().AppraiseStep == 1) // 通過資格審
                                             {
-                                                @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-FirstTrail a-newWindow" })
+                                                @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }
                                             else if (item.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) // 進行複審
                                             {
-                                                @Html.ActionLink("複審", "SecondTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default btn-SecondTrail a-newWindow" })
+                                                @Html.ActionLink("複審", "SecondTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }
                                         }
                                     </td>

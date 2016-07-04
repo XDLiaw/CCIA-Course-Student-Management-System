@@ -1,8 +1,8 @@
 ﻿@model CCIA2.Models.ViewModels.MemberTrailViewModel
 
 <div class="member_bg container">
-    <h3>初審</h3>
-    @using (Html.BeginForm("FirstTrail", "Member", FormMethod.Post))
+    <h3>複審</h3>
+    @using (Html.BeginForm("SecondTrail", "Member", FormMethod.Post))
     {
         @Html.HiddenFor(model => model.sqno)
 
