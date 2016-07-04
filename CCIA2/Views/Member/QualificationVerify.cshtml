@@ -251,6 +251,13 @@
     </div>
     <br />
     <div class="row">
+        @Html.LabelFor(model => model.member.mrWhy, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.DisplayFor(model => model.member.mrWhy)
+        </div>
+    </div>
+    <br />
+    <div class="row">
         @Html.LabelFor(model => model.member.mrFuture, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
             @Html.DisplayFor(model => model.member.mrFuture)
