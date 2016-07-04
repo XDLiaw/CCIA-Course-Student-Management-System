@@ -13,6 +13,7 @@ namespace CCIA2.Models.ViewModels
         public Member member { get; set; }
 
         [Display(Name = "分數")]
+        [Range(0.0, 100.0)]
         public double score { get; set; }
 
         [Display(Name = "意見")]

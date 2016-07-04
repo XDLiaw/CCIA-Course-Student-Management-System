@@ -190,23 +190,7 @@ namespace CCIA2.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MemberGroupResult> MemberGroupResult { get; set; }
 
-        //[Display(Name = "現階段結果")]
-        //[NotMapped]
-        //public MemberGroupResult currentMemberGroupResult { 
-        //    get
-        //    { 
-        //        if (this.MemberGroupResult == null || this.MemberGroupResult.Count == 0)
-        //        {
-        //            return null;
-        //        }
-        //        else 
-        //        {
-        //            return this.MemberGroupResult.OrderBy(m => m.AppraiseStep).LastOrDefault();
-        //        }
-        //    }
-        //}
-
-        [Display(Name="初審分數")]
+        [Display(Name = "初審平均分數")]
         [NotMapped]
         public double? firstTrailScore
         {
@@ -214,7 +198,7 @@ namespace CCIA2.Models
             {
                 try
                 {
-                    return this.MemberGroupResult.Where(res => res.AppraiseStep == 2).FirstOrDefault().AppraiseScore;
+                    return this.MemberGroupResult.Where(res => res.AppraiseStep == 2).Average(res => res.AppraiseScore);
                 }
                 catch (NullReferenceException e)
                 {
@@ -277,7 +261,13 @@ namespace CCIA2.Models
             {
                 if (user.role == 1 || user.role == 2)
                 {
-                    if (this.MemberGroupResult.Count(res => res.AppraiseStep == 3 && res.AppraiseNo == user.accountNo) == 1 && 
+                    if (this.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1 &&
+                        this.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0)
+                    {
+                        return this.MemberGroupResult.Where(res => res.AppraiseStep == 1).LastOrDefault().AppraiseState;
+                    } 
+
+                    if (this.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1 && 
                         this.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) {
                         return this.MemberGroupResult.Where(res => res.AppraiseStep == 3).LastOrDefault().AppraiseState;
                     } 

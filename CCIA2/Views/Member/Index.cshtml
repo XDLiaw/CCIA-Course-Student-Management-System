@@ -96,7 +96,7 @@
                                             {
                                                 @Html.ActionLink("資格審", "QualificationVerify", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }
-                                            else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 1) // 通過資格審
+                                            else if (item.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0) // 通過資格審
                                             {
                                                 @Html.ActionLink("變更組別", "ChangeGroup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                                 @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
@@ -135,7 +135,7 @@
                                         }
                                         else if (user.role == 2)
                                         {
-                                            if (item.MemberGroupResult != null && item.MemberGroupResult.LastOrDefault().AppraiseStep == 1) // 通過資格審
+                                            if (item.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0) // 通過資格審
                                             {
                                                 @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }

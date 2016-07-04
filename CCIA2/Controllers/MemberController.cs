@@ -72,8 +72,8 @@ namespace CCIA2.Controllers
                     else if (model.step == 1)  // 通過資格審
                     {
                         memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0)
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1);
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0) // 表自己還沒評初審過
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1); // 已有"通過資格審"資料一筆
                         if (model.group != null && model.group.Trim().Length != 0)
                         {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1 && res.AppraiseGroup == model.group) > 0);
@@ -83,8 +83,8 @@ namespace CCIA2.Controllers
                     else if (model.step == 2) // 完成初審
                     {
                         memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0)
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1);
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0) // 還沒有下一階段"進行複審"的資料
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step && res.AppraiseNo == user.accountNo) == 1); // 有一筆自己審過的初審資料
                         if (model.group != null && model.group.Trim().Length != 0) {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1 && res.AppraiseGroup == model.group) > 0);
                         }
@@ -95,8 +95,8 @@ namespace CCIA2.Controllers
                     else if (model.step == 3) // 進行複審
                     {                        
                         memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0)
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1);
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0) // 表示自己還沒評過複審
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1); // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
                         model.memberPagedList = memberQuery
                             .OrderByDescending(m => m.MemberGroupResult.Where(res => res.AppraiseStep == 2).FirstOrDefault().AppraiseScore)
                             .ToPagedList(model.pageNumber - 1, model.pageSize);
@@ -106,8 +106,8 @@ namespace CCIA2.Controllers
                     else if (model.step == 4) // 完成複審
                     {
                         memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0) 
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) > 0);
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0) // 還沒有下一階段的資料
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step && res.AppraiseNo == user.accountNo) == 1); // 已有一筆自己審過的複審資料
                         if (model.group != null && model.group.Trim().Length != 0)
                         {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1 && res.AppraiseGroup == model.group) > 0);
@@ -287,11 +287,12 @@ namespace CCIA2.Controllers
         // 初審
         public ActionResult FirstTrail(int sqno)
         {
+            SysUser user = Session[SessionKey.USER] as SysUser;
             MemberTrailViewModel model = new MemberTrailViewModel();
             model.sqno = sqno;
             model.member = db.Member
                 .Where(m => m.sqno == sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0)
                 .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1)
                 .FirstOrDefault();
             if (model.member == null)
@@ -306,9 +307,10 @@ namespace CCIA2.Controllers
         [HttpPost]
         public ActionResult FirstTrail(MemberTrailViewModel model)
         {
+            SysUser user = Session[SessionKey.USER] as SysUser;
             model.member = db.Member
                 .Where(m => m.sqno == model.sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0)
                 .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1)
                 .FirstOrDefault();
             if (model.member == null)
@@ -334,10 +336,11 @@ namespace CCIA2.Controllers
         // 初審直接正取
         public ActionResult Admission(int sqno)
         {
+            SysUser user = Session[SessionKey.USER] as SysUser;
             Member member = db.Member
                 .Where(m => m.sqno == sqno)
                 .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 2) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 2) == 1)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 2 && res.AppraiseNo == user.accountNo) == 1)
                 .FirstOrDefault();
             if (member == null)
             {
@@ -375,10 +378,11 @@ namespace CCIA2.Controllers
         // 進入複審
         public ActionResult IntoSecondTrail(int sqno)
         {
+            SysUser user = Session[SessionKey.USER] as SysUser;
             Member member = db.Member
                 .Where(m => m.sqno == sqno)
                 .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 2) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 2) == 1)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 2 && res.AppraiseNo == user.accountNo) == 1)
                 .FirstOrDefault();
             if (member == null)
             {
