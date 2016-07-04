@@ -124,14 +124,18 @@ namespace CCIA2.Helper
             return list;
         }
 
-        public static List<SelectListItem> getEnrollTypeList()
+        public static List<SelectListItem> getEnrollTypeList(bool withSelectAllOption)
         {
             List<SelectListItem> list = new List<SelectListItem>();
-            list.Add(new SelectListItem()
+            if (withSelectAllOption)
             {
-                Text = "全部",
-                Value = ""
-            });
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = ""
+                });
+            }
+
             list.Add(new SelectListItem()
             {
                 Text = "正取",
@@ -145,5 +149,7 @@ namespace CCIA2.Helper
 
             return list;
         }
+
+    
     }
 }

@@ -35,6 +35,7 @@ namespace CCIA2.Controllers
                 model.memberTypeNo = 1;
                 model.step = 1;
                 model.searchText = null;
+                model.group = user.group;
             }
 
             return Index(model);
@@ -176,7 +177,7 @@ namespace CCIA2.Controllers
 
             ViewBag.stepList = DropDownListHelper.getApplyStepListWithAll();
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(true);
-            ViewBag.enrollTypeList = DropDownListHelper.getEnrollTypeList();
+            ViewBag.enrollTypeList = DropDownListHelper.getEnrollTypeList(true);
             return View("Index", model);
         }
 
@@ -503,6 +504,63 @@ namespace CCIA2.Controllers
                 db.SaveChanges();
                 return View("Close");
             }
+            return View(model);
+        }
+
+        public ActionResult Admit(int sqno)
+        {
+            SysUser user = Session[SessionKey.USER] as SysUser;
+            MemberAdmitViewModel model = new MemberAdmitViewModel();
+            model.sqno = sqno;
+            model.member = db.Member
+                .Where(m => m.sqno == sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 4) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 4) > 0)
+                .FirstOrDefault();
+            if (model.member == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return Index();
+            }
+            ViewBag.enrollTypeList = DropDownListHelper.getEnrollTypeList(false);
+            ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(false);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult Admit(MemberAdmitViewModel model)
+        {
+            model.member = db.Member
+                .Where(m => m.sqno == model.sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 4) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 4) > 0)
+                .FirstOrDefault();
+            if (model.member == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return Index();
+            }
+            if (ModelState.IsValid)
+            {
+                MemberGroupResult newResult = new MemberGroupResult(model.member);
+                newResult.AppraiseStep = 5;
+                if (model.result == "1")
+                {
+                    newResult.AppraiseState = "正取";
+                }
+                if (model.result == "2")
+                {
+                    newResult.AppraiseState = "備取";
+                }
+                newResult.AppraiseResult = model.result;
+                newResult.AppraiseGroup = model.group;
+
+                db.Entry(model.member).State = EntityState.Modified;
+                db.SaveChanges();
+                return View("Close");
+            }
+            ViewBag.enrollTypeList = DropDownListHelper.getEnrollTypeList(false);
+            ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(false);
             return View(model);
         }
 

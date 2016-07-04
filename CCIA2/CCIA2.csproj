@@ -196,6 +196,7 @@
     <Compile Include="Models\TableNumber.cs" />
     <Compile Include="Models\TablePlan.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
+    <Compile Include="Models\ViewModels\MemberAdmitViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberAppraiseViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberChangeGroupViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberTrailViewModel.cs" />
@@ -316,6 +317,7 @@
     <Content Include="Views\Member\ChangeGroup.cshtml" />
     <Content Include="Views\Member\FirstTrail.cshtml" />
     <Content Include="Views\Member\SecondTrail.cshtml" />
+    <Content Include="Views\Member\Admit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

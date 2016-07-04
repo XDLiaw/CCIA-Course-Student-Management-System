@@ -72,8 +72,19 @@
                                     <td>@Html.DisplayFor(modelItem => item.MemberGroupApply.FirstOrDefault().First)</td>
                                     <td>@Html.DisplayFor(modelItem => item.MemberGroupResult.Where(res => res.AppraiseStep == 1).FirstOrDefault().AppraiseGroup)</td>
                                     <td>@Html.DisplayFor(modelItem => item.MemberGroupResult.Where(res => res.AppraiseStep == 5).FirstOrDefault().AppraiseGroup)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.firstTrailScore)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.secondTrailAvgScore)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.firstTrailScore)
+                                        @if (item.numberOfFristTrailScore > 0)
+                                        {
+                                            @Html.Raw("(" + item.numberOfFristTrailScore + ")")
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.secondTrailAvgScore)
+                                        @if (item.numberOfSecondTrailScore > 0)
+                                        {
+                                            @Html.Raw("(" + item.numberOfSecondTrailScore + ")")
+                                        }                                        
+                                    </td>
                                     <td>@item.currentStateString()</td>
                                     <td>
                                         @if (user.role == 1) 

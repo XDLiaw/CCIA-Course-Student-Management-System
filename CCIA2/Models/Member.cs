@@ -223,6 +223,15 @@ namespace CCIA2.Models
             }
         }
 
+        [Display(Name="初審評分人數")]
+        public int numberOfFristTrailScore
+        {
+            get
+            {
+                return MemberGroupResult.Count(res => res.AppraiseStep == 2);
+            }
+        }
+
         [Display(Name = "複審平均分數")]
         [DisplayFormat(DataFormatString = "{0:F1}")]
         [NotMapped]
@@ -238,6 +247,15 @@ namespace CCIA2.Models
                 {
                     return null;
                 }
+            }
+        }
+
+        [Display(Name = "複審評分人數")]
+        public int numberOfSecondTrailScore
+        {
+            get
+            {
+                return MemberGroupResult.Count(res => res.AppraiseStep == 4);
             }
         }
 
