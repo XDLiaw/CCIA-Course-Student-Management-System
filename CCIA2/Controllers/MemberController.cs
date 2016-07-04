@@ -125,7 +125,7 @@ namespace CCIA2.Controllers
                         {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseGroup == model.group) > 0);
                         }
-                        if (model.enrollType != null && model.group.Trim().Length != 0)
+                        if (model.enrollType != null && model.enrollType.Trim().Length != 0)
                         {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseResult == model.enrollType) > 0);
                         }
@@ -141,7 +141,7 @@ namespace CCIA2.Controllers
                         {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseGroup == model.group) > 0);
                         }
-                        if (model.enrollType != null && model.group.Trim().Length != 0)
+                        if (model.enrollType != null && model.enrollType.Trim().Length != 0)
                         {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseResult == model.enrollType) > 0);
                         }
@@ -477,7 +477,7 @@ namespace CCIA2.Controllers
             return View(model);
         }
 
-        //複審
+        // 複審
         [HttpPost]
         public ActionResult SecondTrail(MemberTrailViewModel model)
         {
@@ -562,6 +562,54 @@ namespace CCIA2.Controllers
             ViewBag.enrollTypeList = DropDownListHelper.getEnrollTypeList(false);
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(false);
             return View(model);
+        }
+
+        // 繳交保證金
+        public ActionResult PayDeposit(int sqno, bool hasPaiedDeposit)
+        {
+            Member member = db.Member
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 5) == 0)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5) == 1)
+                .FirstOrDefault();
+            if (member == null)
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "找不到資料"
+                };
+                return Json(result);
+            }
+            else
+            {
+                try
+                {
+                    MemberGroupResult newResult = new MemberGroupResult(member);
+                    string msg;
+                    if (hasPaiedDeposit)
+                    {
+                        newResult.AppraiseStep = 6;
+                        newResult.AppraiseState = "已通過";
+                        msg = "會員 " + member.mrName + " 已繳保證金!";
+                    }
+                    else
+                    {
+                        newResult.AppraiseStep = 7;
+                        newResult.AppraiseState = "未繳交保證金";
+                        msg = "會員 " + member.mrName + " 未繳保證金!";
+                    }
+                    db.Entry(member).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    var result = new { success = true, message = msg };
+                    return Json(result);
+                }
+                catch (Exception e)
+                {
+                    var result = new { success = false, errorMessages = e.Message };
+                    return Json(result);
+                }
+            }
         }
 
         // 轉為一般會員

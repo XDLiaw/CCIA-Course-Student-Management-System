@@ -115,7 +115,14 @@
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 5) // 正/備取名單
                                             {
-                                                <input type="button" value="已繳保證金" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                                if (Int32.Parse(item.mrRole) == 1)
+                                                {
+                                                    <input type="button" value="已繳8000" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                                }
+                                                if (Int32.Parse(item.mrRole) == 2)
+                                                {
+                                                    <input type="button" value="已繳4000" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                                }
                                                 <input type="button" value="未繳保證金" class="btn btn-default btn-NotPay" sqno="@item.sqno" />
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 7) // 未通過
@@ -366,6 +373,48 @@
                 var data = {sqno : $(this).attr("sqno")};
                 $.post(
                     "@Url.Content("~/Member/Flunk")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+
+        // 已繳保證金
+        $("#form-memberType1").find(".btn-Pay").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno"), hasPaiedDeposit : true};
+                $.post(
+                    "@Url.Content("~/Member/PayDeposit")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+
+        // 未繳保證金
+        $("#form-memberType1").find(".btn-NotPay").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno"), hasPaiedDeposit : false};
+                $.post(
+                    "@Url.Content("~/Member/PayDeposit")",
                     data,
                     function (res) {
                         if (typeof(res.errorMessage) != 'undefined') {
