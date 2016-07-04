@@ -12,8 +12,6 @@ namespace CCIA2.Models
         {
         }
 
-        public virtual DbSet<Course> Course { get; set; }
-        public virtual DbSet<CourseDay> CourseDay { get; set; }
         public virtual DbSet<LogMemberLog> LogMemberLog { get; set; }
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<MemberAttchFile> MemberAttchFile { get; set; }
@@ -35,10 +33,6 @@ namespace CCIA2.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CourseDay>()
-                .Property(e => e.CourseDay1)
-                .IsUnicode(false);
-
             modelBuilder.Entity<LogMemberLog>()
                 .Property(e => e.sessionid)
                 .IsUnicode(false);
@@ -158,16 +152,6 @@ namespace CCIA2.Models
             modelBuilder.Entity<Member>()
                 .Property(e => e.mrIsOpen)
                 .IsUnicode(false);
-
-            //modelBuilder.Entity<Member>()
-            //    .HasMany(e => e.MemberAttchFile)
-            //    .WithOptional(e => e.Member)
-            //    .HasForeignKey(e => e.mrSqno);
-
-            //modelBuilder.Entity<Member>()
-            //    .HasMany(e => e.MemberGroupResult)
-            //    .WithOptional(e => e.Member)
-            //    .HasForeignKey(e => e.mrSqno);
 
             modelBuilder.Entity<MemberAttchFile>()
                 .Property(e => e.mrNumber)

@@ -174,8 +174,6 @@
     <Compile Include="Helper\DropDownListHelper.cs" />
     <Compile Include="Models\CaptchaResponse.cs" />
     <Compile Include="Models\CCIAContext.cs" />
-    <Compile Include="Models\Course.cs" />
-    <Compile Include="Models\CourseDay.cs" />
     <Compile Include="Models\LogMemberLog.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\MemberAttchFile.cs" />
