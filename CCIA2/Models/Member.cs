@@ -39,6 +39,7 @@ namespace CCIA2.Models
 
         [Display(Name="密碼")]
         [StringLength(50)]
+        [DataType(DataType.Password)]
         public string mrPassword { get; set; }
 
         [Display(Name = "啟動")]
@@ -46,6 +47,7 @@ namespace CCIA2.Models
         public string mrIsActive { get; set; }
 
         [Display(Name = "啟動日期")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? mrIsActivityDate { get; set; }
 
         [Display(Name = "完成")]
@@ -53,6 +55,7 @@ namespace CCIA2.Models
         public string mrIsFinish { get; set; }
 
         [Display(Name = "完成日期")]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public DateTime? mrFinishDate { get; set; }
 
         [Display(Name = "姓名")]
@@ -65,6 +68,7 @@ namespace CCIA2.Models
 
         [Display(Name = "生日")]
         [StringLength(50)]
+        [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
         public string mrBirth { get; set; }
 
         [Display(Name = "電話")]
@@ -191,6 +195,7 @@ namespace CCIA2.Models
         public virtual ICollection<MemberGroupResult> MemberGroupResult { get; set; }
 
         [Display(Name = "初審平均分數")]
+        [DisplayFormat(DataFormatString = "{0:F1}")]
         [NotMapped]
         public double? firstTrailScore
         {

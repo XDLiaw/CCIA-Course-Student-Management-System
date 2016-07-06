@@ -48,6 +48,10 @@
         </div>
     </div>
 
+    @using CCIA2.Models
+    @{
+        var user = @Session[SessionKey.USER] as SysUser;
+    }
     <!-- Menu -->
     <div class="menu_bg hidden-xs">
         <div class="container">
@@ -55,28 +59,26 @@
                 <div class="col-md-12 nopadding text-center">
                     <div class="menu_hover linev_left ">@Html.ActionLink("首頁", "Index", "Home", null, new { @class = "menu_link" })</div>
                     <div class="menu linev_left ">@Html.ActionLink("會員管理", "Index", "Member", null, new { @class = "menu_link" })</div>
-                    @*<div class="menu linev_left ">@Html.ActionLink("人員", "Index", "SysUser", null, new { @class = "menu_link" })</div>*@
-                    
-                    @{
-                        if (Request.IsAuthenticated)
+                    @if (user != null && user.role == 1)
+                    {
+                        <div class="menu linev_left">@Html.ActionLink("課程管理", "Index", "Course", null, new { @class = "menu_link" })</div>
+                        <div class="menu linev_left">@Html.ActionLink("講師管理", "Index", "CourseTeacher", null, new { @class = "menu_link" })</div>
+                        @*<div class="menu linev_left ">@Html.ActionLink("人員", "Index", "SysUser", null, new { @class = "menu_link" })</div>*@
+                    }
+                    <div class="menu linev_left linev_right">
+                        @if (Request.IsAuthenticated)
                         {
-                            <div class="menu linev_left linev_right">
-                                @Html.ActionLink("登出", "Logout", "Account", null, new { @class = "menu_link" })
-                            </div>
+                            @Html.ActionLink("登出", "Logout", "Account", null, new { @class = "menu_link" })
                         }
                         else
                         {
-                            <div class="menu linev_left linev_right">
-                                @Html.ActionLink("人員登入", "Login", "Account", new { @class = "menu_link" })
-                            </div>
+                            @Html.ActionLink("人員登入", "Login", "Account", new { @class = "menu_link" })
                         }
-                    }               
+                    </div>            
                 </div>
             </div>
         </div>
     </div>
-
-
 
     <div class="event_bg">
         <div class="container">

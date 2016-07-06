@@ -21,6 +21,7 @@ namespace CCIA2.Models
         [Display(Name="±K½X")]
         [Required]
         [StringLength(50)]
+        [DataType(DataType.Password)]
         public string password { get; set; }
 
         [Display(Name="¸}¦â")]
