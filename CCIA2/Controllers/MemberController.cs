@@ -369,7 +369,7 @@ namespace CCIA2.Controllers
                 }
                 catch (Exception e)
                 {
-                    var result = new { success = false, errorMessages = e.Message };
+                    var result = new { success = false, errorMessage = e.Message };
                     return Json(result);
                 }
             }
@@ -408,7 +408,7 @@ namespace CCIA2.Controllers
                 }
                 catch (Exception e)
                 {
-                    var result = new { success = false, errorMessages = e.Message };
+                    var result = new { success = false, errorMessage = e.Message };
                     return Json(result);
                 }
             }
@@ -456,7 +456,7 @@ namespace CCIA2.Controllers
                 }
                 catch (Exception e)
                 {
-                    var result = new { success = false, errorMessages = e.Message };
+                    var result = new { success = false, errorMessage = e.Message };
                     return Json(result);
                 }
             }
@@ -610,7 +610,7 @@ namespace CCIA2.Controllers
                 }
                 catch (Exception e)
                 {
-                    var result = new { success = false, errorMessages = e.Message };
+                    var result = new { success = false, errorMessage = e.Message };
                     return Json(result);
                 }
             }

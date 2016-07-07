@@ -1,0 +1,28 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="/Scripts/jquery.bpopup.min.js"></script>
+    <script>
+        alert($("#div-bPopupWin").attr('class'));
+        alert($("#bPopupClose").attr("test"))
+        $("#div-bPopupWin").bPopup().close();
+        window.close();
+    </script>
+</head>
+<body>
+    <div>
+    
+    </div>
+</body>
+</html>

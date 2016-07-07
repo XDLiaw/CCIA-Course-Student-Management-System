@@ -40,6 +40,20 @@ namespace CCIA2.Controllers
             return View(model);
         }
 
+        public ActionResult TeacherDetail(int sqno)
+        {
+            CourseTeacher teacher = db.CourseTeacher.Where(t => t.sqno == sqno).FirstOrDefault();
+            if (teacher == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(teacher);
+            }
+        }
+
         public ActionResult EditTeacher(int sqno)
         {
             CourseTeacher teacher = db.CourseTeacher.Where(t => t.sqno == sqno).FirstOrDefault();
@@ -66,5 +80,45 @@ namespace CCIA2.Controllers
             }
             return View(teacher);
         }
+
+        public ActionResult EditTeacherPopup(int sqno)
+        {
+            CourseTeacher teacher = db.CourseTeacher.Where(t => t.sqno == sqno).FirstOrDefault();
+            if (teacher == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(teacher);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditTeacherPopup(CourseTeacher teacher)
+        {
+            if (ModelState.IsValid)
+            {
+                teacher.courses = db.CourseTeacher.Where(t => t.sqno == teacher.sqno).SelectMany(t => t.courses).ToList();
+                db.Entry(teacher).State = EntityState.Modified;
+                db.SaveChanges();
+
+                var result = new { success = true };
+                return Json(result);
+            }
+            else
+            {
+                var result = new { 
+                    success = false, 
+                    errorMessage = "資料有誤，請檢查並更正資料",
+                    ModelStateErrors = ModelState.Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(k => k.Key, k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray())
+                };
+                return Json(result);
+                //return View(teacher);
+            }
+        }
+
     }
 }

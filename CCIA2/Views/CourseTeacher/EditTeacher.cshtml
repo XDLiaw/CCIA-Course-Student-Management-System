@@ -38,10 +38,11 @@
                             <tr>
                                 <td>@Html.DisplayFor(modelItem => courseTeacherR.course.topic)</td>
                                 <td>@Html.DisplayFor(modelItem => courseTeacherR.course.title)</td>
-                                <td>@Html.DisplayFor(modelItem => courseTeacherR.course.day)
-                                    @Html.DisplayFor(modelItem => courseTeacherR.course.startTime)~@Html.DisplayFor(modelItem => courseTeacherR.course.endTime)
-                                </td>
-                            </tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => courseTeacherR.course.day)
+                                @Html.DisplayFor(modelItem => courseTeacherR.course.startTime)~@Html.DisplayFor(modelItem => courseTeacherR.course.endTime)
+                            </td>
+                        </tr>
                         }
                     </tbody>
                 </table>
@@ -60,8 +61,8 @@
                 <input type="submit" value="送出" class="btn btn-primary" />
             </div>
         </div>
-        }
-    </div>
+    }
+</div>
 @*<script src='//cdn.tinymce.com/4/tinymce.min.js'></script>*@
 <script src="/Scripts/tinymce/tinymce.min.js"></script>
 <script src="/Scripts/tinymce/jquery.tinymce.min.js"></script>
@@ -79,6 +80,6 @@
             'code | undo redo | cut copy paste | bold italic underline strikethrough | styleselect formatselect fontselect fontsizeselect  ',
             'bullist numlist outdent indent | alignleft aligncenter alignright alignjustify | link searchreplace table | forecolor backcolor'
         ],
-        height : 400
+        height: 400
     });
 </script>

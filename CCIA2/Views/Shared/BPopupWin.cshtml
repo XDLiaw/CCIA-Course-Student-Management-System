@@ -1,0 +1,36 @@
+﻿@Scripts.Render("~/bundles/jquery")
+<style type="text/css">
+    .bPopupWin {
+        display: none;
+        overflow-y: auto;
+        border-radius: 3px;
+        box-shadow: 0 0 10px 10px #FFFFFF;
+        background-color: #ffffff;
+        transform: translate(0,0);
+        min-width: 90%;
+        min-height: 90%;
+        margin: 30px auto;
+    }
+
+    .b-close {
+        display: inline-block;
+        cursor: pointer;
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        font: bold 131% sans-serif;
+        padding: 0 6px 2px;
+        background-color: #d14949;
+        border-radius: 7px 7px 7px 7px;
+        text-align: center;
+        color: #fff;
+    }
+</style>
+<div id="div-bPopupWin" class="container bPopupWin" >
+    <input type="button" class="btn btn-xs b-close" id="btn-close-bPopupWin" value="X"/>
+</div>
+<script>
+    $("#btn-close-bPopupWin").click(function (event) {
+        //alert("X click");
+    });
+</script>

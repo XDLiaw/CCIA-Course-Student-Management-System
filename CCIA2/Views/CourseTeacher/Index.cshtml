@@ -5,7 +5,7 @@
 }
 <div class="bs-component">
     <div class="tab-content  member_bg">
-        @using (Html.BeginForm("Index", "CourseTeacher", FormMethod.Post, htmlAttributes: new { @id = "form-teacher" }))
+        @using (Html.BeginForm("Index", "CourseTeacher", FormMethod.Post, htmlAttributes: new { @id = "form-SearchTeacher" }))
         {
             <div class="container">
                 <div class="col-sm-6">
@@ -21,8 +21,6 @@
                     <tr>
                         <td>@Html.DisplayNameFor(model => model.teacherPagedList.FirstOrDefault().name)</td>
                         <td>@Html.DisplayNameFor(model => model.teacherPagedList.FirstOrDefault().orgName)</td>
-                        @*<td>@Html.DisplayNameFor(model => model.teacherPagedList.FirstOrDefault().courses.FirstOrDefault().course.topic)</td>*@
-                        @*<td>@Html.DisplayNameFor(model => model.teacherPagedList.FirstOrDefault().courses.FirstOrDefault().course.title)</td>*@
                         <td></td>
                     </tr>
                 </thead>
@@ -34,11 +32,11 @@
                             <tr>
                                 <td>@Html.ActionLink(item.name, "TeacherDetail", new { sqno = item.sqno }, htmlAttributes: new { target = "_blank" })</td>
                                 <td>@Html.DisplayFor(modelItem => item.orgName)</td>
-                                @*<td>@Html.DisplayFor(modelItem => item.courses.FirstOrDefault().course.topic)</td>*@
-                                @*<td>@Html.DisplayFor(modelItem => item.courses.FirstOrDefault().course.title)</td>*@
-                                <td>@if (user.role == 1)
+                                <td>
+                                    @if (user.role == 1)
                                     {
                                         @Html.ActionLink("編輯", "EditTeacher", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow", target = "_blank" })
+                                        @Html.ActionLink("編輯", "EditTeacherPopup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup", target = "_blank" })
                                     }
                                 </td>
                             </tr>
@@ -64,27 +62,51 @@
     </div>
 </div>
 
-
+@Html.Partial("~/Views/Shared/BPopupWin.cshtml")
+<script src="/Scripts/jquery.bpopup.min.js"></script>
 <script>
     $(document).ready(function () {
-        paggingSetting();
-
-        $("#form-teacher").find("a.a-newWindow").click(function(event) {
+        $("#form-SearchTeacher").find("a.a-newWindow").click(function(event) {
             event.preventDefault();
+
             var popup = window.open($(this).prop("href"), "_blank");
             //var popup = window.open($(this).prop("href"), "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
             var loop = setInterval(function() {
                 if(popup.closed) {
                     clearInterval(loop);
-                    $("#form-teacher").submit();
+                    $("#form-SearchTeacher").submit();
                 }
             }, 500);
+
+            $('#div-bPopupWin').load(url);
+
+            return false;
+        });
+
+        $("#form-SearchTeacher").find(".bpopup").click(function(event) {
+            event.preventDefault();
+            var url = $(this).prop("href");
+
+            $('#div-bPopupWin').bPopup({
+                loadUrl: url, //Uses jQuery.load()
+                scrollBar: true,
+                escClose: false,
+                onClose: function() {
+                    //alert("bpopup on close ");
+                    $("#form-SearchTeacher").submit(); 
+                }                
+            },
+            function() {
+                //alert('Callback fired');
+            });
 
             return false;
         });
     });
-
-    function paggingSetting() {
+</script>
+<script>
+    // pagging setting
+    $(document).ready(function () {
         $("ul > li > input").addClass("btn btn-default btn-sm");
         $("ul > li > input.btn-page").click(function () {
             $("#PageNumber").val($(this).attr("value"));
@@ -115,5 +137,5 @@
             $("#PageNumber").val(1);
             return true;
         });
-    }
+    });
 </script>
