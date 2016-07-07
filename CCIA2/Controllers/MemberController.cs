@@ -10,6 +10,9 @@ using MvcPaging;
 using System.Data.Entity;
 using System.Web.Configuration;
 using System.IO;
+using CCIA2.Services;
+using CCIA2.Helper.ExcelReport;
+using NPOI.SS.UserModel;
 
 namespace CCIA2.Controllers
 {
@@ -23,7 +26,7 @@ namespace CCIA2.Controllers
         public ActionResult Index()
         {
             SysUser user = Session[SessionKey.USER] as SysUser;
-            MemberViewModel model = new MemberViewModel();
+            MemberSearchViewModel model = new MemberSearchViewModel();
             if (user.role == 1 || user.role == 3)
             {
                 model.memberTypeNo = 1;
@@ -42,143 +45,35 @@ namespace CCIA2.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(MemberViewModel model)
+        public ActionResult Index(MemberSearchViewModel model)
         {
             SysUser user = Session[SessionKey.USER] as SysUser;
-            if (model.memberTypeNo == 1) //經紀仲介學員
-            {
-                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo && m.mrIsActive == "Y" && m.mrIsFinish == "Y");
-                if (model.searchText != null && model.searchText.Trim().Length > 0) //只要這內容不為空就忽略其他條件
-                {
-                    memberQuery = memberQuery
-                        .Where(m => m.mrName.Contains(model.searchText)
-                            || m.mrMainEmail.Equals(model.searchText)
-                            || m.mrOtherEmail.Equals(model.searchText)
-                            || m.mrNumber.Equals(model.searchText)
-                            || m.mrId.Equals(model.searchText));
-                    model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
-                }
-                else
-                {
-                    if (model.step == null) // 全部階段
-                    {
-                        model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
-                    }
-                    else if (model.step == 0) // 待審核 
-                    {
-                        memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count() == 0);
-                        model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
-                    }
-                    else if (model.step == 1)  // 通過資格審
-                    {
-                        memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0) // 表自己還沒評初審過
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1); // 已有"通過資格審"資料一筆
-                        if (model.group != null && model.group.Trim().Length != 0)
-                        {
-                            memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1 && res.AppraiseGroup == model.group) > 0);
-                        }
-                        model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
-                    }
-                    else if (model.step == 2) // 完成初審
-                    {
-                        memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0) // 還沒有下一階段"進行複審"的資料
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step && res.AppraiseNo == user.accountNo) == 1); // 有一筆自己審過的初審資料
-                        if (model.group != null && model.group.Trim().Length != 0) {
-                            memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1 && res.AppraiseGroup == model.group) > 0);
-                        }
-                        model.memberPagedList = memberQuery
-                            .OrderByDescending(m => m.MemberGroupResult.Where(res => res.AppraiseStep == 2).FirstOrDefault().AppraiseScore)
-                            .ToPagedList(model.pageNumber - 1, model.pageSize);   
-                    }
-                    else if (model.step == 3) // 進行複審
-                    {                        
-                        memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0) // 表示自己還沒評過複審
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1); // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
-                        model.memberPagedList = memberQuery
-                            .OrderByDescending(m => m.MemberGroupResult.Where(res => res.AppraiseStep == 2).FirstOrDefault().AppraiseScore)
-                            .ToPagedList(model.pageNumber - 1, model.pageSize);
-
-                        //TODO 要測試不同外審人員是否可看到
-                    }
-                    else if (model.step == 4) // 完成複審
-                    {
-                        memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0) // 還沒有下一階段的資料
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step && res.AppraiseNo == user.accountNo) == 1); // 已有一筆自己審過的複審資料
-                        if (model.group != null && model.group.Trim().Length != 0)
-                        {
-                            memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1 && res.AppraiseGroup == model.group) > 0);
-                        }
-                        model.memberPagedList = memberQuery
-                            .OrderByDescending(m => m.MemberGroupResult.Where(res => res.AppraiseStep == model.step).Average(res => res.AppraiseScore))
-                            .ToPagedList(model.pageNumber - 1, model.pageSize);
-                    }
-                    else if (model.step == 5) // 正/備取名單
-                    {
-                        memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0)
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1);
-                        if (model.group != null && model.group.Trim().Length != 0)
-                        {
-                            memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseGroup == model.group) > 0);
-                        }
-                        if (model.enrollType != null && model.enrollType.Trim().Length != 0)
-                        {
-                            memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseResult == model.enrollType) > 0);
-                        }
-                            
-                        model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
-                    }
-                    else if (model.step == 6) //已通過
-                    {
-                        memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0)
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1);
-                        if (model.group != null && model.group.Trim().Length != 0)
-                        {
-                            memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseGroup == model.group) > 0);
-                        }
-                        if (model.enrollType != null && model.enrollType.Trim().Length != 0)
-                        {
-                            memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseResult == model.enrollType) > 0);
-                        }
-                        model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
-                    }
-                    else if (model.step == 7) //未通過
-                    {
-                        memberQuery = memberQuery
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step) == 0)
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1);
-                        model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
-                    }
-                }
-                    
-                // 重新排序各會員的歷史審查紀錄
-                foreach (Member m in model.memberPagedList)
-                {
-                    m.MemberGroupResult = m.MemberGroupResult.OrderBy(r => r.AppraiseStep).ToList();
-                }
-            }
-            else if (model.memberTypeNo == 2 || model.memberTypeNo == 3) //歷屆會員 or 一般會員
-            {
-                model.memberPagedList = db.Member
-                    .Where(m => m.mrMemberTypesqno == model.memberTypeNo)
-                    .Where(m => model.searchText == null ? true : m.mrName.Contains(model.searchText)
-                        || model.searchText == null ? true : m.mrMainEmail.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrOtherEmail.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrNumber.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrId.Equals(model.searchText))
-                    .OrderBy(m => m.mrNumber)
-                    .ToPagedList(model.pageNumber - 1, model.pageSize);
-            }
+            model = new MemberService(db).searchNPagging(model, user);
 
             ViewBag.stepList = DropDownListHelper.getApplyStepListWithAll();
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(true);
             ViewBag.enrollTypeList = DropDownListHelper.getEnrollTypeList(true);
             return View("Index", model);
+        }
+
+        [HttpGet]
+        public ActionResult DownloadReport(MemberSearchViewModel model)
+        {
+            SysUser user = Session[SessionKey.USER] as SysUser;
+            MemoryStream memoryStream = new MemoryStream();
+            try
+            {                
+                List<Member> memberList = new MemberService(db).search(model, user);
+                MemberReport report = new MemberReport();
+                IWorkbook wb = report.create(memberList);
+                wb.Write(memoryStream);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = e.Message;
+            }
+
+            return File(memoryStream.ToArray(), "application/vnd.ms-excel", "會員資料.xls");
         }
 
         public ActionResult Details(int sqno)

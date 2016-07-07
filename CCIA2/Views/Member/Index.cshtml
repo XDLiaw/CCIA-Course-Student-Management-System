@@ -1,5 +1,5 @@
 ﻿@using CCIA2.Models
-@model CCIA2.Models.ViewModels.MemberViewModel
+@model CCIA2.Models.ViewModels.MemberSearchViewModel
 
 @{
     var user = @Session[SessionKey.USER] as SysUser;
@@ -19,12 +19,12 @@
         <div id="tab_memberType1" class="fade tab-pane ">
             @using (Html.BeginForm("Index", "Member", FormMethod.Post, htmlAttributes: new { @id = "form-memberType1" }))
             {
-                <input type="hidden" name="memberTypeNo" value="1" />
+                <input type="hidden" name="memberTypeNo" value="1" id="hidden-memberTypeNo"/>
                 <div class="container">
                     @if (user.role != 2)
                     {
                         <div class="col-sm-4">
-                            @Html.TextBoxFor(model => model.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入會員編號, 姓名, Email, 或身分證字號" })
+                            @Html.TextBoxFor(model => model.searchText, htmlAttributes: new { @class = "form-control", @id="textBox-searchText", @placeholder = "請輸入會員編號, 姓名, Email, 或身分證字號" })
                         </div>
                     }
                     <div class="col-sm-2">
@@ -45,6 +45,7 @@
                     </div>
                     <div class="col-md-2 pull-right">
                         <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+                        
                     </div>
                 </div>
 
@@ -55,12 +56,12 @@
                             <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrNumber)</th>
                             <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrName)</th>
                             <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().MemberGroupApply)</th>
-                            <th>資格審組別</th>
-                            <th>最終組別</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().FirstAssignGroup)</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().FinalGroup)</th>
                             <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().firstTrailScore)</th>
                             <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().secondTrailAvgScore)</th>
                             <th>狀態</th>
-                            <th></th>
+                            <th class=""><input type="button" value="下載報表" class="btn btn-info" id="btn-downloadMemberReport"/></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -73,8 +74,8 @@
                                     <td>@Html.DisplayFor(modelItem => item.mrNumber)</td>
                                     <td>@Html.ActionLink(item.mrName, "Details", new { sqno = item.sqno }, htmlAttributes: new { target = "_blank" })</td>
                                     <td>@Html.DisplayFor(modelItem => item.MemberGroupApply.FirstOrDefault().First)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.MemberGroupResult.Where(res => res.AppraiseStep == 1).FirstOrDefault().AppraiseGroup)</td>
-                                    <td>@Html.DisplayFor(modelItem => item.MemberGroupResult.Where(res => res.AppraiseStep == 5).FirstOrDefault().AppraiseGroup)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.FirstAssignGroup)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.FinalGroup)</td>
                                     <td>@Html.DisplayFor(modelItem => item.firstTrailScore)
                                         @if (item.numberOfFristTrailScore > 0)
                                         {
@@ -281,7 +282,6 @@
 
 <script>
     $(document).ready(function () {
-        paggingSetting();
 
         // 決定要顯示的頁籤
         $("#li-memberType"+@Model.memberTypeNo).trigger("click");
@@ -455,7 +455,32 @@
         });
     });
 
-    function paggingSetting() {
+</script>
+<script>
+    // 下載報表
+    $(document).ready(function () {
+        $("#btn-downloadMemberReport").click(function () {
+            //alert("download click");
+            try {
+                var searchText = $("#textBox-searchText").val();
+                var memberTypeNo = $("#hidden-memberTypeNo").val();
+                var step = $("#select-step").val();
+                var group = $("#select-group").val();
+                var enrollType = $("#select-enrollType").val();
+                var url = "/Member/DownloadReport?searchText=" + searchText + "&memberTypeNo=" + memberTypeNo + "&step=" + step + "&group=" + group + "&enrollType=" + enrollType;
+                //alert(url);
+                window.location.href = url;
+                return true;
+            }
+            catch (e) {
+                return false;
+            }
+        });
+    });
+</script>
+<script>
+    // 分頁相關設定
+    $(document).ready(function () {
         $("ul > li > input").addClass("btn btn-default btn-sm");
         $("ul > li > input.btn-page").click(function () {
             $("#PageNumber").val($(this).attr("value"));
@@ -486,5 +511,6 @@
             $("#PageNumber").val(1);
             return true;
         });
-    }
+    });
+
 </script>

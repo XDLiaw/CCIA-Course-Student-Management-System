@@ -252,6 +252,28 @@ namespace CCIA2.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MemberGroupApply> MemberGroupApply { get; set; }
 
+        [Display(Name = "資格審組別")]
+        [NotMapped]
+        public string FirstAssignGroup
+        {
+            get
+            {
+                var temp = this.MemberGroupResult.Where(res => res.AppraiseStep == 1).FirstOrDefault();
+                return temp == null ? null : temp.AppraiseGroup;
+            }
+        }
+
+        [Display(Name = "最終組別")]
+        [NotMapped]
+        public string FinalGroup
+        {
+            get
+            {
+                var temp = this.MemberGroupResult.Where(res => res.AppraiseStep == 5).FirstOrDefault();
+                return temp == null ? null : temp.AppraiseGroup;
+            }
+        }
+
         [Display(Name = "曾經參加或獲得的文化部計畫補助")]
         public virtual ICollection<MemberSupport> MemberSupport { get; set; }
 
