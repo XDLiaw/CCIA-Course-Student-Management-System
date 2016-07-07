@@ -11,53 +11,57 @@
                 <div class="col-sm-6">
                     @Html.TextBoxFor(model => model.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入講師姓名或所屬單位名稱" })
                 </div>
-                <div class="col-sm-2 pull-right">
+                <div class="col-sm-1">
                     <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+                </div>
+                <div class="col-sm-2 pull-right">
+                    @Html.ActionLink("新增講師", "CreateTeacher", null, htmlAttributes: new { @class = "btn btn-info bpopup", target = "_blank" })
                 </div>
             </div>
             <br />
-            <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <td>@Html.DisplayNameFor(model => model.teacherPagedList.FirstOrDefault().name)</td>
-                        <td>@Html.DisplayNameFor(model => model.teacherPagedList.FirstOrDefault().orgName)</td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.teacherPagedList.FirstOrDefault().name)</td>
+                            <td>@Html.DisplayNameFor(model => model.teacherPagedList.FirstOrDefault().orgName)</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.teacherPagedList != null)
+                        {
+                            foreach (var item in Model.teacherPagedList)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.name)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.orgName)</td>
+                                    <td class="col-sm-1">
+                                        @if (user.role == 1)
+                                        {
+                                            @Html.ActionLink("編輯", "EditTeacherPopup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup", target = "_blank" })
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
+                <ul class="pagination">
                     @if (Model != null && Model.teacherPagedList != null)
                     {
-                        foreach (var item in Model.teacherPagedList)
+                        <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+                        for (int i = 1; i <= Model.teacherPagedList.PageCount; i++)
                         {
-                            <tr>
-                                <td>@Html.ActionLink(item.name, "TeacherDetail", new { sqno = item.sqno }, htmlAttributes: new { target = "_blank" })</td>
-                                <td>@Html.DisplayFor(modelItem => item.orgName)</td>
-                                <td>
-                                    @if (user.role == 1)
-                                    {
-                                        @Html.ActionLink("編輯", "EditTeacher", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow", target = "_blank" })
-                                        @Html.ActionLink("編輯", "EditTeacherPopup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup", target = "_blank" })
-                                    }
-                                </td>
-                            </tr>
+                            <li><input type="submit" value=@i class="btn-page" /></li>
                         }
+                        <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+                        <text>共 @Model.teacherPagedList.TotalItemCount 筆資料</text>
                     }
-                </tbody>
-            </table>
-
-            @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
-            <ul class="pagination">
-                @if (Model != null && Model.teacherPagedList != null)
-                {
-                    <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
-                    for (int i = 1; i <= Model.teacherPagedList.PageCount; i++)
-                    {
-                        <li><input type="submit" value=@i class="btn-page" /></li>
-                    }
-                    <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
-                    <text>共 @Model.teacherPagedList.TotalItemCount 筆資料</text>
-                }
-            </ul>
+                </ul>
+            </div>
         }
     </div>
 </div>
@@ -66,23 +70,6 @@
 <script src="/Scripts/jquery.bpopup.min.js"></script>
 <script>
     $(document).ready(function () {
-        $("#form-SearchTeacher").find("a.a-newWindow").click(function(event) {
-            event.preventDefault();
-
-            var popup = window.open($(this).prop("href"), "_blank");
-            //var popup = window.open($(this).prop("href"), "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
-            var loop = setInterval(function() {
-                if(popup.closed) {
-                    clearInterval(loop);
-                    $("#form-SearchTeacher").submit();
-                }
-            }, 500);
-
-            $('#div-bPopupWin').load(url);
-
-            return false;
-        });
-
         $("#form-SearchTeacher").find(".bpopup").click(function(event) {
             event.preventDefault();
             var url = $(this).prop("href");
@@ -93,8 +80,8 @@
                 escClose: false,
                 onClose: function() {
                     //alert("bpopup on close ");
-                    $("#form-SearchTeacher").submit(); 
-                }                
+                    $("#form-SearchTeacher").submit();
+                }
             },
             function() {
                 //alert('Callback fired');

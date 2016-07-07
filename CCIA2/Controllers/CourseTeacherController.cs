@@ -40,45 +40,34 @@ namespace CCIA2.Controllers
             return View(model);
         }
 
-        public ActionResult TeacherDetail(int sqno)
+        public ActionResult CreateTeacher()
         {
-            CourseTeacher teacher = db.CourseTeacher.Where(t => t.sqno == sqno).FirstOrDefault();
-            if (teacher == null)
-            {
-                ViewBag.ErrorMessage = "找不到資料";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(teacher);
-            }
-        }
-
-        public ActionResult EditTeacher(int sqno)
-        {
-            CourseTeacher teacher = db.CourseTeacher.Where(t => t.sqno == sqno).FirstOrDefault();
-            if (teacher == null)
-            {
-                ViewBag.ErrorMessage = "找不到資料";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(teacher);
-            }
+            CourseTeacher teacher = new CourseTeacher();
+            return View(teacher);
         }
 
         [HttpPost]
-        public ActionResult EditTeacher(CourseTeacher teacher)
+        public ActionResult CreateTeacher(CourseTeacher teacher)
         {
             if (ModelState.IsValid)
             {
-                teacher.courses = db.CourseTeacher.Where(t => t.sqno == teacher.sqno).SelectMany(t => t.courses).ToList();
-                db.Entry(teacher).State = EntityState.Modified;
+                db.CourseTeacher.Add(teacher);
                 db.SaveChanges();
-                return View("Close");
+
+                var result = new { success = true };
+                return Json(result);
             }
-            return View(teacher);
+            else
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "資料有誤，請檢查並更正資料",
+                    ModelStateErrors = ModelState.Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(k => k.Key, k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray())
+                };
+                return Json(result);
+            }
         }
 
         public ActionResult EditTeacherPopup(int sqno)
@@ -116,7 +105,6 @@ namespace CCIA2.Controllers
                         .ToDictionary(k => k.Key, k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray())
                 };
                 return Json(result);
-                //return View(teacher);
             }
         }
 

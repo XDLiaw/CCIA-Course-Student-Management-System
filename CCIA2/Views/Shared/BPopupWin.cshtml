@@ -1,4 +1,4 @@
-﻿@Scripts.Render("~/bundles/jquery")
+﻿
 <style type="text/css">
     .bPopupWin {
         display: none;
@@ -29,8 +29,9 @@
 <div id="div-bPopupWin" class="container bPopupWin" >
     <input type="button" class="btn btn-xs b-close" id="btn-close-bPopupWin" value="X"/>
 </div>
+@*@Scripts.Render("~/bundles/jquery")
 <script>
     $("#btn-close-bPopupWin").click(function (event) {
-        //alert("X click");
+        alert("X click");
     });
-</script>
+</script>*@
