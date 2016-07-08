@@ -277,30 +277,39 @@ namespace CCIA2.Models
         [Display(Name = "曾經參加或獲得的文化部計畫補助")]
         public virtual ICollection<MemberSupport> MemberSupport { get; set; }
 
-        public string currentStateString()
+        [Display(Name="狀態")]
+        [NotMapped]
+        public string currentState
         {
-            SysUser user = HttpContext.Current.Session[SessionKey.USER] as SysUser;
-            if (this.MemberGroupResult == null || this.MemberGroupResult.Count == 0)
+            get
             {
-                return "待審核";
-            }
-            else
-            {
-                if (user.role == 1 || user.role == 2)
+                SysUser user = HttpContext.Current.Session[SessionKey.USER] as SysUser;
+                if (this.MemberGroupResult == null || this.MemberGroupResult.Count == 0)
                 {
-                    if (this.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1 &&
-                        this.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0)
-                    {
-                        return this.MemberGroupResult.Where(res => res.AppraiseStep == 1).LastOrDefault().AppraiseState;
-                    } 
-
-                    if (this.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1 && 
-                        this.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) {
-                        return this.MemberGroupResult.Where(res => res.AppraiseStep == 3).LastOrDefault().AppraiseState;
-                    } 
+                    return "待審核";
                 }
-                return this.MemberGroupResult.OrderBy(m => m.AppraiseStep).LastOrDefault().AppraiseState;
+                else
+                {
+                    if (user.role == 1 || user.role == 2)
+                    {
+                        if (this.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1 && // 已有"通過資格審"資料一筆
+                            this.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0 && // 表自己還沒評初審過
+                            this.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0)  // 不能有正備取紀錄或未通過紀錄或進入複審紀錄
+                        {
+                            return this.MemberGroupResult.Where(res => res.AppraiseStep == 1).LastOrDefault().AppraiseState;
+                        }
+
+                        if (this.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1 && // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
+                            this.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0 && // 自己還沒評過複審
+                            this.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0) // 不能有正備取or通過or未通過紀錄
+                        {
+                            return this.MemberGroupResult.Where(res => res.AppraiseStep == 3).LastOrDefault().AppraiseState;
+                        }
+                    }
+                    return this.MemberGroupResult.OrderBy(m => m.AppraiseStep).LastOrDefault().AppraiseState;
+                }
             }
         }
+
     }
 }

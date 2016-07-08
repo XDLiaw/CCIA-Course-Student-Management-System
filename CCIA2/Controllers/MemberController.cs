@@ -187,8 +187,9 @@ namespace CCIA2.Controllers
             model.sqno = sqno;
             model.member = db.Member
                 .Where(m => m.sqno == sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0) // 表自己還沒評初審過
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1) // 已有"通過資格審"資料一筆
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0) // 不能有正備取or通過or未通過or進入複審紀錄
                 .FirstOrDefault();
             if (model.member == null)
             {
@@ -205,8 +206,9 @@ namespace CCIA2.Controllers
             SysUser user = Session[SessionKey.USER] as SysUser;
             model.member = db.Member
                 .Where(m => m.sqno == model.sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0) // 表自己還沒評初審過
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1) // 已有"通過資格審"資料一筆
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0) // 不能有正備取or通過or未通過or進入複審紀錄
                 .FirstOrDefault();
             if (model.member == null)
             {
@@ -365,8 +367,9 @@ namespace CCIA2.Controllers
             model.sqno = sqno;
             model.member = db.Member
                 .Where(m => m.sqno == sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) // 表示自己還沒評過複審
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1) // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0) // 不能有正備取or通過or未通過紀錄
                 .FirstOrDefault();
             if (model.member == null)
             {
@@ -383,8 +386,9 @@ namespace CCIA2.Controllers
             SysUser user = Session[SessionKey.USER] as SysUser;
             model.member = db.Member
                 .Where(m => m.sqno == model.sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) // 表示自己還沒評過複審
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1) // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0) // 不能有正備取or通過or未通過紀錄
                 .FirstOrDefault();
             if (model.member == null)
             {

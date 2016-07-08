@@ -134,7 +134,7 @@ namespace CCIA2.Helper.ExcelReport
 
                 cell = frow.CreateCell(++colIndex);
                 cell.CellStyle = contentStyle;
-                cell.SetCellValue(member.currentStateString());
+                cell.SetCellValue(member.currentState);
             }
 
             #endregion

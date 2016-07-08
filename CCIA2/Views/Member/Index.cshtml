@@ -60,7 +60,7 @@
                             <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().FinalGroup)</th>
                             <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().firstTrailScore)</th>
                             <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().secondTrailAvgScore)</th>
-                            <th>狀態</th>
+                            <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().currentState)</th>
                             <th class=""><input type="button" value="下載報表" class="btn btn-info" id="btn-downloadMemberReport"/></th>
                         </tr>
                     </thead>
@@ -89,7 +89,7 @@
                                             @Html.Raw("(" + item.numberOfSecondTrailScore + ")")
                                         }                                        
                                     </td>
-                                    <td>@item.currentStateString()</td>
+                                    <td>@Html.DisplayFor(modelItem => item.currentState)</td>
                                     <td>
                                         @if (user.role == 1) 
                                         {
@@ -97,7 +97,8 @@
                                             {
                                                 @Html.ActionLink("資格審", "QualificationVerify", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }
-                                            else if (item.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0) // 通過資格審
+                                            else if (item.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0 &&
+                                                     item.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0) // 通過資格審
                                             {
                                                 @Html.ActionLink("變更組別", "ChangeGroup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                                 @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
@@ -108,7 +109,8 @@
                                                 <input type="button" value="進入複審" class="btn btn-default btn-SecondTrail" sqno="@item.sqno" />
                                                 <input type="button" value="未錄取" class="btn btn-default btn-Flunk" sqno="@item.sqno" />
                                             }
-                                            else if (item.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) // 進行複審
+                                            else if (item.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0 &&
+                                                     item.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0) // 進行複審
                                             {
                                                 @Html.ActionLink("複審", "SecondTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
                                             }

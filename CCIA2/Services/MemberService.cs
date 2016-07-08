@@ -47,7 +47,8 @@ namespace CCIA2.Services
                     {
                         memberQuery = memberQuery
                             .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0) // 表自己還沒評初審過
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1); // 已有"通過資格審"資料一筆
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1) // 已有"通過資格審"資料一筆
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0); // 不能有正備取or通過or未通過or進入複審紀錄
                         if (model.group != null && model.group.Trim().Length != 0)
                         {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1 && res.AppraiseGroup == model.group) > 0);
@@ -71,7 +72,8 @@ namespace CCIA2.Services
                     {
                         memberQuery = memberQuery
                             .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0) // 表示自己還沒評過複審
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1); // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1) // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0); // 不能有正備取or通過or未通過紀錄
                         model.memberPagedList = memberQuery
                             .OrderByDescending(m => m.MemberGroupResult.Where(res => res.AppraiseStep == 2).Average(res => res.AppraiseScore)) // 依初審平均分數由高到低排序
                             .ToPagedList(model.pageNumber - 1, model.pageSize);
@@ -184,7 +186,8 @@ namespace CCIA2.Services
                     {
                         memberQuery = memberQuery
                             .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0) // 表自己還沒評初審過
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1); // 已有"通過資格審"資料一筆
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1) // 已有"通過資格審"資料一筆
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0); // 不能有正備取or通過or未通過or進入複審紀錄
                         if (model.group != null && model.group.Trim().Length != 0)
                         {
                             memberQuery = memberQuery.Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1 && res.AppraiseGroup == model.group) > 0);
@@ -208,7 +211,8 @@ namespace CCIA2.Services
                     {
                         memberQuery = memberQuery
                             .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > model.step && res.AppraiseNo == user.accountNo) == 0) // 表示自己還沒評過複審
-                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1); // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == model.step) == 1) // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
+                            .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0); // 不能有正備取or通過or未通過紀錄
                         memberList = memberQuery
                             .OrderByDescending(m => m.MemberGroupResult.Where(res => res.AppraiseStep == 2).Average(res => res.AppraiseScore)) // 依初審平均分數由高到低排序
                             .ToList();
