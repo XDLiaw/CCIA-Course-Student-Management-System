@@ -575,6 +575,9 @@
     <Content Include="Views\Shared\BPopupWin.cshtml" />
     <Content Include="Views\Shared\CloseBPopupWin.cshtml" />
     <Content Include="Views\CourseTeacher\CreateTeacher.cshtml" />
+    <Content Include="Views\Course\Index.cshtml" />
+    <Content Include="Views\Course\EditTeacher.cshtml" />
+    <Content Include="Views\Course\CreateTeacher.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

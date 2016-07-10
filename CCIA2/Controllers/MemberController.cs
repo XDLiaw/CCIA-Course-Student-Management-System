@@ -21,6 +21,12 @@ namespace CCIA2.Controllers
     public class MemberController : Controller
     {
         private CCIAContext db = new CCIAContext();
+        private MemberService memberService;
+
+        public MemberController()
+        {
+            this.memberService = new MemberService(this.db);
+        }
 
         
         public ActionResult Index()
@@ -48,7 +54,7 @@ namespace CCIA2.Controllers
         public ActionResult Index(MemberSearchViewModel model)
         {
             SysUser user = Session[SessionKey.USER] as SysUser;
-            model = new MemberService(db).searchNPagging(model, user);
+            model = this.memberService.searchNPagging(model, user);
 
             ViewBag.stepList = DropDownListHelper.getApplyStepListWithAll();
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(true);
@@ -63,7 +69,7 @@ namespace CCIA2.Controllers
             MemoryStream memoryStream = new MemoryStream();
             try
             {                
-                List<Member> memberList = new MemberService(db).search(model, user);
+                List<Member> memberList = this.memberService.search(model, user);
                 MemberReport report = new MemberReport();
                 IWorkbook wb = report.create(memberList);
                 wb.Write(memoryStream);
@@ -185,12 +191,8 @@ namespace CCIA2.Controllers
             SysUser user = Session[SessionKey.USER] as SysUser;
             MemberTrailViewModel model = new MemberTrailViewModel();
             model.sqno = sqno;
-            model.member = db.Member
-                .Where(m => m.sqno == sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0) // 表自己還沒評初審過
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1) // 已有"通過資格審"資料一筆
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0) // 不能有正備取or通過or未通過or進入複審紀錄
-                .FirstOrDefault();
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == sqno);
+            model.member = this.memberService.queryMemberAtStep1(memberQuery, user).FirstOrDefault();
             if (model.member == null)
             {
                 ViewBag.ErrorMessage = "找不到資料";
@@ -204,12 +206,8 @@ namespace CCIA2.Controllers
         public ActionResult FirstTrail(MemberTrailViewModel model)
         {
             SysUser user = Session[SessionKey.USER] as SysUser;
-            model.member = db.Member
-                .Where(m => m.sqno == model.sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0) // 表自己還沒評初審過
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1) // 已有"通過資格審"資料一筆
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0) // 不能有正備取or通過or未通過or進入複審紀錄
-                .FirstOrDefault();
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == model.sqno);
+            model.member = this.memberService.queryMemberAtStep1(memberQuery, user).FirstOrDefault();
             if (model.member == null)
             {
                 ViewBag.ErrorMessage = "找不到資料";
@@ -234,11 +232,8 @@ namespace CCIA2.Controllers
         public ActionResult Admission(int sqno)
         {
             SysUser user = Session[SessionKey.USER] as SysUser;
-            Member member = db.Member
-                .Where(m => m.sqno == sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 2) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 2 && res.AppraiseNo == user.accountNo) == 1)
-                .FirstOrDefault();
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == sqno);
+            Member member = this.memberService.queryMemberAtStep2(memberQuery, user).FirstOrDefault();
             if (member == null)
             {
                 var result = new
@@ -276,11 +271,8 @@ namespace CCIA2.Controllers
         public ActionResult IntoSecondTrail(int sqno)
         {
             SysUser user = Session[SessionKey.USER] as SysUser;
-            Member member = db.Member
-                .Where(m => m.sqno == sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 2) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 2 && res.AppraiseNo == user.accountNo) == 1)
-                .FirstOrDefault();
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == sqno);
+            Member member = this.memberService.queryMemberAtStep2(memberQuery, user).FirstOrDefault();
             if (member == null)
             {
                 var result = new
@@ -365,12 +357,8 @@ namespace CCIA2.Controllers
             SysUser user = Session[SessionKey.USER] as SysUser;
             MemberTrailViewModel model = new MemberTrailViewModel();
             model.sqno = sqno;
-            model.member = db.Member
-                .Where(m => m.sqno == sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) // 表示自己還沒評過複審
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1) // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0) // 不能有正備取or通過or未通過紀錄
-                .FirstOrDefault();
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == sqno);
+            model.member = this.memberService.queryMemberAtStep3(memberQuery, user).FirstOrDefault();
             if (model.member == null)
             {
                 ViewBag.ErrorMessage = "找不到資料";
@@ -384,12 +372,8 @@ namespace CCIA2.Controllers
         public ActionResult SecondTrail(MemberTrailViewModel model)
         {
             SysUser user = Session[SessionKey.USER] as SysUser;
-            model.member = db.Member
-                .Where(m => m.sqno == model.sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 3 && res.AppraiseNo == user.accountNo) == 0) // 表示自己還沒評過複審
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1) // 已有一筆"進行複審"的資料 (已在複審待審核清單中)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0) // 不能有正備取or通過or未通過紀錄
-                .FirstOrDefault();
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == model.sqno);
+            model.member = this.memberService.queryMemberAtStep3(memberQuery, user).FirstOrDefault();
             if (model.member == null)
             {
                 ViewBag.ErrorMessage = "找不到資料";
@@ -415,11 +399,8 @@ namespace CCIA2.Controllers
             SysUser user = Session[SessionKey.USER] as SysUser;
             MemberAdmitViewModel model = new MemberAdmitViewModel();
             model.sqno = sqno;
-            model.member = db.Member
-                .Where(m => m.sqno == sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 4) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 4) > 0)
-                .FirstOrDefault();
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == sqno);
+            model.member = this.memberService.queryMemberAtStep4(memberQuery, user).FirstOrDefault();
             if (model.member == null)
             {
                 ViewBag.ErrorMessage = "找不到資料";
@@ -433,11 +414,9 @@ namespace CCIA2.Controllers
         [HttpPost]
         public ActionResult Admit(MemberAdmitViewModel model)
         {
-            model.member = db.Member
-                .Where(m => m.sqno == model.sqno)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 4) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 4) > 0)
-                .FirstOrDefault();
+            SysUser user = Session[SessionKey.USER] as SysUser;
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == model.sqno);
+            model.member = this.memberService.queryMemberAtStep4(memberQuery, user).FirstOrDefault();
             if (model.member == null)
             {
                 ViewBag.ErrorMessage = "找不到資料";
@@ -470,10 +449,8 @@ namespace CCIA2.Controllers
         // 繳交保證金
         public ActionResult PayDeposit(int sqno, bool hasPaiedDeposit)
         {
-            Member member = db.Member
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 5) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5) == 1)
-                .FirstOrDefault();
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == sqno);
+            Member member = this.memberService.queryMemberAtStep5(memberQuery).FirstOrDefault();
             if (member == null)
             {
                 var result = new

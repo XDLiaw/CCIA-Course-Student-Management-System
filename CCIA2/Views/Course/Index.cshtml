@@ -1,0 +1,182 @@
+﻿@model CCIA2.Models.ViewModels.CourseViewModel
+@using CCIA2.Models
+@{
+    var user = @Session[SessionKey.USER] as SysUser;
+}
+
+<div class="bs-component">
+    <ul class="nav nav-tabs">
+        <li class=""><a href="#tab_courseForGroups" id="tabLink-courseForGroups" data-toggle="tab" aria-expanded="true">各組須修課程</a></li>
+        <li class=""><a href="#tab_courseList" id="tabLink-courseList" data-toggle="tab" aria-expanded="true">分項課程列表</a></li>
+        <li class=""><a href="#tab_teacherList" id="tabLink-teacherList" data-toggle="tab" aria-expanded="true">講師列表</a></li>
+    </ul>
+    <div class="tab-content  member_bg">
+        @using (Html.BeginForm("Index", "Course", FormMethod.Post))
+        {
+            @Html.HiddenFor(model => model.tabId, htmlAttributes: new { @id="hidden-tabId" })
+            //各組須修課程
+            <div id="tab_courseForGroups" class="fade tab-pane ">
+
+            </div>
+            //分項課程列表
+            <div id="tab_courseList" class="fade tab-pane ">
+
+            </div>
+            //講師列表
+            <div id="tab_teacherList" class="fade tab-pane ">
+                <div class="container">
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(model => model.teacherViewModel.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入講師姓名或所屬單位名稱" })
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="submit" value="查詢" class="btn btn-primary btn-search" id="btn_search_teacher" />
+                    </div>
+                    <div class="col-sm-2 pull-right">
+                        @Html.ActionLink("新增講師", "CreateTeacher", null, htmlAttributes: new { @class = "btn btn-info bpopup", target = "_blank" })
+                    </div>
+                </div>
+                <br />
+                <div class="">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <td>@Html.DisplayNameFor(model => model.teacherViewModel.teacherPagedList.FirstOrDefault().name)</td>
+                                <td>@Html.DisplayNameFor(model => model.teacherViewModel.teacherPagedList.FirstOrDefault().orgName)</td>
+                                <td></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.teacherViewModel != null && Model.teacherViewModel.teacherPagedList != null)
+                            {
+                                foreach (var item in Model.teacherViewModel.teacherPagedList)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.name)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.orgName)</td>
+                                        <td class="col-sm-1">
+                                            @if (user.role == 1)
+                                            {
+                                                @Html.ActionLink("編輯", "EditTeacher", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup", target = "_blank" })
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                    @Html.HiddenFor(model => model.teacherViewModel.pageNumber, htmlAttributes: new { @class = "PageNumber" })
+                    <ul class="pagination">
+                        @if (Model != null && Model.teacherViewModel != null && Model.teacherViewModel.teacherPagedList != null)
+                        {
+                        <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+                            for (int i = 1; i <= Model.teacherViewModel.teacherPagedList.PageCount; i++)
+                            {
+                        <li><input type="submit" value=@i class="btn-page" /></li>
+                            }
+                        <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+                        <text>共 @Model.teacherViewModel.teacherPagedList.TotalItemCount 筆資料</text>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@Html.Partial("~/Views/Shared/BPopupWin.cshtml")
+<script src="/Scripts/jquery.bpopup.min.js"></script>
+<script>
+    $(document).ready(function () {
+        tabSetting();
+        teacherListPaggingSetting();
+        bPopupSetting();
+
+    });
+</script>
+
+@*頁籤相關設定*@
+<script>
+    function tabSetting() {
+        $("#tabLink-courseForGroups").click(function(){            
+            $("#hidden-tabId").val($(this).attr("id"));
+        });
+
+        $("#tabLink-courseList").click(function(){
+            $("#hidden-tabId").val($(this).attr("id"));
+        });
+
+        $("#tabLink-teacherList").click(function(){
+            $("#hidden-tabId").val($(this).attr("id"));
+        });
+
+        var selectedTabId =  $("#hidden-tabId").val();
+        if (selectedTabId == '') {
+            $("#tabLink-teacherList").trigger("click");
+        }
+        else {
+            $("#"+selectedTabId).trigger("click");
+        }
+    }
+</script>
+@*講師列表頁籤的分頁相關設定*@
+<script>
+    function teacherListPaggingSetting() {
+        $("ul > li > input").addClass("btn btn-default btn-sm");
+
+        $("#tab_teacherList").find("ul > li > input.btn-page").click(function () {
+            $("#tab_teacherList").find(".PageNumber").val($(this).attr("value"));
+            return true;
+        });
+
+        $("#tab_teacherList").find("ul > li > input.btn-page").eq(@Model.teacherViewModel.teacherPagedList.PageIndex).addClass("active");
+        $("#tab_teacherList").find("ul > li > input.btn-previous-page").click(function () {
+            if (@Model.teacherViewModel.teacherPagedList.PageIndex > 0) {
+                $("#tab_teacherList").find(".PageNumber").val(@Model.teacherViewModel.teacherPagedList.PageNumber -1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+        $("#tab_teacherList").find("ul > li > input.btn-next-page").click(function () {
+            if ((@Model.teacherViewModel.teacherPagedList.PageIndex) < (@Model.teacherViewModel.teacherPagedList.PageCount-1)) {
+                $("#tab_teacherList").find(".PageNumber").val(@Model.teacherViewModel.teacherPagedList.PageNumber + 1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+
+        $("#tab_teacherList").find("input.btn-search").click(function(){
+            $("#tab_teacherList").find(".PageNumber").val(1);
+            return true;
+        });
+    }
+</script>
+@*bPopup視窗相關設定*@
+<script>
+    function bPopupSetting() {
+        $(".bpopup").click(function(event) {
+            event.preventDefault();
+            var url = $(this).prop("href");
+            //alert(url);
+
+            $('#div-bPopupWin').bPopup({
+                loadUrl: url, //Uses jQuery.load()
+                scrollBar: true,
+                escClose: false,
+                onClose: function() {
+                    //alert("bpopup on close ");
+                    $("form").submit();
+                }
+            },
+            function() {
+                //alert('Callback fired');
+            });
+
+            return false;
+        });
+    }
+</script>

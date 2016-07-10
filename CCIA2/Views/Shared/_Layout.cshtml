@@ -58,17 +58,20 @@
             <div class="row">
                 <div class="col-md-12 nopadding text-center">
                     <div class="menu_hover linev_left ">@Html.ActionLink("首頁", "Index", "Home", null, new { @class = "menu_link" })</div>
-                    <div class="menu linev_left ">@Html.ActionLink("會員管理", "Index", "Member", null, new { @class = "menu_link" })</div>
+                    @if (user != null)
+                    {
+                        <div class="menu linev_left ">@Html.ActionLink("會員管理", "Index", "Member", null, new { @class = "menu_link" })</div>
+                    }                    
                     @if (user != null && user.role == 1)
                     {
-                        @*<div class="menu linev_left">@Html.ActionLink("課程管理", "Index", "Course", null, new { @class = "menu_link" })</div>*@
+                        <div class="menu linev_left">@Html.ActionLink("課程管理", "Index", "Course", null, new { @class = "menu_link" })</div>
                         <div class="menu linev_left">@Html.ActionLink("課程管理", "Index", "CourseTeacher", null, new { @class = "menu_link" })</div>
                         @*<div class="menu linev_left ">@Html.ActionLink("人員", "Index", "SysUser", null, new { @class = "menu_link" })</div>*@
                     }
                     <div class="menu linev_left linev_right">
                         @if (Request.IsAuthenticated)
                         {
-                            @Html.ActionLink("登出", "Logout", "Account", null, new { @class = "menu_link" })
+                            @Html.ActionLink(user.name+" 登出", "Logout", "Account", null, new { @class = "menu_link" })
                         }
                         else
                         {
