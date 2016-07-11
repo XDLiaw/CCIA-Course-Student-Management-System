@@ -21,6 +21,7 @@ namespace CCIA2.Models
         [ForeignKey("courseClass")]
         public int courseClassSqno { get; set; }
 
+        [Display(Name="課程類別")]
         public CourseClass courseClass { get; set; }
 
         [Display(Name = "主題")]
@@ -46,6 +47,7 @@ namespace CCIA2.Models
         //[Display(Name = "講師")]
         //public virtual ICollection<CourseTeacher> teachers { get; set; }
 
+        [Display(Name = "講師")]
         public virtual ICollection<CourseTeacherRelation> teachers { get; set; }
 
         [Display(Name = "講題")]

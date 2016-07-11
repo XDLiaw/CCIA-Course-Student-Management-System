@@ -19,19 +19,21 @@ namespace CCIA2.Controllers
 
         public ActionResult Index()
         {
-            CourseViewModel model = new CourseViewModel();
+            CourseRelativeViewModel model = new CourseRelativeViewModel();
             return Index(model);
         }
 
         [HttpPost]
-        public ActionResult Index(CourseViewModel model)
+        public ActionResult Index(CourseRelativeViewModel model)
         {
 
             model.courseGroupViewModel.courseGroupList = searchCourseGroup(model.courseGroupViewModel);
+            model.courseViewModel.CoursePagedList = searchCourse(model.courseViewModel);
             model.teacherViewModel.teacherPagedList = searchTeacher(model.teacherViewModel);
 
 
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupList(true);
+            ViewBag.courseClassList = DropDownListHelper.getCourseClassList(true);
             return View(model);
         }
 
@@ -135,6 +137,32 @@ namespace CCIA2.Controllers
                 var result = new { success = true };
                 return Json(result);
             }
+        }
+
+        #endregion
+
+        #region 分項課程列表
+
+        private IPagedList<Course> searchCourse(CourseViewModel model)
+        {
+            IPagedList<Course> courseList;
+            IQueryable<Course> query = db.Course;
+            if (model.courseClassSqno > 0)
+            {
+                query = query.Where(c => c.courseClassSqno == model.courseClassSqno);
+            }
+            if (model.day != null)
+            {
+                query = query.Where(c => c.day == model.day);
+            }
+            if (model.searchText != null && model.searchText.Trim().Length > 0)
+            {
+                query = query.Where(c => c.topic.Contains(model.searchText) || c.title.Contains(model.searchText));
+            }
+
+            courseList = query.OrderBy(c => c.courseClassSqno).ThenBy(c => c.startTime)
+                .ToPagedList(model.pageNumber - 1, model.pageSize);
+            return courseList;
         }
 
         #endregion

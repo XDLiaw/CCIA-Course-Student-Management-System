@@ -7,17 +7,20 @@ using System.Web;
 
 namespace CCIA2.Models.ViewModels
 {
-    public class CourseViewModel
+    public class CourseRelativeViewModel
     {
         public string tabId { get; set; }
 
         public CourseGroupViewModel courseGroupViewModel { get; set; }
 
+        public CourseViewModel courseViewModel { get; set; }
+
         public TeacherViewModel teacherViewModel { get; set; }
 
-        public CourseViewModel()
+        public CourseRelativeViewModel()
         {
             this.courseGroupViewModel = new CourseGroupViewModel();
+            this.courseViewModel = new CourseViewModel();
             this.teacherViewModel = new TeacherViewModel();
         }
     }
@@ -27,6 +30,29 @@ namespace CCIA2.Models.ViewModels
         public int groupSqno { get; set; }
 
         public List<CourseGroup> courseGroupList { get; set; }
+    }
+
+    public class CourseViewModel
+    {
+        public int courseClassSqno { get; set; }
+
+        public DateTime? day { get; set; }
+
+        public string searchText { get; set; }
+
+        [Display(Name = "頁碼")]
+        public int pageNumber { get; set; }
+
+        [Display(Name = "每頁資料筆數")]
+        public int pageSize { get; private set; }
+
+        public IPagedList<Course> CoursePagedList { get; set; }
+
+        public CourseViewModel()
+        {
+            this.pageNumber = 1;
+            this.pageSize = 15;
+        }
     }
 
     public class TeacherViewModel

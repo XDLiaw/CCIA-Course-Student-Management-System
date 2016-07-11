@@ -222,7 +222,7 @@
     <Compile Include="Models\TableNumber.cs" />
     <Compile Include="Models\TablePlan.cs" />
     <Compile Include="Models\ViewModels\CourseTeacherViewModel.cs" />
-    <Compile Include="Models\ViewModels\CourseViewModel.cs" />
+    <Compile Include="Models\ViewModels\CourseRelativeViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberAdmitViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberAppraiseViewModel.cs" />
@@ -266,6 +266,7 @@
     <Content Include="Content\images\sbanner_04.jpg" />
     <Content Include="Content\images\sbanner_05.jpg" />
     <Content Include="Content\images\sbanner_06.jpg" />
+    <Content Include="Content\jquery.datetimepicker.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -305,6 +306,7 @@
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\bootstrap-3.3.4.js" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
+    <Content Include="Scripts\calendarBox.js" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
     <Content Include="Scripts\jquery-3.0.0.slim.js" />
@@ -315,6 +317,7 @@
     <Content Include="Scripts\jquery-ui-1.11.4.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
     <Content Include="Scripts\jquery.bpopup.min.js" />
+    <Content Include="Scripts\jquery.datetimepicker.full.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />

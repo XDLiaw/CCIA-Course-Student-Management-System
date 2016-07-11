@@ -43,6 +43,13 @@ namespace CCIA2
                         "~/Content/themes/base/jquery.ui.datepicker.css",
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
+
+            // 日曆盒
+            bundles.Add(new ScriptBundle("~/bundles/datetimepicker").Include(
+                      "~/Scripts/jquery.datetimepicker.full.js",
+                      "~/Scripts/calendarBox.js"));
+            bundles.Add(new StyleBundle("~/Content/datetimepicker").Include(
+                   "~/Content/jquery.datetimepicker.css"));
         }
     }
 }
