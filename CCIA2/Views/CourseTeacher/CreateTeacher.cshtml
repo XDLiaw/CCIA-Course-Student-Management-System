@@ -39,6 +39,8 @@
         $(document).ready(function () {          
             $("#submitByAjax").click(function (event) {
                 event.preventDefault();
+                tinyMCE.triggerSave(); //很重要, 這行沒寫的話 tinyMCE套件 不會把資料放進teaxArea裡面
+
                 var data = {
                     sqno: $("#hidden-sqno").val(),
                     name: $("#textbox-teacherName").val(),

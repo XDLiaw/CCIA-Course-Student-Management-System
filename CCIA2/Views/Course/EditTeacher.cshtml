@@ -31,7 +31,7 @@
                 'code | undo redo | cut copy paste | bold italic underline strikethrough | styleselect formatselect fontselect fontsizeselect  ',
                 'bullist numlist outdent indent | alignleft aligncenter alignright alignjustify | link searchreplace table | forecolor backcolor'
             ],
-            height: 400
+            height: 400,
         });
     </script>
     <script src="/Scripts/jquery.bpopup.min.js"></script>
@@ -39,7 +39,9 @@
         $(document).ready(function () {          
             $("#submitByAjax").click(function (event) {
                 event.preventDefault();
-                alert($("#textArea-introduction").val());
+                //alert(tinyMCE.activeEditor.getContent()); // 此行可以拿到網頁編輯器裡面的值
+                tinyMCE.triggerSave(); //很重要, 這行沒寫的話 tinyMCE套件 不會把資料放進teaxArea裡面
+
                 var data = {
                     sqno: $("#hidden-sqno").val(),
                     name: $("#textbox-teacherName").val(),
