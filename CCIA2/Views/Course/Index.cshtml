@@ -11,28 +11,24 @@
         <li class=""><a href="#tab_teacherList" id="tabLink-teacherList" data-toggle="tab" aria-expanded="true">講師列表</a></li>
     </ul>
     <div class="tab-content  member_bg">
-        @using (Html.BeginForm("Index", "Course", FormMethod.Post))
-        {
-            @Html.HiddenFor(model => model.tabId, htmlAttributes: new { @id="hidden-tabId" })
-            //各組須修課程
-            <div id="tab_courseForGroups" class="fade tab-pane ">
 
-            </div>
-            //分項課程列表
-            <div id="tab_courseList" class="fade tab-pane ">
-
-            </div>
-            //講師列表
-            <div id="tab_teacherList" class="fade tab-pane ">
+        @*//各組須修課程*@
+        <div id="tab_courseForGroups" class="fade tab-pane ">
+            @using (Html.BeginForm("Index", "Course", FormMethod.Post, htmlAttributes: new { @id = "form-search-courseGroup" }))
+            {
+                @Html.HiddenFor(model => model.tabId, htmlAttributes: new { @class = "hidden-tabId" })
                 <div class="container">
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.courseGroupViewModel.groupSqno, (IEnumerable<SelectListItem>)ViewBag.groupList, htmlAttributes: new { @class = "form-control" })
+                    </div>
                     <div class="col-sm-6">
-                        @Html.TextBoxFor(model => model.teacherViewModel.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入講師姓名或所屬單位名稱" })
+
                     </div>
                     <div class="col-sm-1">
-                        <input type="submit" value="查詢" class="btn btn-primary btn-search" id="btn_search_teacher" />
+                        <input type="submit" value="查詢" class="btn btn-primary btn-search" />
                     </div>
-                    <div class="col-sm-2 pull-right">
-                        @Html.ActionLink("新增講師", "CreateTeacher", null, htmlAttributes: new { @class = "btn btn-info bpopup", target = "_blank" })
+                    <div class="col-sm-3 pull-right">
+                        @Html.ActionLink("新增各組須修課程", "CreateCourseGroup", null, htmlAttributes: new { @class = "btn btn-info bpopup", target = "_blank" })
                     </div>
                 </div>
                 <br />
@@ -40,23 +36,26 @@
                     <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <td>@Html.DisplayNameFor(model => model.teacherViewModel.teacherPagedList.FirstOrDefault().name)</td>
-                                <td>@Html.DisplayNameFor(model => model.teacherViewModel.teacherPagedList.FirstOrDefault().orgName)</td>
-                                <td></td>
+                                <th>@Html.DisplayNameFor(x => Model.courseGroupViewModel.courseGroupList.FirstOrDefault().tableGroup)</th>
+                                <th>@Html.DisplayNameFor(x => Model.courseGroupViewModel.courseGroupList.FirstOrDefault().courseClass)</th>
+                                <th>@Html.DisplayNameFor(x => Model.courseGroupViewModel.courseGroupList.FirstOrDefault().electiveString)</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if (Model != null && Model.teacherViewModel != null && Model.teacherViewModel.teacherPagedList != null)
+                            @if (Model != null && Model.courseGroupViewModel != null && Model.courseGroupViewModel.courseGroupList != null)
                             {
-                                foreach (var item in Model.teacherViewModel.teacherPagedList)
+                                foreach (var item in Model.courseGroupViewModel.courseGroupList)
                                 {
                                     <tr>
-                                        <td>@Html.DisplayFor(modelItem => item.name)</td>
-                                        <td>@Html.DisplayFor(modelItem => item.orgName)</td>
-                                        <td class="col-sm-1">
+                                        <td>@Html.DisplayFor(modelItem => item.tableGroup.GroupName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.courseClass.name)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.electiveString)</td>
+                                        <td>
                                             @if (user.role == 1)
                                             {
-                                                @Html.ActionLink("編輯", "EditTeacher", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup", target = "_blank" })
+                                                @Html.ActionLink("編輯", "EditCourseGroup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })
+                                                @Html.ActionLink("刪除", "DeleteCourseGroup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-danger btn-delete" })
                                             }
                                         </td>
                                     </tr>
@@ -64,10 +63,69 @@
                             }
                         </tbody>
                     </table>
+                </div>
+            }
+        </div>
+        @*//分項課程列表*@
+        <div id="tab_courseList" class="fade tab-pane ">
+            @using (Html.BeginForm("Index", "Course", FormMethod.Post))
+            {
+            @Html.HiddenFor(model => model.tabId, htmlAttributes: new { @class = "hidden-tabId" })
+            <div class="container">
 
-                    @Html.HiddenFor(model => model.teacherViewModel.pageNumber, htmlAttributes: new { @class = "PageNumber" })
-                    <ul class="pagination">
+            </div>
+            }
+        </div>
+        @*//講師列表*@
+        <div id="tab_teacherList" class="fade tab-pane ">
+            @using (Html.BeginForm("Index", "Course", FormMethod.Post, htmlAttributes: new { @id="form-search-courseTeacher"}))
+            {
+            @Html.HiddenFor(model => model.tabId, htmlAttributes: new { @class = "hidden-tabId" })
+            @*<input type="hidden" name="tabId" value="tabLink-teacherList" />*@
+            <div class="container">
+                <div class="col-sm-6">
+                    @Html.TextBoxFor(model => model.teacherViewModel.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入講師姓名或所屬單位名稱" })
+                </div>
+                <div class="col-sm-1">
+                    <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+                </div>
+                <div class="col-sm-2 pull-right">
+                    @Html.ActionLink("新增講師", "CreateTeacher", null, htmlAttributes: new { @class = "btn btn-info bpopup", target = "_blank" })
+                </div>
+            </div>
+            <br />
+            <div class="">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>@Html.DisplayNameFor(model => model.teacherViewModel.teacherPagedList.FirstOrDefault().name)</td>
+                            <td>@Html.DisplayNameFor(model => model.teacherViewModel.teacherPagedList.FirstOrDefault().orgName)</td>
+                            <td></td>
+                        </tr>
+                    </thead>
+                    <tbody>
                         @if (Model != null && Model.teacherViewModel != null && Model.teacherViewModel.teacherPagedList != null)
+                            {
+                                foreach (var item in Model.teacherViewModel.teacherPagedList)
+                                {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.orgName)</td>
+                                <td class="col-sm-1">
+                                    @if (user.role == 1)
+                                            {
+                                            @Html.ActionLink("編輯", "EditTeacher", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup", target = "_blank" })
+                                            }
+                                </td>
+                            </tr>
+                                }
+                            }
+                    </tbody>
+                </table>
+
+                @Html.HiddenFor(model => model.teacherViewModel.pageNumber, htmlAttributes: new { @class = "PageNumber" })
+                <ul class="pagination">
+                    @if (Model != null && Model.teacherViewModel != null && Model.teacherViewModel.teacherPagedList != null)
                         {
                         <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
                             for (int i = 1; i <= Model.teacherViewModel.teacherPagedList.PageCount; i++)
@@ -77,10 +135,11 @@
                         <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
                         <text>共 @Model.teacherViewModel.teacherPagedList.TotalItemCount 筆資料</text>
                         }
-                    </ul>
-                </div>
+                </ul>
             </div>
-        }
+            }
+        </div>
+
     </div>
 </div>
 
@@ -91,28 +150,28 @@
         tabSetting();
         teacherListPaggingSetting();
         bPopupSetting();
-
+        deleteCourseGroupSetting();
     });
 </script>
 
 @*頁籤相關設定*@
 <script>
     function tabSetting() {
-        $("#tabLink-courseForGroups").click(function(){            
-            $("#hidden-tabId").val($(this).attr("id"));
+        $("#tabLink-courseForGroups").click(function(){
+            $(".hidden-tabId").val($(this).attr("id"));
         });
 
         $("#tabLink-courseList").click(function(){
-            $("#hidden-tabId").val($(this).attr("id"));
+            $(".hidden-tabId").val($(this).attr("id"));
         });
 
         $("#tabLink-teacherList").click(function(){
-            $("#hidden-tabId").val($(this).attr("id"));
+            $(".hidden-tabId").val($(this).attr("id"));
         });
 
-        var selectedTabId =  $("#hidden-tabId").val();
+        var selectedTabId =  $(".hidden-tabId").val();
         if (selectedTabId == '') {
-            $("#tabLink-teacherList").trigger("click");
+            $("#tabLink-courseForGroups").trigger("click");
         }
         else {
             $("#"+selectedTabId).trigger("click");
@@ -162,6 +221,7 @@
             event.preventDefault();
             var url = $(this).prop("href");
             //alert(url);
+            var formObject = $(this).closest('form');
 
             $('#div-bPopupWin').bPopup({
                 loadUrl: url, //Uses jQuery.load()
@@ -169,12 +229,45 @@
                 escClose: false,
                 onClose: function() {
                     //alert("bpopup on close ");
-                    $("form").submit();
+                    //$("form").submit();
+                    formObject.submit();
                 }
             },
             function() {
                 //alert('Callback fired');
             });
+
+            return false;
+        });
+    }
+</script>
+
+<script>
+    function deleteCourseGroupSetting() {
+        $("#form-search-courseGroup").find(".btn-delete").click(function (event){
+            event.preventDefault();
+            if(confirm("確定要刪除？"))
+            {
+                var url = $(this).prop("href");
+                //alert(url);
+                var formObject = $(this).closest('form');
+
+                $.post(
+                    url,
+                    null,
+                    function(res){
+                        if (res.success) {
+                            alert("刪除成功");
+                            formObject.submit();
+                        } else {
+                            if (typeof (res.errorMessage) != 'undefined') {
+                                alert(res.errorMessage);
+                            }
+                        }
+                    },
+                    "json"
+                );
+            }
 
             return false;
         });

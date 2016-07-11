@@ -99,6 +99,31 @@ namespace CCIA2.Helper
             return list;
         }
 
+        public static List<SelectListItem> getAppraiseGroupList(bool withSelectAllOption)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = "0"
+                });
+            }
+            var items =
+            (
+                from tg in db.TableGroup
+                select new SelectListItem
+                {
+                    Text = tg.GroupName,
+                    Value = tg.sqno.ToString()
+                }
+            );
+            list.AddRange(items);
+
+            return list;
+        }
+
         public static List<SelectListItem> getAppraiseGroupNameList(bool withSelectAllOption)
         {
             List<SelectListItem> list = new List<SelectListItem>();
@@ -150,6 +175,32 @@ namespace CCIA2.Helper
             return list;
         }
 
-    
+        public static List<SelectListItem> getCourseClassList(bool withSelectAllOption)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = "0"
+                });
+            }
+
+            var items = 
+            (
+                from cc in db.CourseClass
+                select new SelectListItem
+                {
+                    Text = cc.name,
+                    Value = cc.sqno.ToString()
+                }
+            );
+            list.AddRange(items);
+
+            return list;
+        }
+
+        
     }
 }

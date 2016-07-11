@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using MvcPaging;
 using System.Data.Entity;
+using CCIA2.Helper;
 
 namespace CCIA2.Controllers
 {
@@ -24,12 +25,121 @@ namespace CCIA2.Controllers
 
         [HttpPost]
         public ActionResult Index(CourseViewModel model)
-        {            
+        {
+
+            model.courseGroupViewModel.courseGroupList = searchCourseGroup(model.courseGroupViewModel);
             model.teacherViewModel.teacherPagedList = searchTeacher(model.teacherViewModel);
 
 
+            ViewBag.groupList = DropDownListHelper.getAppraiseGroupList(true);
             return View(model);
         }
+
+        #region 各組須修課程
+
+        private List<CourseGroup> searchCourseGroup(CourseGroupViewModel model)
+        {
+            List<CourseGroup> courseGroupList = db.CourseGroup
+                .Where(g => model.groupSqno == 0 ? true : g.memberGroupSqno == model.groupSqno)
+                .OrderBy(g => g.memberGroupSqno).ThenBy(g => g.isElective).ThenBy(g => g.courseClassSqno).ToList();
+            return courseGroupList;
+        }
+
+        public ActionResult CreateCourseGroup()
+        {
+            CourseGroup courseGroup = new CourseGroup();
+
+            ViewBag.groupList = DropDownListHelper.getAppraiseGroupList(false);
+            ViewBag.courseClassList = DropDownListHelper.getCourseClassList(false);
+            return View(courseGroup);
+        }
+
+        [HttpPost]
+        public ActionResult CreateCourseGroup(CourseGroup model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.CourseGroup.Add(model);
+                db.SaveChanges();
+                var result = new { success = true };
+                return Json(result);
+            }
+            else
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "資料有誤，請檢查並更正資料",
+                    ModelStateErrors = ModelState.Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(k => k.Key, k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray())
+                };
+                return Json(result);
+            }
+        }
+
+        public ActionResult EditCourseGroup(int sqno)
+        {
+            CourseGroup model = db.CourseGroup.Where(cc => cc.sqno == sqno).FirstOrDefault();
+            if (model == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ViewBag.groupList = DropDownListHelper.getAppraiseGroupList(false);
+                ViewBag.courseClassList = DropDownListHelper.getCourseClassList(false);
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditCourseGroup(CourseGroup model)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(model).State = EntityState.Modified;
+                db.SaveChanges();
+                var result = new { success = true };
+                return Json(result);
+            }
+            else
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "資料有誤，請檢查並更正資料",
+                    ModelStateErrors = ModelState.Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(k => k.Key, k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray())
+                };
+                return Json(result);
+            }
+        }
+
+        public ActionResult DeleteCourseGroup(int sqno)
+        {
+            CourseGroup model = db.CourseGroup.Where(cc => cc.sqno == sqno).FirstOrDefault();
+            if (model == null)
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "找不到資料",
+                };
+                return Json(result);
+            }
+            else
+            {
+                db.CourseGroup.Remove(model);
+                db.SaveChanges();
+                var result = new { success = true };
+                return Json(result);
+            }
+        }
+
+        #endregion
+
+        #region 講師
 
         private IPagedList<CourseTeacher> searchTeacher(TeacherViewModel model)
         {
@@ -118,7 +228,7 @@ namespace CCIA2.Controllers
             }
         }
 
-
+        #endregion
 
         protected override void Dispose(bool disposing)
         {

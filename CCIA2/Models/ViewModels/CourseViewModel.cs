@@ -11,12 +11,22 @@ namespace CCIA2.Models.ViewModels
     {
         public string tabId { get; set; }
 
+        public CourseGroupViewModel courseGroupViewModel { get; set; }
+
         public TeacherViewModel teacherViewModel { get; set; }
 
         public CourseViewModel()
         {
+            this.courseGroupViewModel = new CourseGroupViewModel();
             this.teacherViewModel = new TeacherViewModel();
         }
+    }
+
+    public class CourseGroupViewModel
+    {
+        public int groupSqno { get; set; }
+
+        public List<CourseGroup> courseGroupList { get; set; }
     }
 
     public class TeacherViewModel
