@@ -95,6 +95,15 @@ namespace CCIA2.Models
         [Display(Name="學生人數上限")]
         public int? maxStudentNum { get; set; }
 
+        [Display(Name = "圖像授權組人數上限")]
+        public int? maxGroup1StudentNum { get; set; }
+
+        [Display(Name = "故事行銷組人數上限")]
+        public int? maxGroup2StudentNum { get; set; }
+
+        [Display(Name = "文創科技組人數上限")]
+        public int? maxGroup3StudentNum { get; set; }
+
         [Display(Name = "地點")]
         [StringLength(50)]
         public string location { get; set; }

@@ -30,7 +30,9 @@
                 hour: $("input[name='hour']").val(),
                 teacherSqnoListString: $("select[name='teacherSqnoList']").val().toString(),
                 title: $("input[name='title']").val(),
-                maxStudentNum: $("input[name='maxStudentNum']").val(),
+                maxGroup1StudentNum: $("input[name='maxGroup1StudentNum']").val(),
+                maxGroup2StudentNum: $("input[name='maxGroup2StudentNum']").val(),
+                maxGroup3StudentNum: $("input[name='maxGroup3StudentNum']").val(),
                 location: $("input[name='location']").val(),
                 memberType1: $("input[name='memberType1']").is(':checked'),
                 memberType2: $("input[name='memberType2']").is(':checked'),
@@ -100,46 +102,49 @@
                 </div>
             </div>
             <div class="form-group">
-                @Html.LabelFor(model => model.day, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.day, "{0:yyyy/MM/dd}", htmlAttributes: new { @class = "form-control calendarBox" })
-                    @Html.ValidationMessageFor(model => model.day, null, new { @class = "help-inline text-danger" })
-                </div>
-                @Html.LabelFor(model => model.hour, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.hour, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.hour, null, new { @class = "help-inline text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.startTime, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.startTime, "{0:HH:mm}", htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.startTime, null, new { @class = "help-inline text-danger" })
-                </div>
-                @Html.LabelFor(model => model.endTime, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.endTime, "{0:HH:mm}", htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.endTime, null, new { @class = "help-inline text-danger" })
-                </div>
-            </div>
-            <div class="form-group">
                 @Html.LabelFor(model => model.teachers, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
                 <div class="col-md-4">
-                    @Html.Raw("按住control或shift進行多選")
+                    <span style="color:#aa0000; font-size:13px;">@Html.Raw("按住control或shift進行多選")</span>
                     @Html.ListBoxFor(model => model.teacherSqnoList, (IEnumerable<SelectListItem>)ViewBag.teacherList, htmlAttributes: new { @class = "form-control", style = "height: 100px" })
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.LabelFor(model => model.maxStudentNum, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
-                <div class="col-md-4">
-                    @Html.TextBoxFor(model => model.maxStudentNum, htmlAttributes: new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.maxStudentNum, null, new { @class = "help-inline text-danger" })
                 </div>
                 @Html.LabelFor(model => model.location, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
                 <div class="col-md-4">
                     @Html.TextBoxFor(model => model.location, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.location, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.day, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.day, "{0:yyyy/MM/dd}", htmlAttributes: new { @class = "form-control calendarBox" })
+                    @Html.ValidationMessageFor(model => model.day, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.startTime, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.startTime, "{0:HH:mm}", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.startTime, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.endTime, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.endTime, "{0:HH:mm}", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.endTime, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.maxGroup1StudentNum, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.maxGroup1StudentNum, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.maxGroup1StudentNum, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.maxGroup2StudentNum, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.maxGroup2StudentNum, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.maxGroup2StudentNum, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.maxGroup3StudentNum, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.maxGroup3StudentNum, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.maxGroup3StudentNum, null, new { @class = "help-inline text-danger" })
                 </div>
             </div>
             <div class="form-group">

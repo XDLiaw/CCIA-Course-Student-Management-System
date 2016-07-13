@@ -177,6 +177,8 @@ namespace CCIA2.Controllers
         {
             if (ModelState.IsValid)
             {
+                model.maxStudentNum = model.maxGroup1StudentNum + model.maxGroup2StudentNum + model.maxGroup3StudentNum;
+                model.hour = (model.endTime.GetValueOrDefault() - model.startTime.GetValueOrDefault()).TotalHours;
                 List<CourseTeacherRelation> tempRelation = model.teachers.ToList();
                 model.teachers = null;
                 db.Course.Add(model);
@@ -223,6 +225,8 @@ namespace CCIA2.Controllers
         {
             if (ModelState.IsValid)
             {
+                model.maxStudentNum = model.maxGroup1StudentNum + model.maxGroup2StudentNum + model.maxGroup3StudentNum;
+                model.hour = (model.endTime.GetValueOrDefault() - model.startTime.GetValueOrDefault()).TotalHours;
                 List<CourseTeacherRelation> oldRelations = db.CourseTeacherRelation.Where(x => x.courseSqno == model.sqno).ToList();
                 db.CourseTeacherRelation.RemoveRange(oldRelations);
                 db.CourseTeacherRelation.AddRange(model.teachers);
