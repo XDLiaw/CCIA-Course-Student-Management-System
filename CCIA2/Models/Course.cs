@@ -44,8 +44,46 @@ namespace CCIA2.Models
         [DisplayFormat(DataFormatString = "{0:F1}")]
         public double? hour { get; set; }
 
-        //[Display(Name = "講師")]
-        //public virtual ICollection<CourseTeacher> teachers { get; set; }
+        [NotMapped]
+        public List<int> teacherSqnoList
+        {
+            get
+            {
+                return this.teachers.Select(t => t.teacherSqno).ToList();
+            }
+            set
+            {
+                this.teachers = new List<CourseTeacherRelation>();
+                if (value != null && value.Count > 0)
+                {
+                    value.ForEach(sqno => this.teachers.Add(new CourseTeacherRelation() { courseSqno = this.sqno, teacherSqno = sqno }));
+                }
+            }
+        }
+
+        [NotMapped]
+        public string teacherSqnoListString
+        {
+            get
+            {
+                return this.teachers.Select(t => t.teacherSqno).ToList().ToString();
+            }
+            set
+            {
+                this.teachers = new List<CourseTeacherRelation>();
+                if (value != null)
+                {
+                    string[] sqnoStringList = value.Split(',');
+                    if (sqnoStringList != null && sqnoStringList.Length > 0)
+                    {
+                        foreach (string sqnoString in sqnoStringList)
+                        {
+                            this.teachers.Add(new CourseTeacherRelation() { courseSqno = this.sqno, teacherSqno = Int32.Parse(sqnoString) });
+                        }
+                    }
+                }
+            }
+        }
 
         [Display(Name = "講師")]
         public virtual ICollection<CourseTeacherRelation> teachers { get; set; }
@@ -54,6 +92,7 @@ namespace CCIA2.Models
         [StringLength(50)]
         public string title { get; set; }
 
+        [Display(Name="學生人數上限")]
         public int? maxStudentNum { get; set; }
 
         [Display(Name = "地點")]

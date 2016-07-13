@@ -4,5 +4,4 @@ $(document).ready(function () {
         timepicker: false,
         format: 'Y/m/d'
     });
-
 });

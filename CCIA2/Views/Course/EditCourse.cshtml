@@ -1,0 +1,180 @@
+﻿@model CCIA2.Models.Course
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    @Styles.Render("~/Content/datetimepicker")
+    @Scripts.Render("~/bundles/datetimepicker")
+    <script src="/Scripts/jquery.bpopup.min.js"></script>
+    <script src="/Scripts/Chosen/chosen.jquery.min.js"></script>
+    <link href="/Content/Chosen/chosen.css" rel="stylesheet" />
+    <script>
+    $(document).ready(function () {
+        $(".chosen").chosen();
+
+        $("#submitByAjax").click(function (event) {
+            event.preventDefault();
+
+            var data = {
+                sqno: $("input[name='sqno']").val(),
+                courseClassSqno: $("select[name='courseClassSqno']").val(),
+                topic: $("input[name='topic']").val(),
+                day: $("input[name='day']").val(),
+                startTime: $("input[name='startTime']").val(),
+                endTime: $("input[name='endTime']").val(),
+                hour: $("input[name='hour']").val(),
+                teacherSqnoListString: $("select[name='teacherSqnoList']").val().toString(),
+                title: $("input[name='title']").val(),
+                maxStudentNum: $("input[name='maxStudentNum']").val(),
+                location: $("input[name='location']").val(),
+                memberType1: $("input[name='memberType1']").is(':checked'),
+                memberType2: $("input[name='memberType2']").is(':checked'),
+                memberType3: $("input[name='memberType3']").is(':checked')
+            };
+            alert(JSON.stringify(data));
+
+            @*var url = '@Url.Content("~/Course/EditCourse")';
+            alert(url);*@
+            alert('@Url.Action("EditCourse")');
+
+            $.ajax({
+                url: '@Url.Action("EditCourse")',
+                type: "POST",
+                data: data,
+                success: function (res) {
+                    if (res.success) {
+                        alert("編輯成功");
+                        //$('#div-bPopupWin').bPopup().close(); //不要用這個, 會無法觸發原本的onClose事件
+                        $("#btn-close-bPopupWin").trigger("click");
+                    } else {
+                        if (typeof (res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        }
+                        if (typeof (res.ModelStateErrors) != 'undefined') {
+                            $.each(res.ModelStateErrors, function (key, value) {
+                                //alert(key + ":" + value[0]);
+                                if (value != null) {
+                                    var container = $('span[data-valmsg-for="' + key + '"]');
+                                    container.removeClass("field-validation-valid").addClass("field-validation-error");
+                                    container.html(value[0]);
+                                }
+                            });
+                        }
+                    }
+                    return false
+                }
+            });
+            return false;
+        }); //END $("#submitByAjax").click
+
+    });
+</script>
+
+</head>
+<body>
+    <div>
+        <div class="member_bg form-horizontal">
+            <div class="form-group">
+                <div class="col-md-2"></div>
+                <div class="col-md-10"><h2>編輯 課程資料</h2></div>
+            </div>
+            @Html.HiddenFor(model => model.sqno)
+            <div class="form-group">
+                @Html.LabelFor(model => model.courseClass, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.DropDownListFor(model => model.courseClassSqno, (IEnumerable<SelectListItem>)ViewBag.courseClassList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.courseClassSqno, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.topic, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(model => model.topic, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.topic, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.title, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(model => model.title, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.title, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.day, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(model => model.day, "{0:yyyy/MM/dd}", htmlAttributes: new { @class = "form-control calendarBox" })
+                    @Html.ValidationMessageFor(model => model.day, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.hour, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(model => model.hour, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.hour, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.startTime, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(model => model.startTime, "{0:HH:mm}", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.startTime, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.endTime, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(model => model.endTime, "{0:HH:mm}", htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.endTime, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.teachers, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.Raw("按住control或shift進行多選")
+                    @Html.ListBoxFor(model => model.teacherSqnoList, (IEnumerable<SelectListItem>)ViewBag.teacherList, htmlAttributes: new { @class = "form-control", style = "height: 100px" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.maxStudentNum, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(model => model.maxStudentNum, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.maxStudentNum, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.location, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-4">
+                    @Html.TextBoxFor(model => model.location, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.location, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.memberType1, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.CheckBoxFor(model => model.memberType1, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.memberType1, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.memberType2, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.CheckBoxFor(model => model.memberType2, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.memberType2, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.memberType3, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.CheckBoxFor(model => model.memberType3, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.memberType3, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <input type="button" value="送出" id="submitByAjax" class="btn btn-primary" />
+                    <input type="button" value="取消" class="btn btn-default" onclick='$("#btn-close-bPopupWin").trigger("click");' />
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</body>
+</html>

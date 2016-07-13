@@ -235,6 +235,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-3.3.4.css" />
+    <Content Include="Content\Chosen\chosen-sprite%402x.png" />
+    <Content Include="Content\Chosen\chosen-sprite.png" />
+    <Content Include="Content\Chosen\chosen.css" />
+    <Content Include="Content\Chosen\chosen.min.css" />
     <Content Include="Content\default.css" />
     <Content Include="Content\images\2015CoursesSch_2.png" />
     <Content Include="Content\images\banner_01.jpg" />
@@ -306,7 +310,9 @@
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\bootstrap-3.3.4.js" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
-    <Content Include="Scripts\calendarBox.js" />
+    <Content Include="Scripts\Chosen\chosen.jquery.js" />
+    <Content Include="Scripts\Chosen\chosen.jquery.min.js" />
+    <Content Include="Scripts\datetimepicker\calendarBox.js" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
     <Content Include="Scripts\jquery-3.0.0.slim.js" />
@@ -317,7 +323,7 @@
     <Content Include="Scripts\jquery-ui-1.11.4.js" />
     <Content Include="Scripts\jquery-ui-1.11.4.min.js" />
     <Content Include="Scripts\jquery.bpopup.min.js" />
-    <Content Include="Scripts\jquery.datetimepicker.full.js" />
+    <Content Include="Scripts\datetimepicker\jquery.datetimepicker.full.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -583,6 +589,7 @@
     <Content Include="Views\Course\CreateTeacher.cshtml" />
     <Content Include="Views\Course\CreateCourseGroup.cshtml" />
     <Content Include="Views\Course\EditCourseGroup.cshtml" />
+    <Content Include="Views\Course\EditCourse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

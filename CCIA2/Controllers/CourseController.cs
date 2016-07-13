@@ -160,9 +160,76 @@ namespace CCIA2.Controllers
                 query = query.Where(c => c.topic.Contains(model.searchText) || c.title.Contains(model.searchText));
             }
 
-            courseList = query.OrderBy(c => c.courseClassSqno).ThenBy(c => c.startTime)
-                .ToPagedList(model.pageNumber - 1, model.pageSize);
+            courseList = query.OrderBy(c => c.startTime).ToPagedList(model.pageNumber - 1, model.pageSize);
             return courseList;
+        }
+
+        public ActionResult EditCourse(int sqno)
+        {
+            Course model = db.Course.Where(c => c.sqno == sqno).FirstOrDefault();
+            if (model == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ViewBag.courseClassList = DropDownListHelper.getCourseClassList(false);
+                ViewBag.teacherList = DropDownListHelper.getTeacherList();
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditCourse(Course model)
+        {
+            if (ModelState.IsValid)
+            {
+                List<CourseTeacherRelation> oldRelations = db.CourseTeacherRelation.Where(x => x.courseSqno == model.sqno).ToList();
+                db.CourseTeacherRelation.RemoveRange(oldRelations);
+                db.CourseTeacherRelation.AddRange(model.teachers);
+                db.Entry(model).State = EntityState.Modified;
+                db.SaveChanges();
+
+                var result = new { success = true };
+                return Json(result);
+            }
+            else
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "資料有誤，請檢查並更正資料",
+                    ModelStateErrors = ModelState.Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(k => k.Key, k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray())
+                };
+                return Json(result);
+            }
+        }
+
+        public ActionResult DeleteCourse(int sqno)
+        {
+            Course model = db.Course.Where(cc => cc.sqno == sqno).FirstOrDefault();
+            if (model == null)
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "找不到資料",
+                };
+                return Json(result);
+            }
+            else
+            {
+                if (model.teachers != null && model.teachers.Count > 0)
+                {
+                    db.CourseTeacherRelation.RemoveRange(model.teachers);
+                }
+                db.Course.Remove(model);
+                db.SaveChanges();
+                var result = new { success = true };
+                return Json(result);
+            }
         }
 
         #endregion
@@ -252,6 +319,31 @@ namespace CCIA2.Controllers
                     ModelStateErrors = ModelState.Where(x => x.Value.Errors.Count > 0)
                         .ToDictionary(k => k.Key, k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray())
                 };
+                return Json(result);
+            }
+        }
+
+        public ActionResult DeleteTeacher(int sqno)
+        {
+            CourseTeacher model = db.CourseTeacher.Where(cc => cc.sqno == sqno).FirstOrDefault();
+            if (model == null)
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "找不到資料",
+                };
+                return Json(result);
+            }
+            else
+            {
+                if (model.courses != null && model.courses.Count > 0)
+                {
+                    db.CourseTeacherRelation.RemoveRange(model.courses);
+                }
+                db.CourseTeacher.Remove(model);
+                db.SaveChanges();
+                var result = new { success = true };
                 return Json(result);
             }
         }

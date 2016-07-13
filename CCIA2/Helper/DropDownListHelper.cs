@@ -201,6 +201,22 @@ namespace CCIA2.Helper
             return list;
         }
 
-        
+        public static List<SelectListItem> getTeacherList()
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            var items = 
+            (
+                from t in db.CourseTeacher
+                orderby t.name
+                select new SelectListItem
+                {
+                    Text = t.name,
+                    Value = t.sqno.ToString()
+                }
+            );
+            list.AddRange(items);
+
+            return list;
+        }
     }
 }

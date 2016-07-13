@@ -23,13 +23,6 @@ namespace CCIA2
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap-3.3.4.css",
-                      "~/Content/default.css"));
-
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
-                        "~/Scripts/bootstrap-3.3.4.js"));
-
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",
                         "~/Content/themes/base/jquery.ui.resizable.css",
@@ -44,12 +37,25 @@ namespace CCIA2
                         "~/Content/themes/base/jquery.ui.progressbar.css",
                         "~/Content/themes/base/jquery.ui.theme.css"));
 
+            // bootstrap & 自訂樣式
+            bundles.Add(new StyleBundle("~/Content/css").Include(
+                        "~/Content/bootstrap-3.3.4.css",
+                        "~/Content/default.css"));
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+                        "~/Scripts/bootstrap-3.3.4.js"));
+
             // 日曆盒
             bundles.Add(new ScriptBundle("~/bundles/datetimepicker").Include(
-                      "~/Scripts/jquery.datetimepicker.full.js",
-                      "~/Scripts/calendarBox.js"));
+                        "~/Scripts/datetimepicker/jquery.datetimepicker.full.js",
+                        "~/Scripts/datetimepicker/calendarBox.js"));
             bundles.Add(new StyleBundle("~/Content/datetimepicker").Include(
-                   "~/Content/jquery.datetimepicker.css"));
+                        "~/Content/jquery.datetimepicker.css"));
+
+            // 多選元件
+            bundles.Add(new ScriptBundle("~/bundles/Chosen").Include(
+                        "~/Scripts/Chosen/chosen.jquery.min.js"));
+            bundles.Add(new StyleBundle("~/Content/Chosen").Include(
+                        "~/Content/Chosen/chosen.css"));
         }
     }
 }

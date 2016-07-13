@@ -15,6 +15,7 @@ namespace CCIA2.Models
         [ForeignKey("course")]
         public int courseSqno { get; set; }
 
+        [Display(Name="課程")]
         public virtual Course course { get; set; }
 
         [Key, Column(Order = 2)]
@@ -22,6 +23,7 @@ namespace CCIA2.Models
         [ForeignKey("teacher")]
         public int teacherSqno { get; set; }
 
+        [Display(Name="講師")]
         public virtual CourseTeacher teacher { get; set; }
     }
 }
