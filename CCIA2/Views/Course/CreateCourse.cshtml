@@ -34,7 +34,8 @@
                 location: $("input[name='location']").val(),
                 memberType1: $("input[name='memberType1']").is(':checked'),
                 memberType2: $("input[name='memberType2']").is(':checked'),
-                memberType3: $("input[name='memberType3']").is(':checked')
+                memberType3: $("input[name='memberType3']").is(':checked'),
+                content: $("textarea[name='content']").val()
             };
             //alert(JSON.stringify(data));
 
@@ -156,6 +157,13 @@
                 <div class="col-md-2">
                     @Html.CheckBoxFor(model => model.memberType3, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.memberType3, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.content, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.content, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.content, null, new { @class = "help-inline text-danger" })
                 </div>
             </div>
             <div class="form-group">

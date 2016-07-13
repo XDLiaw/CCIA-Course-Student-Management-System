@@ -108,5 +108,7 @@ namespace CCIA2.Models
         [Display(Name = "開放給一般會員")]
         public bool memberType3 { get; set; }
 
+        [Display(Name = "說明")]
+        public string content { get; set; }
     }
 }
