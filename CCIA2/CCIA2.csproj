@@ -590,6 +590,7 @@
     <Content Include="Views\Course\CreateCourseGroup.cshtml" />
     <Content Include="Views\Course\EditCourseGroup.cshtml" />
     <Content Include="Views\Course\EditCourse.cshtml" />
+    <Content Include="Views\Course\CreateCourse.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

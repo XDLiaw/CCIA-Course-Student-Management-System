@@ -22,7 +22,6 @@
             event.preventDefault();
 
             var data = {
-                sqno: $("input[name='sqno']").val(),
                 courseClassSqno: $("select[name='courseClassSqno']").val(),
                 topic: $("input[name='topic']").val(),
                 day: $("input[name='day']").val(),
@@ -40,12 +39,12 @@
             //alert(JSON.stringify(data));
 
             $.ajax({
-                url: '@Url.Action("EditCourse")',
+                url: '@Url.Action("CreateCourse")',
                 type: "POST",
                 data: data,
                 success: function (res) {
                     if (res.success) {
-                        alert("編輯成功");
+                        alert("新增成功");
                         //$('#div-bPopupWin').bPopup().close(); //不要用這個, 會無法觸發原本的onClose事件
                         $("#btn-close-bPopupWin").trigger("click");
                     } else {
@@ -78,9 +77,8 @@
         <div class="member_bg form-horizontal">
             <div class="form-group">
                 <div class="col-md-2"></div>
-                <div class="col-md-10"><h2>編輯 課程資料</h2></div>
+                <div class="col-md-10"><h2>新增 課程資料</h2></div>
             </div>
-            @Html.HiddenFor(model => model.sqno)
             <div class="form-group">
                 @Html.LabelFor(model => model.courseClass, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
                 <div class="col-md-4">

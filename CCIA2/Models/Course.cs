@@ -30,15 +30,15 @@ namespace CCIA2.Models
 
         [Display(Name = "日期")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy/MM/dd}")]
-        public DateTime day { get; set; }
+        public DateTime? day { get; set; }
 
         [Display(Name = "時間(起)")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]
-        public DateTime startTime { get; set; }
+        public DateTime? startTime { get; set; }
 
         [Display(Name = "時間(訖)")]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:HH:mm}")]
-        public DateTime endTime { get; set; }
+        public DateTime? endTime { get; set; }
 
         [Display(Name = "時數")]
         [DisplayFormat(DataFormatString = "{0:F1}")]

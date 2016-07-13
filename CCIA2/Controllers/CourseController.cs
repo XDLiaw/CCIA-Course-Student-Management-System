@@ -164,6 +164,44 @@ namespace CCIA2.Controllers
             return courseList;
         }
 
+        public ActionResult CreateCourse()
+        {
+            Course model = new Course() { day = DateTime.Now, startTime = null, endTime = null};
+            ViewBag.courseClassList = DropDownListHelper.getCourseClassList(false);
+            ViewBag.teacherList = DropDownListHelper.getTeacherList();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult CreateCourse(Course model)
+        {
+            if (ModelState.IsValid)
+            {
+                List<CourseTeacherRelation> tempRelation = model.teachers.ToList();
+                model.teachers = null;
+                db.Course.Add(model);
+                db.SaveChanges();
+
+                tempRelation.ForEach(x => x.courseSqno = model.sqno);
+                db.CourseTeacherRelation.AddRange(tempRelation);
+                db.SaveChanges();
+
+                var result = new { success = true };
+                return Json(result);
+            }
+            else
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "資料有誤，請檢查並更正資料",
+                    ModelStateErrors = ModelState.Where(x => x.Value.Errors.Count > 0)
+                        .ToDictionary(k => k.Key, k => k.Value.Errors.Select(e => e.ErrorMessage).ToArray())
+                };
+                return Json(result);
+            }
+        }
+
         public ActionResult EditCourse(int sqno)
         {
             Course model = db.Course.Where(c => c.sqno == sqno).FirstOrDefault();
