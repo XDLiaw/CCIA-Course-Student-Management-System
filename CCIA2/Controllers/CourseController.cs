@@ -263,14 +263,23 @@ namespace CCIA2.Controllers
             }
             else
             {
-                if (model.teachers != null && model.teachers.Count > 0)
+                bool isCourseHasStudent = db.memberCourse.Where(x => x.CourseSqno == sqno).Count() > 0;
+                if (isCourseHasStudent)
                 {
-                    db.CourseTeacherRelation.RemoveRange(model.teachers);
+                    var result = new { success = false, errorMessage = "此課程已有學生選修不可刪除" };
+                    return Json(result);
                 }
-                db.Course.Remove(model);
-                db.SaveChanges();
-                var result = new { success = true };
-                return Json(result);
+                else
+                {
+                    if (model.teachers != null && model.teachers.Count > 0)
+                    {
+                        db.CourseTeacherRelation.RemoveRange(model.teachers);
+                    }
+                    db.Course.Remove(model);
+                    db.SaveChanges();
+                    var result = new { success = true };
+                    return Json(result);
+                }
             }
         }
 

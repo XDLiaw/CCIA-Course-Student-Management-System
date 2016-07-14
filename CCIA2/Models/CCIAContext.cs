@@ -18,6 +18,8 @@ namespace CCIA2.Models
         public virtual DbSet<CourseTeacher> CourseTeacher { get; set; }
         public virtual DbSet<CourseTeacherRelation> CourseTeacherRelation { get; set; }
 
+        public virtual DbSet<MemberCourse> memberCourse { get; set; }
+
         public virtual DbSet<LogMemberLog> LogMemberLog { get; set; }
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<MemberAttchFile> MemberAttchFile { get; set; }

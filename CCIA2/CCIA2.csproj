@@ -206,6 +206,7 @@
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\MemberAttchFile.cs" />
     <Compile Include="Models\MemberBackGroup.cs" />
+    <Compile Include="Models\MemberCourse.cs" />
     <Compile Include="Models\MemberCourseAttchFile.cs" />
     <Compile Include="Models\MemberGroupApply.cs" />
     <Compile Include="Models\MemberGroupResult.cs" />
