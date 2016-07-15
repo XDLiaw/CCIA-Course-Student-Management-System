@@ -189,10 +189,6 @@ namespace CCIA2.Models
                 .Property(e => e.BackGroupYear)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<MemberBackGroup>()
-                .Property(e => e.BacmGroupSqno)
-                .IsUnicode(false);
-
             modelBuilder.Entity<MemberCourseAttchFile>()
                 .Property(e => e.mrNumber)
                 .IsUnicode(false);

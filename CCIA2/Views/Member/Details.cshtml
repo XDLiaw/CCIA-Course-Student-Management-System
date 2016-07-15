@@ -66,6 +66,22 @@
             </div>
         </div>
     }
+    @if (Model.mrMemberTypesqno == 2 && Model.memberHistoryGroups != null)
+    {
+        <div class="row">
+            @Html.LabelFor(model => model.memberHistoryGroups, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                <div class="row">
+                    @foreach (var item in Model.memberHistoryGroups)
+                    {
+                        <div class="col-md-3">
+                            @Html.DisplayFor(x => item.year)年度：@Html.DisplayFor(x => item.groupName)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
     <div class="row">
         @Html.LabelFor(model => model.mrName, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">

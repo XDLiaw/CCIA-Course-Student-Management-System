@@ -12,15 +12,21 @@ namespace CCIA2.Models
         [Key]
         public int sqno { get; set; }
 
+        [ForeignKey("member")]
         public int mrSqno { get; set; }
 
         [StringLength(50)]
         public string mrMemberNo { get; set; }
 
+        public virtual Member member { get; set; }
+
+        [Display(Name="¨ü°V¦~«×")]
         [StringLength(50)]
         public string BackGroupYear { get; set; }
 
-        [StringLength(50)]
-        public string BacmGroupSqno { get; set; }
+        [ForeignKey("tableBackGroup")]
+        public int BackGroupSqno { get; set; }
+
+        public virtual TableBackGroup tableBackGroup { get; set; }
     }
 }

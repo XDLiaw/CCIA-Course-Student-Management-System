@@ -7,6 +7,7 @@ namespace CCIA2.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
     using System.Web;
+    using CCIA2.Models.ViewModels;
 
     [Table("Member")]
     public partial class Member
@@ -14,10 +15,11 @@ namespace CCIA2.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Member()
         {
-            MemberAttchFile = new HashSet<MemberAttchFile>();
-            MemberGroupResult = new HashSet<MemberGroupResult>();
-            MemberGroupApply = new HashSet<MemberGroupApply>();
-            MemberSupport = new HashSet<MemberSupport>();
+            MemberAttchFile = new List<MemberAttchFile>();
+            MemberGroupResult = new List<MemberGroupResult>();
+            MemberGroupApply = new List<MemberGroupApply>();
+            MemberSupport = new List<MemberSupport>();
+            memberBackGroups = new List<MemberBackGroup>();
         }
 
         [Key]
@@ -276,6 +278,28 @@ namespace CCIA2.Models
 
         [Display(Name = "曾經參加或獲得的文化部計畫補助")]
         public virtual ICollection<MemberSupport> MemberSupport { get; set; }
+
+        
+        public virtual ICollection<MemberBackGroup> memberBackGroups { get; set; }
+
+        [Display(Name = "受訓年度/組別")]
+        [NotMapped]
+        public List<HistoryYearGroupViewModel> memberHistoryGroups
+        {
+            get
+            {
+                List<HistoryYearGroupViewModel> res = new List<HistoryYearGroupViewModel>();
+                if (this.memberBackGroups != null && this.memberBackGroups.Count > 0)
+                {
+                    this.memberBackGroups.ToList().ForEach(x => res.Add(new HistoryYearGroupViewModel() { year = x.BackGroupYear, groupName = x.tableBackGroup.backGroupName }));
+                }                
+                if (this.FinalGroup != null)
+                {
+                    res.Add(new HistoryYearGroupViewModel() { year = this.mrJoinYear.ToString(), groupName = this.FinalGroup });
+                }
+                return res;
+            }
+        }
 
         [Display(Name="狀態")]
         [NotMapped]

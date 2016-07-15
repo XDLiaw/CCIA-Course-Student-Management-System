@@ -13,6 +13,9 @@ namespace CCIA2.Models
         public int sqno { get; set; }
 
         [StringLength(50)]
+        public string backGroupYear { get; set; }
+
+        [StringLength(50)]
         public string backGroupName { get; set; }
     }
 }
