@@ -40,29 +40,32 @@
         </div>
     </div>
     <div class="row">
-        @Html.LabelFor(model => model.mrJoinYear, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
-        <div class="col-sm-9">
-            @Html.DisplayFor(model => model.mrJoinYear)
-        </div>
-    </div>
-    <div class="row">
         @Html.LabelFor(model => model.mrMemberTypesqno, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
             @Html.DisplayFor(model => model.memberType.membertypename)
         </div>
     </div>
-    <div class="row">
-        @Html.LabelFor(model => model.MemberGroupApply, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
-        <div class="col-sm-2">
-            第一組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().First)
+    @if (Model.mrMemberTypesqno == 1)
+    {
+        <div class="row">
+            @Html.LabelFor(model => model.mrJoinYear, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.DisplayFor(model => model.mrJoinYear)
+            </div>
         </div>
-        <div class="col-sm-2">
-            第二組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().Second)
+        <div class="row">
+            @Html.LabelFor(model => model.MemberGroupApply, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+            <div class="col-sm-2">
+                第一組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().First)
+            </div>
+            <div class="col-sm-2">
+                第二組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().Second)
+            </div>
+            <div class="col-sm-2">
+                第三組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().Third)
+            </div>
         </div>
-        <div class="col-sm-2">
-            第三組 ： @Html.DisplayFor(model => model.MemberGroupApply.FirstOrDefault().Third)
-        </div>
-    </div>
+    }
     <div class="row">
         @Html.LabelFor(model => model.mrName, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
