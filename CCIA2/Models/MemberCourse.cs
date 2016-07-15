@@ -29,9 +29,15 @@ namespace CCIA2.Models
         public virtual Member member { get; set; }
 
         [Display(Name = "是否出席")]
-        public bool? IsAttend { get; set; }
+        public string IsAttend { get; set; }
 
         public DateTime CreateDate { get; set; }
 
+        public virtual ICollection<MemberCourseAttchFile> memberCourseAttachFiles { get; set; }
+
+        public MemberCourse()
+        {
+            this.memberCourseAttachFiles = new List<MemberCourseAttchFile>();
+        }
     }
 }

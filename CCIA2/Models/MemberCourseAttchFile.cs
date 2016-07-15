@@ -7,20 +7,30 @@ namespace CCIA2.Models
     using System.Data.Entity.Spatial;
 
     [Table("MemberCourseAttchFile")]
-    public partial class MemberCourseAttchFile
+    public class MemberCourseAttchFile
     {
         [Key]
         public int sqno { get; set; }
 
-        public int? CourseSqno { get; set; }
+        [ForeignKey("memberCourse")]
+        public int mrCourseSqno { get; set; }
+
+        public MemberCourse memberCourse { get; set; }
 
         public int mrSqno { get; set; }
 
         [StringLength(50)]
         public string mrNumber { get; set; }
 
-        [StringLength(50)]
-        public string MemberAttchFileName { get; set; }
+        [Display(Name="ªþÀÉ")]
+        [StringLength(500)]
+        public string ShowAttchFileName { get; set; }
+
+        [StringLength(500)]
+        public string AttchFileName { get; set; }
+
+        [StringLength(10)]
+        public string AttchFileType { get; set; }
 
         public DateTime? CreateDate { get; set; }
     }

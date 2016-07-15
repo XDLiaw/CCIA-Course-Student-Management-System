@@ -1,0 +1,129 @@
+﻿@model CCIA2.Models.ViewModels.CourseStudentListViewModel
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="/Scripts/jquery.bpopup.min.js"></script>
+    <script>
+    $(document).ready(function (event) {
+        $("input[type='radio'][name='memberCourse.IsAttend']").change(function (event) {
+            event.preventDefault();
+            var thisElement = $(this);
+            var sqno = $(this).siblings("input[type='hidden'][name='memberCourse.sqno']").val();
+            var IsAttend = $(this).val();
+            alert(sqno + " : " + IsAttend);
+
+            $.ajax({
+                url: '@Url.Action("EditCourseStudentAttend")',
+                type: "POST",
+                data: {sqno : sqno, IsAttend : IsAttend},
+                success: function (res) {
+                    if (res.success) {
+                        thisElement.siblings(".attend-change-message").removeAttr("hidden");
+                        setInterval(function () {
+                            thisElement.siblings(".attend-change-message").attr("hidden", "hidden");
+                        }, 3000);                       
+                    } else {
+                        if (typeof (res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        }
+                    }
+                    return false
+                }
+            });// END ajax
+            return false;
+        });
+    });
+    </script>
+
+</head>
+<body>
+    <div class="">
+        <div class="member_bg form-horizontal">
+            <h3>課程資訊</h3>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.course.courseClass.name)</th>
+                        <th>@Html.DisplayNameFor(model => model.course.topic)</th>
+                        <th>@Html.DisplayNameFor(model => model.course.day)</th>
+                        <th>@Html.DisplayNameFor(model => model.course.hour)</th>
+                        <th>@Html.DisplayNameFor(model => model.course.teachers.FirstOrDefault().teacher)</th>
+                        <th>@Html.DisplayNameFor(model => model.course.title)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>@Html.DisplayFor(model => model.course.courseClass.name)</td>
+                        <td>@Html.DisplayFor(model => model.course.topic)</td>
+                        <td>
+                            @Html.DisplayFor(model => model.course.day)
+                            @Html.DisplayFor(model => model.course.startTime) ~ @Html.DisplayFor(model => model.course.endTime)
+                        </td>
+                        <td>@Html.DisplayFor(model => model.course.hour)</td>
+                        <td>
+                            @foreach (var teacher in Model.course.teachers)
+                            {
+                                @Html.DisplayFor(x => teacher.teacher.name)
+                            }
+                        </td>
+                        <td>@Html.DisplayFor(model => model.course.title)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr />
+            <h3>學生清單</h3>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th class="col-md-1">@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().member.mrNumber)</th>
+                        <th class="col-md-2">@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().member.mrName)</th>
+                        <th class="col-md-3">@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().IsAttend)</th>
+                        <th>@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().memberCourseAttachFiles.FirstOrDefault().ShowAttchFileName)</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.memberCourseList != null && Model.memberCourseList.Count > 0)
+                    {
+                        foreach (var memberCourse in Model.memberCourseList)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(x => memberCourse.member.mrNumber)</td>
+                                <td>@Html.DisplayFor(x => memberCourse.member.mrName)</td>
+                                <td>
+                                    <form action="">
+                                        @Html.HiddenFor(x => memberCourse.sqno)
+                                        @Html.RadioButtonFor(x => memberCourse.IsAttend, "", (memberCourse.IsAttend == "Y" || memberCourse.IsAttend == "N") ? null : new { @checked = "checked" }) 無
+                                        @Html.RadioButtonFor(x => memberCourse.IsAttend, "Y") 出席
+                                        @Html.RadioButtonFor(x => memberCourse.IsAttend, "N") 缺席
+                                        <span style="color:#40dd7d; font-size:11px;" class="attend-change-message" hidden="hidden"> (變更成功) </span>
+                                    </form>
+                                </td>
+                                <td>
+                                    @foreach (var file in memberCourse.memberCourseAttachFiles)
+                                    {
+                                        @Html.ActionLink(file.ShowAttchFileName, "DownloadMemberCourseAttchFile", new { sqno = file.sqno }, new { target = "_blank" })<br />
+                                    }                                
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+

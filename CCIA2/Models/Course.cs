@@ -22,7 +22,7 @@ namespace CCIA2.Models
         public int courseClassSqno { get; set; }
 
         [Display(Name="課程類別")]
-        public CourseClass courseClass { get; set; }
+        public virtual CourseClass courseClass { get; set; }
 
         [Display(Name = "主題")]
         [StringLength(50)]

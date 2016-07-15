@@ -99,7 +99,7 @@
                                 <th>@Html.DisplayNameFor(x => Model.courseViewModel.CoursePagedList.FirstOrDefault().hour)</th>
                                 <th>@Html.DisplayNameFor(x => Model.courseViewModel.CoursePagedList.FirstOrDefault().teachers)</th>
                                 <th>@Html.DisplayNameFor(x => Model.courseViewModel.CoursePagedList.FirstOrDefault().title)</th>
-                                <th></th>
+                                <th width="20%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -127,6 +127,7 @@
                                             {
                                                 @Html.ActionLink("編輯", "EditCourse", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })
                                                 @Html.ActionLink("刪除", "DeleteCourse", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-danger btn-delete" })
+                                                @Html.ActionLink("學生名單", "CourseStudentList", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-info bpopup" })
                                             }
                                         </td>
                                     </tr>

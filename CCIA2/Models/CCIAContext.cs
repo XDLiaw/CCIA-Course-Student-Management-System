@@ -17,19 +17,23 @@ namespace CCIA2.Models
         public virtual DbSet<CourseGroup> CourseGroup { get; set; }
         public virtual DbSet<CourseTeacher> CourseTeacher { get; set; }
         public virtual DbSet<CourseTeacherRelation> CourseTeacherRelation { get; set; }
-
-        public virtual DbSet<MemberCourse> memberCourse { get; set; }
+                
 
         public virtual DbSet<LogMemberLog> LogMemberLog { get; set; }
+
         public virtual DbSet<Member> Member { get; set; }
         public virtual DbSet<MemberAttchFile> MemberAttchFile { get; set; }
         public virtual DbSet<MemberBackGroup> MemberBackGroup { get; set; }
+        public virtual DbSet<MemberCourse> MemberCourse { get; set; }
         public virtual DbSet<MemberCourseAttchFile> MemberCourseAttchFile { get; set; }
         public virtual DbSet<MemberGroupApply> MemberGroupApply { get; set; }
         public virtual DbSet<MemberGroupResult> MemberGroupResult { get; set; }
         public virtual DbSet<MemberSupport> MemberSupport { get; set; }
+
         public virtual DbSet<SYS_ErrorLog> SYS_ErrorLog { get; set; }
+
         public virtual DbSet<SysUser> SysUser { get; set; }
+
         public virtual DbSet<TableApplyStep> TableApplyStep { get; set; }
         public virtual DbSet<TableBackGroup> TableBackGroup { get; set; }
         public virtual DbSet<TableCulture> TableCulture { get; set; }
@@ -191,10 +195,6 @@ namespace CCIA2.Models
 
             modelBuilder.Entity<MemberCourseAttchFile>()
                 .Property(e => e.mrNumber)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<MemberCourseAttchFile>()
-                .Property(e => e.MemberAttchFileName)
                 .IsUnicode(false);
 
             modelBuilder.Entity<MemberGroupApply>()

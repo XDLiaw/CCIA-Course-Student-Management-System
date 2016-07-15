@@ -8,6 +8,8 @@ using System.Web.Mvc;
 using MvcPaging;
 using System.Data.Entity;
 using CCIA2.Helper;
+using System.Web.Configuration;
+using System.IO;
 
 namespace CCIA2.Controllers
 {
@@ -263,7 +265,7 @@ namespace CCIA2.Controllers
             }
             else
             {
-                bool isCourseHasStudent = db.memberCourse.Where(x => x.CourseSqno == sqno).Count() > 0;
+                bool isCourseHasStudent = db.MemberCourse.Where(x => x.CourseSqno == sqno).Count() > 0;
                 if (isCourseHasStudent)
                 {
                     var result = new { success = false, errorMessage = "此課程已有學生選修不可刪除" };
@@ -279,6 +281,74 @@ namespace CCIA2.Controllers
                     db.SaveChanges();
                     var result = new { success = true };
                     return Json(result);
+                }
+            }
+        }
+
+        public ActionResult CourseStudentList(int sqno)
+        {
+            CourseStudentListViewModel model = new CourseStudentListViewModel();
+            model.course = db.Course.Where(c => c.sqno == sqno).FirstOrDefault();
+            model.memberCourseList = db.MemberCourse.Where(mc => mc.CourseSqno == sqno).ToList();
+
+            if (model.course == null)
+            {
+                ViewBag.ErrorMessage = "找不到課程資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(model);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditCourseStudentAttend(int sqno, string IsAttend)
+        {
+            MemberCourse model = db.MemberCourse.Where(x => x.sqno == sqno).FirstOrDefault();
+            if (model == null)
+            {
+                ViewBag.ErrorMessage = "找不到資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                model.IsAttend = IsAttend;
+                db.Entry(model).State = EntityState.Modified;
+                db.SaveChanges();
+
+                var result = new { success = true };
+                return Json(result);
+            }
+        }
+
+        public FileContentResult DownloadMemberCourseAttchFile(int sqno)
+        {
+            MemberCourseAttchFile attachF = db.MemberCourseAttchFile.Where(x => x.sqno == sqno).FirstOrDefault();
+            if (attachF == null)
+            {
+                return null;
+            }
+            else
+            {
+                string folder = WebConfigurationManager.AppSettings["MemberCourseAttchFileDir"];
+                string filePath = System.IO.Path.Combine(folder, attachF.mrNumber, attachF.AttchFileName);
+                string contentType = FileUtils.GetContentTypeForFileName(attachF.AttchFileName);
+                if (System.IO.File.Exists(filePath) == false)
+                {
+                    return null;
+                }
+                else
+                {
+                    using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                    {
+                        byte[] bytes = new byte[fs.Length];
+                        fs.Read(bytes, 0, Convert.ToInt32(fs.Length));
+                        return new FileContentResult(bytes, contentType)
+                        {
+                            FileDownloadName = attachF.ShowAttchFileName
+                        };
+                    }
                 }
             }
         }

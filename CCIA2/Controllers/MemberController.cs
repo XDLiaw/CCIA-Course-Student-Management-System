@@ -526,7 +526,7 @@ namespace CCIA2.Controllers
             {
                 string folder = WebConfigurationManager.AppSettings["MemberAttchFileDir"];
                 string filePath = System.IO.Path.Combine(folder, attachF.mrNumber, attachF.mrAttchFileName);
-                string contentType = GetContentTypeForFileName(attachF.mrAttchFileName);
+                string contentType = FileUtils.GetContentTypeForFileName(attachF.mrAttchFileName);
                 if (System.IO.File.Exists(filePath) == false)
                 {
                     return null;
@@ -543,18 +543,6 @@ namespace CCIA2.Controllers
                         };
                     }
                 }
-            }
-        }
-
-        private static string GetContentTypeForFileName(string fileName)
-        {
-            string ext = System.IO.Path.GetExtension(fileName);
-            using (Microsoft.Win32.RegistryKey registryKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(ext))
-            {
-                if (registryKey == null)
-                    return null;
-                var value = registryKey.GetValue("Content Type");
-                return (value == null) ? string.Empty : value.ToString();
             }
         }
 

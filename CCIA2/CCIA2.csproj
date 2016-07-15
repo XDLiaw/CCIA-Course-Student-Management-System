@@ -195,6 +195,7 @@
     <Compile Include="Helper\CAPTCHAImageGenerater.cs" />
     <Compile Include="Helper\DropDownListHelper.cs" />
     <Compile Include="Helper\ExcelReport\MemberReport.cs" />
+    <Compile Include="Helper\FileUtils.cs" />
     <Compile Include="Models\CaptchaResponse.cs" />
     <Compile Include="Models\CCIAContext.cs" />
     <Compile Include="Models\Course.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Models\TableNation.cs" />
     <Compile Include="Models\TableNumber.cs" />
     <Compile Include="Models\TablePlan.cs" />
+    <Compile Include="Models\ViewModels\CourseStudentListViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseTeacherViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseRelativeViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
@@ -592,6 +594,7 @@
     <Content Include="Views\Course\EditCourseGroup.cshtml" />
     <Content Include="Views\Course\EditCourse.cshtml" />
     <Content Include="Views\Course\CreateCourse.cshtml" />
+    <Content Include="Views\Course\CourseStudentList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
