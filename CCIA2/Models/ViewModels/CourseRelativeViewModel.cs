@@ -17,11 +17,14 @@ namespace CCIA2.Models.ViewModels
 
         public TeacherViewModel teacherViewModel { get; set; }
 
+        public StudendViewModel studentViewModel { get; set; }
+
         public CourseRelativeViewModel()
         {
             this.courseGroupViewModel = new CourseGroupViewModel();
             this.courseViewModel = new CourseViewModel();
             this.teacherViewModel = new TeacherViewModel();
+            this.studentViewModel = new StudendViewModel();
         }
     }
 
@@ -68,6 +71,25 @@ namespace CCIA2.Models.ViewModels
         public IPagedList<CourseTeacher> teacherPagedList { get; set; }
 
         public TeacherViewModel()
+        {
+            this.pageNumber = 1;
+            this.pageSize = 15;
+        }
+    }
+
+    public class StudendViewModel
+    {
+        public string searchText { get; set; }
+
+        [Display(Name = "頁碼")]
+        public int pageNumber { get; set; }
+
+        [Display(Name = "每頁資料筆數")]
+        public int pageSize { get; private set; }
+
+        public IPagedList<Member> studentPagedList { get; set; }
+
+        public StudendViewModel()
         {
             this.pageNumber = 1;
             this.pageSize = 15;

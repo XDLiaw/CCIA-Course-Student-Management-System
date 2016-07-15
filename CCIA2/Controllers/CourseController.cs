@@ -10,6 +10,8 @@ using System.Data.Entity;
 using CCIA2.Helper;
 using System.Web.Configuration;
 using System.IO;
+using CCIA2.Helper.ExcelReport;
+using NPOI.SS.UserModel;
 
 namespace CCIA2.Controllers
 {
@@ -32,7 +34,7 @@ namespace CCIA2.Controllers
             model.courseGroupViewModel.courseGroupList = searchCourseGroup(model.courseGroupViewModel);
             model.courseViewModel.CoursePagedList = searchCourse(model.courseViewModel);
             model.teacherViewModel.teacherPagedList = searchTeacher(model.teacherViewModel);
-
+            model.studentViewModel.studentPagedList = searchStudent(model.studentViewModel);
 
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupList(true);
             ViewBag.courseClassList = DropDownListHelper.getCourseClassList(true);
@@ -290,7 +292,6 @@ namespace CCIA2.Controllers
             CourseStudentListViewModel model = new CourseStudentListViewModel();
             model.course = db.Course.Where(c => c.sqno == sqno).FirstOrDefault();
             model.memberCourseList = db.MemberCourse.Where(mc => mc.CourseSqno == sqno).ToList();
-
             if (model.course == null)
             {
                 ViewBag.ErrorMessage = "找不到課程資料";
@@ -351,6 +352,24 @@ namespace CCIA2.Controllers
                     }
                 }
             }
+        }
+
+        public ActionResult DownloadCourseStudentListReport(int sqno)
+        {
+            MemoryStream memoryStream = new MemoryStream();
+            try
+            {
+                List<MemberCourse> memberCourseList = db.MemberCourse.Where(mc => mc.CourseSqno == sqno).ToList();
+                CourseStudentListReport report = new CourseStudentListReport();
+                IWorkbook wb = report.create(memberCourseList);
+                wb.Write(memoryStream);
+            }
+            catch (Exception e)
+            {
+                ViewBag.ErrorMessage = e.Message;
+            }
+
+            return File(memoryStream.ToArray(), "application/vnd.ms-excel", "課程修課學生列表.xls");
         }
 
         #endregion
@@ -466,6 +485,41 @@ namespace CCIA2.Controllers
                 db.SaveChanges();
                 var result = new { success = true };
                 return Json(result);
+            }
+        }
+
+        #endregion
+
+        #region 學生
+
+        private IPagedList<Member> searchStudent(StudendViewModel model)
+        {
+            IPagedList<Member> studentList;
+            if (model.searchText != null && model.searchText.Trim().Length > 0)
+            {
+                studentList = db.Member.Where(x => x.mrNumber.Contains(model.searchText) || x.mrName.Contains(model.searchText))
+                    .OrderBy(t => t.mrName).ToPagedList(model.pageNumber - 1, model.pageSize);
+            }
+            else
+            {
+                studentList = db.Member.OrderBy(t => t.mrName).ToPagedList(model.pageNumber - 1, model.pageSize);
+            }
+            return studentList;
+        }
+
+        public ActionResult StudentChoseCourseList(int sqno)
+        {
+            StudentChoseCourseListViewModel model = new StudentChoseCourseListViewModel();
+            model.student = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            model.courseList = db.MemberCourse.Where(mc => mc.mrSqno == sqno).ToList();
+            if (model.student == null)
+            {
+                ViewBag.ErrorMessage = "找不到學生資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(model);
             }
         }
 

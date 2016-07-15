@@ -6,9 +6,10 @@
 
 <div class="bs-component">
     <ul class="nav nav-tabs">
-        <li class=""><a href="#tab_courseForGroups" id="tabLink-courseForGroups" data-toggle="tab" aria-expanded="true">各組須修課程</a></li>
-        <li class=""><a href="#tab_courseList" id="tabLink-courseList" data-toggle="tab" aria-expanded="true">分項課程列表</a></li>
-        <li class=""><a href="#tab_teacherList" id="tabLink-teacherList" data-toggle="tab" aria-expanded="true">講師列表</a></li>
+        <li class=""><a href="#tab_courseForGroups" id="tabLink-courseForGroups" class="tabLink" data-toggle="tab" aria-expanded="true">各組須修課程</a></li>
+        <li class=""><a href="#tab_courseList" id="tabLink-courseList" class="tabLink" data-toggle="tab" aria-expanded="true">分項課程列表</a></li>
+        <li class=""><a href="#tab_teacherList" id="tabLink-teacherList" class="tabLink" data-toggle="tab" aria-expanded="true">講師列表</a></li>
+        <li class=""><a href="#tab_studentList" id="tabLink-studentList" class="tabLink" data-toggle="tab" aria-expanded="true">學生</a></li>
     </ul>
     <div class="tab-content  member_bg">
 
@@ -225,7 +226,65 @@
                 </div>
             }
         </div>
+        @*學生列表*@
+        <div id="tab_studentList" class="fade tab-pane">
+            @using (Html.BeginForm("Index", "Course", FormMethod.Post, htmlAttributes: new { @id = "form-search-student" }))
+            {
+                @Html.HiddenFor(model => model.tabId, htmlAttributes: new { @class = "hidden-tabId" })
+                <div class="container">
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(model => model.studentViewModel.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入學生姓名或編號" })
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+                    </div>
+                </div>
+                <br />
+                <div>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>@Html.DisplayNameFor(x => Model.studentViewModel.studentPagedList.FirstOrDefault().mrNumber)</th>
+                                <th>@Html.DisplayNameFor(x => Model.studentViewModel.studentPagedList.FirstOrDefault().mrName)</th>
+                                <th>@Html.DisplayNameFor(x => Model.studentViewModel.studentPagedList.FirstOrDefault().memberType)</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.studentViewModel != null && Model.studentViewModel.studentPagedList != null)
+                            {
+                                foreach (var student in Model.studentViewModel.studentPagedList)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(x => student.mrNumber)</td>
+                                        <td>@Html.DisplayFor(x => student.mrName)</td>
+                                        <td>@Html.DisplayFor(x => student.memberType.membertypename)</td>
+                                        <td>
+                                            @Html.ActionLink("修課清單", "StudentChoseCourseList", new { sqno = student.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
 
+                    @Html.HiddenFor(model => model.studentViewModel.pageNumber, htmlAttributes: new { @class = "PageNumber" })
+                    <ul class="pagination">
+                        @if (Model != null && Model.studentViewModel != null && Model.studentViewModel.studentPagedList != null)
+                        {
+                            <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+                            for (int i = 1; i <= Model.studentViewModel.studentPagedList.PageCount; i++)
+                            {
+                                <li><input type="submit" value=@i class="btn-page" /></li>
+                            }
+                            <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+                            <text>共 @Model.studentViewModel.studentPagedList.TotalItemCount 筆資料</text>
+                        }
+                    </ul>
+
+                </div>
+            }
+        </div>
     </div>
 </div>
 
@@ -235,6 +294,7 @@
         tabSetting();
         courseListPaggingSetting();
         teacherListPaggingSetting();
+        studentListPaggingSetting();
         bPopupSetting();
         deleteCourseGroupSetting();
         deleteCourseSetting();
@@ -247,15 +307,8 @@
 @*頁籤相關設定, 讓頁籤可以在搜尋後停留在原本的頁籤*@
 <script>
     function tabSetting() {
-        $("#tabLink-courseForGroups").click(function(){
-            $(".hidden-tabId").val($(this).attr("id"));
-        });
-
-        $("#tabLink-courseList").click(function(){
-            $(".hidden-tabId").val($(this).attr("id"));
-        });
-
-        $("#tabLink-teacherList").click(function(){
+        $(".tabLink").click(function(){
+            //alert($(this).attr("id"));
             $(".hidden-tabId").val($(this).attr("id"));
         });
 
@@ -338,6 +391,43 @@
 
         $("#tab_teacherList").find("input.btn-search").click(function(){
             $("#tab_teacherList").find(".PageNumber").val(1);
+            return true;
+        });
+    }
+</script>
+
+@*[學生]頁籤的分頁相關設定*@
+<script>
+    function studentListPaggingSetting() {
+        $("#tab_studentList").find("ul > li > input").addClass("btn btn-default btn-sm");
+
+        $("#tab_studentList").find("ul > li > input.btn-page").click(function () {
+            $("#tab_studentList").find(".PageNumber").val($(this).attr("value"));
+            return true;
+        });
+
+        $("#tab_studentList").find("ul > li > input.btn-page").eq(@Model.studentViewModel.studentPagedList.PageIndex).addClass("active");
+        $("#tab_studentList").find("ul > li > input.btn-previous-page").click(function () {
+            if (@Model.studentViewModel.studentPagedList.PageIndex > 0) {
+                $("#tab_studentList").find(".PageNumber").val(@Model.studentViewModel.studentPagedList.PageNumber -1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+        $("#tab_studentList").find("ul > li > input.btn-next-page").click(function () {
+            if ((@Model.studentViewModel.studentPagedList.PageIndex) < (@Model.studentViewModel.studentPagedList.PageCount-1)) {
+                $("#tab_studentList").find(".PageNumber").val(@Model.studentViewModel.studentPagedList.PageNumber + 1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+
+        $("#tab_studentList").find("input.btn-search").click(function(){
+            $("#tab_studentList").find(".PageNumber").val(1);
             return true;
         });
     }

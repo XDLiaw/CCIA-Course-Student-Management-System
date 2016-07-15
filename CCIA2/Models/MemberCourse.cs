@@ -31,9 +31,31 @@ namespace CCIA2.Models
         [Display(Name = "是否出席")]
         public string IsAttend { get; set; }
 
+        [NotMapped]
+        public string IsAttendString
+        {
+            get
+            {
+                if (this.IsAttend == "Y") return "出席";
+                else if (this.IsAttend == "N") return "缺席";
+                else return "";
+            }
+        }
+
         public DateTime CreateDate { get; set; }
 
         public virtual ICollection<MemberCourseAttchFile> memberCourseAttachFiles { get; set; }
+
+        [NotMapped]
+        public string attachFilesString
+        {
+            get
+            {
+                string str = "";
+                this.memberCourseAttachFiles.ToList().ForEach(x => str += (x.ShowAttchFileName + " "));
+                return str;
+            }
+        }
 
         public MemberCourse()
         {

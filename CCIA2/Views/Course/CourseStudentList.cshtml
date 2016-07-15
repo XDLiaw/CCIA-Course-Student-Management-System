@@ -15,37 +15,59 @@
     @Scripts.Render("~/bundles/bootstrap")
     <script src="/Scripts/jquery.bpopup.min.js"></script>
     <script>
-    $(document).ready(function (event) {
-        $("input[type='radio'][name='memberCourse.IsAttend']").change(function (event) {
-            event.preventDefault();
-            var thisElement = $(this);
-            var sqno = $(this).siblings("input[type='hidden'][name='memberCourse.sqno']").val();
-            var IsAttend = $(this).val();
-            alert(sqno + " : " + IsAttend);
-
-            $.ajax({
-                url: '@Url.Action("EditCourseStudentAttend")',
-                type: "POST",
-                data: {sqno : sqno, IsAttend : IsAttend},
-                success: function (res) {
-                    if (res.success) {
-                        thisElement.siblings(".attend-change-message").removeAttr("hidden");
-                        setInterval(function () {
-                            thisElement.siblings(".attend-change-message").attr("hidden", "hidden");
-                        }, 3000);                       
-                    } else {
-                        if (typeof (res.errorMessage) != 'undefined') {
-                            alert(res.errorMessage);
-                        }
-                    }
-                    return false
-                }
-            });// END ajax
-            return false;
-        });
+    $(document).ready(function () {
+        attendRadionChangeSetting();
+        downloadReportSetting();
     });
     </script>
+    <script>
+        function attendRadionChangeSetting() {
+            $("input[type='radio'][name='memberCourse.IsAttend']").change(function (event) {
+                event.preventDefault();
+                var thisElement = $(this);
+                var sqno = $(this).siblings("input[type='hidden'][name='memberCourse.sqno']").val();
+                var IsAttend = $(this).val();
+                //alert(sqno + " : " + IsAttend);
 
+                $.ajax({
+                    url: '@Url.Action("EditCourseStudentAttend")',
+                    type: "POST",
+                    data: { sqno: sqno, IsAttend: IsAttend },
+                    success: function (res) {
+                        if (res.success) {
+                            thisElement.siblings(".attend-change-message").removeAttr("hidden");
+                            setInterval(function () {
+                                thisElement.siblings(".attend-change-message").attr("hidden", "hidden");
+                            }, 3000);
+                        } else {
+                            if (typeof (res.errorMessage) != 'undefined') {
+                                alert(res.errorMessage);
+                            }
+                        }
+                        return false
+                    }
+                });// END ajax
+                return false;
+            });
+        }
+    </script>
+    <script>
+        function downloadReportSetting() {
+            $("#btn-downloadReport").click(function () {
+                //alert("download click");
+                try {
+                    var sqno = @Model.course.sqno;
+                    var url = "/Course/DownloadCourseStudentListReport?sqno=" + sqno;
+                    //alert(url);
+                    window.location.href = url;
+                    return true;
+                }
+                catch (e) {
+                    return false;
+                }
+            });
+        }
+    </script>
 </head>
 <body>
     <div class="">
@@ -72,9 +94,12 @@
                         </td>
                         <td>@Html.DisplayFor(model => model.course.hour)</td>
                         <td>
-                            @foreach (var teacher in Model.course.teachers)
+                            @if (Model.course.teachers != null)
                             {
-                                @Html.DisplayFor(x => teacher.teacher.name)
+                                foreach (var teacher in Model.course.teachers)
+                                {
+                                    @Html.DisplayFor(x => teacher.teacher.name)<br />
+                                }
                             }
                         </td>
                         <td>@Html.DisplayFor(model => model.course.title)</td>
@@ -110,10 +135,14 @@
                                     </form>
                                 </td>
                                 <td>
-                                    @foreach (var file in memberCourse.memberCourseAttachFiles)
+                                    @if (memberCourse.memberCourseAttachFiles != null)
                                     {
-                                        @Html.ActionLink(file.ShowAttchFileName, "DownloadMemberCourseAttchFile", new { sqno = file.sqno }, new { target = "_blank" })<br />
-                                    }                                
+                                        foreach (var file in memberCourse.memberCourseAttachFiles)
+                                        {
+                                            @Html.ActionLink(file.ShowAttchFileName, "DownloadMemberCourseAttchFile", new { sqno = file.sqno }, new { target = "_blank" })<br />
+                                        }
+                                    }
+                                
                                 </td>
 
                             </tr>
@@ -122,6 +151,7 @@
                 </tbody>
 
             </table>
+            <input type="button" value="下載報表" class="btn btn-primary" id="btn-downloadReport" />
         </div>
     </div>
 </body>
