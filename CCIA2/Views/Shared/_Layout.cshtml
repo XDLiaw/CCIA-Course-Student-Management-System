@@ -78,7 +78,16 @@
                     <div class="menu linev_left linev_right">
                         @if (Request.IsAuthenticated)
                         {
-                            @Html.ActionLink(user.name+" 登出", "Logout", "Account", null, new { @class = "menu_link" })
+                            @Html.ActionLink(user.name+" 登出", "Logout", "Account", null, new { @class = "menu_link", @id="btn-logout" })
+                            <script>
+                                //自動登出
+                                $(document).ready(function () {
+                                    setInterval(function () {
+                                        window.location = $('#btn-logout').attr("href");
+                                        return true;
+                                    }, 30*60*1000);
+                                });
+                            </script>
                         }
                         else
                         {
