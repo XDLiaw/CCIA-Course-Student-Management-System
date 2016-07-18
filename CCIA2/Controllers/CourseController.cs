@@ -498,7 +498,7 @@ namespace CCIA2.Controllers
             if (model.searchText != null && model.searchText.Trim().Length > 0)
             {
                 studentList = db.Member.Where(x => x.mrNumber.Contains(model.searchText) || x.mrName.Contains(model.searchText))
-                    .OrderBy(t => t.mrName).ToPagedList(model.pageNumber - 1, model.pageSize);
+                    .OrderBy(t => t.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
             }
             else
             {
