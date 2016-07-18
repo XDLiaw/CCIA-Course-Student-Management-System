@@ -446,11 +446,53 @@ namespace CCIA2.Controllers
             return View(model);
         }
 
+        // 複審備取轉正取
+        public ActionResult ConvertToAdmission(int sqno)
+        {
+            Member member = db.Member.Where(m => m.sqno == sqno)
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseResult == "2") == 1)
+                .FirstOrDefault();
+            if (member == null)
+            {
+                var result = new
+                {
+                    success = false,
+                    errorMessage = "找不到資料"
+                };
+                return Json(result);
+            }
+            else
+            {
+                try
+                {
+                    MemberGroupResult newResult = new MemberGroupResult(member);
+                    newResult.AppraiseStep = 5;
+                    newResult.AppraiseResult = "1";
+                    newResult.AppraiseGroup = member.MemberGroupResult.Where(res => res.AppraiseStep == 5).FirstOrDefault().AppraiseGroup;
+                    newResult.AppraiseState = "正取(遞補)";
+                    string msg = "會員 " + member.mrName + " 已遞補為正取!";
+
+                    db.Entry(member).State = EntityState.Modified;
+                    db.SaveChanges();
+
+                    var result = new { success = true, message = msg };
+                    return Json(result);
+                }
+                catch (Exception e)
+                {
+                    var result = new { success = false, errorMessage = e.Message };
+                    return Json(result);
+                }
+            }
+        }
+
         // 繳交保證金
         public ActionResult PayDeposit(int sqno, bool hasPaiedDeposit)
         {
             IQueryable<Member> memberQuery = db.Member.Where(m => m.sqno == sqno);
-            Member member = this.memberService.queryMemberAtStep5(memberQuery).FirstOrDefault();
+            memberQuery = this.memberService.queryMemberAtStep5(memberQuery);
+            memberQuery = this.memberService.queryMemberEnrollType(memberQuery, "1");
+            Member member = memberQuery.FirstOrDefault();
             if (member == null)
             {
                 var result = new

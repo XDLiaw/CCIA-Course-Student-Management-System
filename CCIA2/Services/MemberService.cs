@@ -276,7 +276,7 @@ namespace CCIA2.Services
         {
             memberQuery = memberQuery
                 .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep > 5) == 0)
-                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5) == 1);
+                .Where(m => m.MemberGroupResult.Count(res => res.AppraiseStep == 5) >= 1);
             return memberQuery;
         }
 

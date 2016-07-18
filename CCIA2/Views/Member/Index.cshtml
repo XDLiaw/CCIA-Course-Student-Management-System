@@ -123,15 +123,22 @@
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 5) // 正/備取名單
                                             {
-                                                if (Int32.Parse(item.mrRole) == 1)
+                                                if (item.MemberGroupResult.LastOrDefault().AppraiseResult == "1")
                                                 {
-                                                    <input type="button" value="已繳8000" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                                    if (Int32.Parse(item.mrRole) == 1)
+                                                    {
+                                                        <input type="button" value="已繳8000" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                                    }
+                                                    if (Int32.Parse(item.mrRole) == 2)
+                                                    {
+                                                        <input type="button" value="已繳4000" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                                    }
+                                                    <input type="button" value="未繳保證金" class="btn btn-default btn-NotPay" sqno="@item.sqno" />
                                                 }
-                                                if (Int32.Parse(item.mrRole) == 2)
+                                                else
                                                 {
-                                                    <input type="button" value="已繳4000" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                                    <input type="button" value="遞補為正取" class="btn btn-default btn-ConvertToAdmission" sqno="@item.sqno" />
                                                 }
-                                                <input type="button" value="未繳保證金" class="btn btn-default btn-NotPay" sqno="@item.sqno" />
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 7) // 未通過
                                             {
@@ -325,7 +332,7 @@
         // 控制顯示下拉選單(全部/正取/備取)
         $("#form-memberType1").find("#select-step").on('change', function() {
             var selectState = $("#form-memberType1").find("#select-step").val();
-            if (selectState == 5 || selectState == 6) {
+            if (selectState == 5) {
                 $("#form-memberType1").find("#select-enrollType").removeClass("hidden");
                 $("#form-memberType1").find("#select-enrollType").removeAttr("disabled");
             } else {
@@ -384,6 +391,27 @@
                 var data = {sqno : $(this).attr("sqno")};
                 $.post(
                     "@Url.Content("~/Member/Flunk")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+
+        // 備取轉正取
+        $("#form-memberType1").find(".btn-ConvertToAdmission").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno"), hasPaiedDeposit : true};
+                $.post(
+                    "@Url.Content("~/Member/ConvertToAdmission")",
                     data,
                     function (res) {
                         if (typeof(res.errorMessage) != 'undefined') {
