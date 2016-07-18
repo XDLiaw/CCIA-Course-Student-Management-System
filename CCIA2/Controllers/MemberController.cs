@@ -336,6 +336,12 @@ namespace CCIA2.Controllers
                         newResult.AppraiseStep = 7;
                         newResult.AppraiseState = "複審未錄取";
                     }
+                    else if (member.MemberGroupResult.LastOrDefault().AppraiseStep == 5)
+                    {
+                        MemberGroupResult newResult = new MemberGroupResult(member);
+                        newResult.AppraiseStep = 7;
+                        newResult.AppraiseState = "備取未通過";
+                    }
 
                     db.Entry(member).State = EntityState.Modified;
                     db.SaveChanges();

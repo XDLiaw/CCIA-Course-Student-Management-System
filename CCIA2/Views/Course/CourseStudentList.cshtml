@@ -112,7 +112,8 @@
                 <thead>
                     <tr>
                         <th class="col-md-1">@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().member.mrNumber)</th>
-                        <th class="col-md-2">@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().member.mrName)</th>
+                        <th class="col-md-1">@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().member.mrName)</th>
+                        <th class="col-md-3">@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().member.memberType)</th>
                         <th class="col-md-3">@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().IsAttend)</th>
                         <th>@Html.DisplayNameFor(model => model.memberCourseList.FirstOrDefault().memberCourseAttachFiles.FirstOrDefault().ShowAttchFileName)</th>                        
                     </tr>
@@ -120,11 +121,18 @@
                 <tbody>
                     @if (Model.memberCourseList != null && Model.memberCourseList.Count > 0)
                     {
-                        foreach (var memberCourse in Model.memberCourseList)
+                        foreach (var memberCourse in Model.memberCourseList.OrderBy(x => x.mrNumber))
                         {
                             <tr>
                                 <td>@Html.DisplayFor(x => memberCourse.member.mrNumber)</td>
                                 <td>@Html.DisplayFor(x => memberCourse.member.mrName)</td>
+                                <th>
+                                    @Html.DisplayFor(x => memberCourse.member.memberType.membertypename)
+                                    @if (memberCourse.member.mrMemberTypesqno == 3 && memberCourse.member.MemberGroupResult.Count(res => res.AppraiseStep == 7) ==1)
+                                    {
+                                        <span style="color:#808080; font-size:11px;"> (本屆未通過) </span>
+                                    }
+                                </th>
                                 <td>
                                     <form action="">
                                         @Html.HiddenFor(x => memberCourse.sqno)

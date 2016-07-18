@@ -95,13 +95,13 @@ namespace CCIA2.Models
         [Display(Name="學生人數上限")]
         public int? maxStudentNum { get; set; }
 
-        [Display(Name = "圖像授權組人數上限")]
+        [Display(Name = "圖像授權組人數")]
         public int? maxGroup1StudentNum { get; set; }
 
-        [Display(Name = "故事行銷組人數上限")]
+        [Display(Name = "故事行銷組人數")]
         public int? maxGroup2StudentNum { get; set; }
 
-        [Display(Name = "文創科技組人數上限")]
+        [Display(Name = "文創科技組人數")]
         public int? maxGroup3StudentNum { get; set; }
 
         [Display(Name = "地點")]
@@ -116,6 +116,15 @@ namespace CCIA2.Models
 
         [Display(Name = "開放給一般會員")]
         public bool memberType3 { get; set; }
+
+        [Display(Name = "經紀中介學員人數")]
+        public int? memberType1Num { get; set; }
+
+        [Display(Name = "歷屆學員人數")]
+        public int? memberType2Num { get; set; }
+
+        [Display(Name = "一般會員人數")]
+        public int? memberType3Num { get; set; }
 
         [Display(Name = "說明")]
         public string content { get; set; }

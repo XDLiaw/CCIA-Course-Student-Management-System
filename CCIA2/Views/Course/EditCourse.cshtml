@@ -38,6 +38,9 @@
                 memberType1: $("input[name='memberType1']").is(':checked'),
                 memberType2: $("input[name='memberType2']").is(':checked'),
                 memberType3: $("input[name='memberType3']").is(':checked'),
+                memberType1Num: $("input[name='memberType1Num']").val(),
+                memberType2Num: $("input[name='memberType2Num']").val(),
+                memberType3Num: $("input[name='memberType3Num']").val(),
                 content: $("textarea[name='content']").val()
             };
             //alert(JSON.stringify(data));
@@ -164,6 +167,23 @@
                 <div class="col-md-2">
                     @Html.CheckBoxFor(model => model.memberType3, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.memberType3, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.memberType1Num, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.memberType1Num, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.memberType1Num, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.memberType2Num, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.memberType2Num, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.memberType2Num, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.memberType3Num, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.memberType3Num, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.memberType3Num, null, new { @class = "help-inline text-danger" })
                 </div>
             </div>
             <div class="form-group">

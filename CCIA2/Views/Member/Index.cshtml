@@ -138,6 +138,7 @@
                                                 else
                                                 {
                                                     <input type="button" value="遞補為正取" class="btn btn-default btn-ConvertToAdmission" sqno="@item.sqno" />
+                                                    <input type="button" value="未通過" class="btn btn-default btn-Flunk" sqno="@item.sqno" />
                                                 }
                                             }
                                             else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 7) // 未通過
