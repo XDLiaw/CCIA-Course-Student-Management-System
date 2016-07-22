@@ -55,6 +55,30 @@ namespace CCIA2.Helper.ExcelReport
 
             cell = frow.CreateCell(++colIndex);
             cell.CellStyle = headerStyle;
+            cell.SetCellValue("社會人士/學生");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("最高學歷");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("服務機關");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("職稱");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("錄取組別");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("會員角色");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
             cell.SetCellValue("是否出席");
 
             cell = frow.CreateCell(++colIndex);
@@ -80,6 +104,63 @@ namespace CCIA2.Helper.ExcelReport
 
                 cell = frow.CreateCell(++colIndex);
                 cell.CellStyle = contentStyle;
+                cell.SetCellValue(student.member.mrRole == "1" ? "社會人士" : "學生");
+
+                if (student.member.mrRole == "1")
+                {
+                    cell = frow.CreateCell(++colIndex);
+                    cell.CellStyle = contentStyle;
+                    cell.SetCellValue(student.member.mrSocialEdu);
+
+                    cell = frow.CreateCell(++colIndex);
+                    cell.CellStyle = contentStyle;
+                    cell.SetCellValue(student.member.mrSocialComp);
+
+                    cell = frow.CreateCell(++colIndex);
+                    cell.CellStyle = contentStyle;
+                    cell.SetCellValue(student.member.mrSocialTitle);
+                }
+                else
+                {
+                    cell = frow.CreateCell(++colIndex);
+                    cell.CellStyle = contentStyle;
+                    cell.SetCellValue(student.member.mrStuSchool);
+
+                    cell = frow.CreateCell(++colIndex);
+                    cell.CellStyle = contentStyle;
+                    cell.SetCellValue(student.member.mrStuDept);
+
+                    cell = frow.CreateCell(++colIndex);
+                    cell.CellStyle = contentStyle;
+                    cell.SetCellValue(student.member.mrStuYear);
+                }
+
+                if (student.member.MemberGroupResult.Count(res => res.AppraiseStep == 5 && res.AppraiseResult == "1") == 1)
+                {
+                    cell = frow.CreateCell(++colIndex);
+                    cell.CellStyle = contentStyle;
+                    cell.SetCellValue(student.member.MemberGroupResult.Where(res => res.AppraiseStep == 5 && res.AppraiseResult == "1").FirstOrDefault().AppraiseGroup);
+                }
+                else
+                {
+                    cell = frow.CreateCell(++colIndex);
+                    cell.CellStyle = contentStyle;
+                    cell.SetCellValue("");
+                }
+
+                cell = frow.CreateCell(++colIndex);
+                cell.CellStyle = contentStyle;
+                if (student.member.mrMemberTypesqno == 3 && student.member.MemberGroupResult.Count(res => res.AppraiseStep == 7) == 1)
+                {
+                    cell.SetCellValue(student.member.memberType.membertypename + "(本屆未通過)");
+                }
+                else
+                {
+                    cell.SetCellValue(student.member.memberType.membertypename);
+                }                
+
+                cell = frow.CreateCell(++colIndex);
+                cell.CellStyle = contentStyle;
                 cell.SetCellValue(student.IsAttendString);
 
                 cell = frow.CreateCell(++colIndex);
@@ -88,6 +169,12 @@ namespace CCIA2.Helper.ExcelReport
             }
 
             #endregion
+
+            for (int i = 0; i < 10; i++)
+            {
+                worksheet.AutoSizeColumn(i);
+            }
+            worksheet.CreateFreezePane(0, 1);
 
             return workbook;
         }
