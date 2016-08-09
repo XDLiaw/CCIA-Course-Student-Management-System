@@ -16,5 +16,7 @@ namespace CCIA2.Models
         [Display(Name="課程類別名稱")]
         [StringLength(50)]
         public string name { get; set; }
+
+        public virtual ICollection<Course> courses { get; set; }
     }
 }

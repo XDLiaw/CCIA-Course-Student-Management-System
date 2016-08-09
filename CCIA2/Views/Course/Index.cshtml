@@ -39,6 +39,7 @@
                             <tr>
                                 <th>@Html.DisplayNameFor(x => Model.courseGroupViewModel.courseGroupList.FirstOrDefault().tableGroup)</th>
                                 <th>@Html.DisplayNameFor(x => Model.courseGroupViewModel.courseGroupList.FirstOrDefault().courseClass)</th>
+                                <th>總開課數</th>
                                 <th>@Html.DisplayNameFor(x => Model.courseGroupViewModel.courseGroupList.FirstOrDefault().electiveString)</th>
                                 <th></th>
                             </tr>
@@ -51,6 +52,7 @@
                                     <tr>
                                         <td>@Html.DisplayFor(modelItem => item.tableGroup.GroupName)</td>
                                         <td>@Html.DisplayFor(modelItem => item.courseClass.name)</td>
+                                        <td>@Html.Raw(item.courseClass.courses.Sum(c => c.hour))</td>
                                         <td>@Html.DisplayFor(modelItem => item.electiveString)</td>
                                         <td>
                                             @if (user.role == 1)
@@ -235,6 +237,9 @@
                     <div class="col-sm-6">
                         @Html.TextBoxFor(model => model.studentViewModel.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "請輸入學生姓名或編號" })
                     </div>
+                    <div class="col-sm-2">
+                        @Html.DropDownListFor(model => model.studentViewModel.memberTypeSqno, (IEnumerable<SelectListItem>)ViewBag.memberTypeList, htmlAttributes: new { @class = "form-control" })
+                    </div>
                     <div class="col-sm-1">
                         <input type="submit" value="查詢" class="btn btn-primary btn-search" />
                     </div>
@@ -261,6 +266,10 @@
                                         <td>@Html.DisplayFor(x => student.memberType.membertypename)</td>
                                         <td>
                                             @Html.ActionLink("修課清單", "StudentChoseCourseList", new { sqno = student.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })
+                                            @if (student.memberType.membertypeno == 1)
+                                            {
+                                                @Html.ActionLink("出席統計", "StudentAttendSummary", new { sqno = student.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })
+                                            }                                            
                                         </td>
                                     </tr>
                                 }

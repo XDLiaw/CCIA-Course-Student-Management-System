@@ -81,6 +81,9 @@ namespace CCIA2.Models.ViewModels
     {
         public string searchText { get; set; }
 
+        [Display(Name="會員腳色")]
+        public int? memberTypeSqno { get; set; }
+
         [Display(Name = "頁碼")]
         public int pageNumber { get; set; }
 

@@ -1,0 +1,94 @@
+﻿@model CCIA2.Models.ViewModels.StudentCourseAttendSummaryViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="/Scripts/jquery.bpopup.min.js"></script>
+</head>
+<body>
+    <div>
+        <div class="member_bg form-horizontal">
+            <div class="container">
+                <div class="col-md-3">
+                    <label>@Html.DisplayNameFor(model => model.student.mrNumber) : </label>
+                    @Html.DisplayFor(model => model.student.mrNumber)
+                </div>
+                <div class="col-md-3">
+                    <label>@Html.DisplayNameFor(model => model.student.mrName) : </label>
+                    @Html.DisplayFor(model => model.student.mrName)
+                </div>
+                <div class="col-md-3">
+                    <label>@Html.DisplayNameFor(model => model.student.memberType) : </label>
+                    @Html.DisplayFor(model => model.student.memberType.membertypename)
+                </div>
+                <div class="col-md-3">
+                    <label>@Html.DisplayNameFor(model => model.student.FinalGroup) : </label>
+                    @Html.DisplayFor(model => model.student.FinalGroup)
+                </div>
+            </div>
+            <br />
+
+            <div>
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>課程大綱</th>
+                            <th>總開課數</th>
+                            <th>必修時數</th>
+                            <th>出席時數</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.nonElectiveCourseAttendHourList != null)
+                        {
+                            foreach (var item in Model.nonElectiveCourseAttendHourList)
+                            {
+                                <tr>
+                                    <td>@Html.Raw(item.Key.electiveString)</td>
+                                    <td>@Html.DisplayFor(x => item.Key.courseClass.name)</td>
+                                    <td>@Html.Raw(item.Key.courseClass.courses.Sum(c => c.hour))</td>
+                                    <td>@Html.Raw(Model.nonElectiveCourseMustAttendHourList[item.Key])</td>
+                                    <td>@Html.Raw(item.Value)</td>
+                                </tr>
+                            }
+                        }
+                        @if (Model.electiveCourseGroupList != null)
+                        {
+                            int i = 0;
+                            foreach (var item in Model.electiveCourseGroupList)
+                            {
+                                <tr>
+                                    <td>@Html.Raw(item.electiveString)</td>
+                                    <td>@Html.DisplayFor(x => item.courseClass.name)</td>
+                                    <td>@Html.Raw(item.courseClass.courses.Sum(c => c.hour))</td>
+                                    @if (i == 0) 
+                                    {
+                                        <td rowspan="@Model.electiveCourseGroupList.Count" style="vertical-align: middle;">
+                                            @Html.DisplayFor(x => Model.electiveCourseMustAttendHour)
+                                        </td>
+                                        <td rowspan="@Model.electiveCourseGroupList.Count" style="vertical-align: middle;">
+                                            @Html.DisplayFor(x => Model.electiveCourseAttendHour)
+                                        </td>
+                                    }                                   
+                                </tr>
+                                i++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

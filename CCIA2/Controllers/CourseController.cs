@@ -38,6 +38,7 @@ namespace CCIA2.Controllers
 
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupList(true);
             ViewBag.courseClassList = DropDownListHelper.getCourseClassList(true);
+            ViewBag.memberTypeList = DropDownListHelper.getMemberTypeList(true);
             return View(model);
         }
 
@@ -497,15 +498,18 @@ namespace CCIA2.Controllers
         private IPagedList<Member> searchStudent(StudendViewModel model)
         {
             IPagedList<Member> studentList;
+            IQueryable<Member> studentQueryable = db.Member.Where(m => m.mrIsActive == "Y" && m.mrIsFinish == "Y");
+
             if (model.searchText != null && model.searchText.Trim().Length > 0)
             {
-                studentList = db.Member.Where(x => x.mrNumber.Contains(model.searchText) || x.mrName.Contains(model.searchText))
-                    .OrderBy(t => t.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
+                studentQueryable = studentQueryable.Where(x => x.mrNumber.Contains(model.searchText) || x.mrName.Contains(model.searchText));                   
             }
-            else
+            if (model.memberTypeSqno != null && model.memberTypeSqno > 0)
             {
-                studentList = db.Member.OrderBy(t => t.mrName).ToPagedList(model.pageNumber - 1, model.pageSize);
+                studentQueryable = studentQueryable.Where(x => x.mrMemberTypesqno == model.memberTypeSqno);
             }
+
+            studentList = studentQueryable.OrderBy(t => t.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
             return studentList;
         }
 
@@ -523,6 +527,57 @@ namespace CCIA2.Controllers
             {
                 return View(model);
             }
+        }
+
+        public ActionResult StudentAttendSummary(int sqno)
+        {
+            StudentCourseAttendSummaryViewModel model = new StudentCourseAttendSummaryViewModel();
+            model.student = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            model.courseList = db.MemberCourse.Where(mc => mc.mrSqno == sqno).ToList();
+            if (model.student == null)
+            {
+                ViewBag.ErrorMessage = "找不到學生資料";
+                return RedirectToAction("Index");
+            }
+            if (model.student.memberType.membertypeno != 1)
+            {
+                ViewBag.ErrorMessage = "不是經紀中介學員";
+                return RedirectToAction("Index");
+            }
+
+            model.nonElectiveCourseGroupList = db.CourseGroup
+                .Where(g => g.tableGroup.GroupName == model.student.FinalGroup && g.isElective == false)
+                .OrderBy(g => g.memberGroupSqno).ThenBy(g => g.isElective).ThenBy(g => g.courseClassSqno).ToList();
+            model.electiveCourseGroupList = db.CourseGroup
+                .Where(g => g.tableGroup.GroupName == model.student.FinalGroup && g.isElective == true)
+                .OrderBy(g => g.memberGroupSqno).ThenBy(g => g.isElective).ThenBy(g => g.courseClassSqno).ToList();
+
+            foreach (CourseGroup cg in model.nonElectiveCourseGroupList)
+            {
+                int courseClassSqno = cg.courseClass.sqno;
+                double attendHour = model.courseList.Where(c => c.IsAttend == "Y" && c.course.courseClassSqno == courseClassSqno).Sum(c => c.course.hour).GetValueOrDefault(0);
+                model.nonElectiveCourseAttendHourList.Add(cg, attendHour);
+                if (cg.courseClass.name == "文創經紀人專業知識")
+                {
+                    model.nonElectiveCourseMustAttendHourList.Add(cg, 12);
+                }
+                if (cg.courseClass.name == "文創經紀模式")
+                {
+                    model.nonElectiveCourseMustAttendHourList.Add(cg, 6);
+                }
+                if (cg.courseClass.name == "故事行銷" || cg.courseClass.name == "圖像授權" || cg.courseClass.name == "文創科技")
+                {
+                    model.nonElectiveCourseMustAttendHourList.Add(cg, 30);
+                }
+            }
+            foreach (CourseGroup cg in model.electiveCourseGroupList)
+            {
+                int courseClassSqno = cg.courseClass.sqno;
+                double attendHour = model.courseList.Where(c => c.IsAttend == "Y" && c.course.courseClassSqno == courseClassSqno).Sum(c => c.course.hour).GetValueOrDefault(0);
+                model.electiveCourseAttendHour += attendHour;
+            }            
+
+            return View(model);
         }
 
         #endregion

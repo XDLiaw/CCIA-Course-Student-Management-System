@@ -218,5 +218,31 @@ namespace CCIA2.Helper
 
             return list;
         }
+
+        public static List<SelectListItem> getMemberTypeList(bool withSelectAllOption)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = "0"
+                });
+            }
+
+            var items =
+            (
+                from mt in db.TableMemberType
+                select new SelectListItem
+                {
+                    Text = mt.membertypename,
+                    Value = mt.sqno.ToString()
+                }
+            );
+            list.AddRange(items);
+
+            return list;
+        }
     }
 }
