@@ -56,6 +56,10 @@ namespace CCIA2
                         "~/Scripts/Chosen/chosen.jquery.min.js"));
             bundles.Add(new StyleBundle("~/Content/Chosen").Include(
                         "~/Content/Chosen/chosen.css"));
+
+            // 檔案瀏覽按鈕
+            bundles.Add(new StyleBundle("~/Content/fileBrowseBtn").Include(
+                   "~/Content/btn.file.css"));  
         }
     }
 }

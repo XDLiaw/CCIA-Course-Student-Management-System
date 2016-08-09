@@ -405,6 +405,7 @@ namespace CCIA2.Controllers
         {
             if (ModelState.IsValid)
             {
+                teacher.savingPhoto();
                 db.CourseTeacher.Add(teacher);
                 db.SaveChanges();
 
@@ -444,6 +445,7 @@ namespace CCIA2.Controllers
             if (ModelState.IsValid)
             {
                 teacher.courses = db.CourseTeacher.Where(t => t.sqno == teacher.sqno).SelectMany(t => t.courses).ToList();
+                teacher.savingPhoto();
                 db.Entry(teacher).State = EntityState.Modified;
                 db.SaveChanges();
 

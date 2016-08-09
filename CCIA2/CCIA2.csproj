@@ -241,6 +241,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-3.3.4.css" />
+    <Content Include="Content\btn.file.css" />
     <Content Include="Content\Chosen\chosen-sprite%402x.png" />
     <Content Include="Content\Chosen\chosen-sprite.png" />
     <Content Include="Content\Chosen\chosen.css" />

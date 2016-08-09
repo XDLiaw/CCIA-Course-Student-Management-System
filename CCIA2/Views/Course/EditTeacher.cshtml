@@ -9,10 +9,6 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title></title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/modernizr")
-    @Scripts.Render("~/bundles/bootstrap")
     @*<script src='//cdn.tinymce.com/4/tinymce.min.js'></script>*@
     <script src="/Scripts/tinymce/tinymce.min.js"></script>
     <script src="/Scripts/tinymce/jquery.tinymce.min.js"></script>
@@ -36,23 +32,31 @@
     </script>
     <script src="/Scripts/jquery.bpopup.min.js"></script>
     <script>
-        $(document).ready(function () {          
+        $(document).ready(function () {
+            submitAjaxSetting();
+        });
+    </script>
+    <script>
+        function submitAjaxSetting() {
             $("#submitByAjax").click(function (event) {
                 event.preventDefault();
                 //alert(tinyMCE.activeEditor.getContent()); // 此行可以拿到網頁編輯器裡面的值
                 tinyMCE.triggerSave(); //很重要, 這行沒寫的話 tinyMCE套件 不會把資料放進teaxArea裡面
 
-                var data = {
-                    sqno: $("#hidden-sqno").val(),
-                    name: $("#textbox-teacherName").val(),
-                    orgName: $("#textbox-orgName").val(),
-                    introduction: $("#textArea-introduction").val()
-                };
+                var formData = new FormData();
+                formData.append("sqno", $("#hidden-sqno").val());
+                formData.append("name", $("#textbox-teacherName").val());
+                formData.append("orgName", $("#textbox-orgName").val());
+                formData.append("introduction", $("#textArea-introduction").val());
+                formData.append("uploadPhoto", $("#photoUpload").get(0).files[0]);
 
-                $.post(
-                    "@Url.Content("~/Course/EditTeacher")",
-                    data,
-                    function (res) {
+                $.ajax({
+                    url: "@Url.Content("~/Course/EditTeacher")",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (res) {
                         if (res.success) {
                             alert("修改成功");
                             //$('#div-bPopupWin').bPopup().close(); //不要用這個, 會無法觸發原本的onClose事件
@@ -72,13 +76,30 @@
                                 });
                             }
                         }
-                        return false;
                     },
-                    "json"
-                );
+                    error: function (er) {
+                        alert(er);
+                    }
+                });
+
                 return false;
             });
-        });
+        }
+    </script>
+    <script type="text/javascript">
+        function readURL(input) {
+            //alert(input.files);
+            //alert(input.files[0]);
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#teacherPhoto').attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
     </script>
 </head>
 <body>
@@ -90,6 +111,18 @@
                 <div class="col-sm-10">
                     @Html.TextBoxFor(model => model.name, htmlAttributes: new { @class = "form-control", id = "textbox-teacherName" })
                     @Html.ValidationMessageFor(model => model.name, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.photo, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-10">
+                    <img id="teacherPhoto" src="data:image;base64,@Model.photoBase64" style="max-width:400px; max-height:400px;" />
+                    <p>
+                        <span class="btn btn-default btn-file">
+                            瀏覽
+                            @Html.TextBoxFor(model => model.uploadPhoto, new { Type = "file", id = "photoUpload", @class = "upload", onchange = "readURL(this);" })
+                        </span>
+                    </p>
                 </div>
             </div>
             <div class="form-group">
@@ -142,5 +175,6 @@
             </div>
         </div>
     </div>
+
 </body>
 </html>
