@@ -85,6 +85,26 @@ namespace CCIA2.Helper.ExcelReport
             cell.CellStyle = headerStyle;
             cell.SetCellValue("附檔名稱");
 
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("電話");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("手機");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Email1");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("Email2");
+
+            cell = frow.CreateCell(++colIndex);
+            cell.CellStyle = headerStyle;
+            cell.SetCellValue("地址");
+
             #endregion
 
             #region 資料
@@ -166,11 +186,31 @@ namespace CCIA2.Helper.ExcelReport
                 cell = frow.CreateCell(++colIndex);
                 cell.CellStyle = contentStyle;
                 cell.SetCellValue(student.attachFilesString);
+
+                cell = frow.CreateCell(++colIndex);
+                cell.CellStyle = contentStyle;
+                cell.SetCellValue(student.member.mrTel);
+
+                cell = frow.CreateCell(++colIndex);
+                cell.CellStyle = contentStyle;
+                cell.SetCellValue(student.member.mrMobile);
+
+                cell = frow.CreateCell(++colIndex);
+                cell.CellStyle = contentStyle;
+                cell.SetCellValue(student.member.mrMainEmail);
+
+                cell = frow.CreateCell(++colIndex);
+                cell.CellStyle = contentStyle;
+                cell.SetCellValue(student.member.mrOtherEmail);
+
+                cell = frow.CreateCell(++colIndex);
+                cell.CellStyle = contentStyle;
+                cell.SetCellValue(student.member.mrAddress);
             }
 
             #endregion
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < worksheet.GetRow(0).LastCellNum; i++)
             {
                 worksheet.AutoSizeColumn(i);
             }
