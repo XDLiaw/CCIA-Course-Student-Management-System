@@ -580,6 +580,39 @@ namespace CCIA2.Controllers
             return View(model);
         }
 
+        public ActionResult SelectCourseManaual(int sqno)
+        {
+           SelectCourseManaualViewModel model = new SelectCourseManaualViewModel();
+           model.CoursList = db.Course.ToList();
+           model.mrSqno = sqno;
+           model.AlreadySelected = db.MemberCourse.Where(x => x.mrSqno == sqno).Select(x => x.CourseSqno).ToList();
+
+           return View(model);
+        }
+
+        [HttpPost]
+        public JsonResult SubmitManaualCourse(int sqno, int[] selected)
+        {
+           try
+           {
+              Member targetMember = db.Member.Where(x => x.sqno == sqno).FirstOrDefault();
+              if (targetMember == null) return Json(new { result = "member not found" });
+              MemberCourse temp;
+              foreach (int courseid in selected)
+              {
+                 temp = new MemberCourse() { CourseSqno = courseid, mrSqno = sqno, mrNumber = targetMember.mrNumber, IsAttend = "Y", CreateDate = DateTime.Now };
+                 db.MemberCourse.Add(temp);
+                 db.SaveChanges();
+              }
+
+              return Json(new { result = "success" });
+           }
+           catch
+           {
+              return Json(new { result = "error" });
+           }           
+        }
+
         #endregion
 
         protected override void Dispose(bool disposing)

@@ -235,6 +235,7 @@
     <Compile Include="Models\ViewModels\MemberTrailViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberQualificationVerifyViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberSearchViewModel.cs" />
+    <Compile Include="Models\ViewModels\SelectCourseManaualViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentChoseCourseListViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentCourseAttendSummaryViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -604,6 +605,7 @@
     <Content Include="Views\Course\CourseStudentList.cshtml" />
     <Content Include="Views\Course\StudentChoseCourseList.cshtml" />
     <Content Include="Views\Course\StudentAttendSummary.cshtml" />
+    <Content Include="Views\Course\SelectCourseManaual.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

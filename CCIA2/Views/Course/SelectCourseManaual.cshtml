@@ -1,0 +1,90 @@
+﻿@model CCIA2.Models.ViewModels.SelectCourseManaualViewModel
+@{
+    Layout = null;
+    var firstClass = Model.CoursList.FirstOrDefault();
+}
+<div class="member_bg form-horizontal">    
+    <div>
+        <table class="table table-striped table-hover" id="tableManaualCourseList">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>@Html.DisplayNameFor(x => firstClass.courseClass)</th>
+                    <th>@Html.DisplayNameFor(x => firstClass.topic)</th>
+                    <th class="col-sm-3">@Html.DisplayNameFor(x => firstClass.day)</th>
+                    <th>@Html.DisplayNameFor(x => firstClass.hour)</th>
+                    <th>@Html.DisplayNameFor(x => firstClass.teachers)</th>
+                    <th>@Html.DisplayNameFor(x => firstClass.title)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.CoursList != null)
+                {
+                    int i = 0;
+                    foreach (var item in Model.CoursList)
+                    {
+                        i++;
+                        <tr>
+                            <td>@i</td>
+                            <td>@Html.DisplayFor(x => item.courseClass.name)</td>
+                            <td>@Html.DisplayFor(x => item.topic)</td>
+                            <td>
+                                @Html.DisplayFor(x => item.day)
+                                @Html.DisplayFor(x => item.startTime) ~ @Html.DisplayFor(x => item.endTime)
+                            </td>
+                            <td>@Html.DisplayFor(x => item.hour)</td>
+                            <td>
+                                @foreach (var teacher in item.teachers)
+                                {
+                                    <p>@Html.DisplayFor(x => teacher.teacher.name)</p>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(x => item.title)</td>
+                            <td>
+                                @if (Model.AlreadySelected.Contains(item.sqno))
+                                {
+                                    <input type="checkbox" value="@item.sqno" checked="checked" disabled />
+                                }
+                                else
+                                {
+                                    <input type="checkbox" value="@item.sqno" />
+                                }
+                                
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <button class="btn btn-primary" id="btnSubmitManaualCourses">送出</button>
+        <button class="btn btn-default" onclick="$('#btn-close-bPopupWin').trigger('click');">取消</button>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#btnSubmitManaualCourses").on("click", function () {
+            var sqno = '@Model.mrSqno';
+            var checkedList = new Array();
+            $('[type=checkbox]').each(function (i,n) {
+                if ($(this).is(":checked") && !$(this).attr("disabled")) {
+                    checkedList.push($(this).val());
+                }
+            });
+            $.ajax({
+                datatype: "json",
+                traditional: true,
+                url: '@Url.Action("SubmitManaualCourse", "Course")',
+                data: { sqno: sqno, selected: checkedList },
+                type: 'POST',
+                complete: function () {
+                    $("#btn-close-bPopupWin").trigger("click");
+                }
+            });
+            console.log(checkedList);
+        });
+    });
+</script>
