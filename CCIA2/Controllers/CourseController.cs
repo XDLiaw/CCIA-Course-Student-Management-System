@@ -613,6 +613,22 @@ namespace CCIA2.Controllers
            }           
         }
 
+        public ActionResult ExamResult(int sqno)
+        {
+            CourseExamResultViewModel model = new CourseExamResultViewModel();
+            model.student = db.Member.Where(m => m.sqno == sqno).FirstOrDefault();
+            model.qaList = db.MemberQAnswer.Where(x => x.mrSqno == sqno && x.question.years == DateTime.Now.Year.ToString()).ToList();
+            if (model.student == null)
+            {
+                ViewBag.ErrorMessage = "找不到學生資料";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(model);
+            }
+        }
+
         #endregion
 
         protected override void Dispose(bool disposing)

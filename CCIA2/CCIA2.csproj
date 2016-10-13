@@ -212,7 +212,9 @@
     <Compile Include="Models\MemberCourseAttchFile.cs" />
     <Compile Include="Models\MemberGroupApply.cs" />
     <Compile Include="Models\MemberGroupResult.cs" />
+    <Compile Include="Models\MemberQAnswer.cs" />
     <Compile Include="Models\MemberSupport.cs" />
+    <Compile Include="Models\Question.cs" />
     <Compile Include="Models\SessionKey.cs" />
     <Compile Include="Models\SysUser.cs" />
     <Compile Include="Models\SYS_ErrorLog.cs" />
@@ -224,6 +226,7 @@
     <Compile Include="Models\TableNation.cs" />
     <Compile Include="Models\TableNumber.cs" />
     <Compile Include="Models\TablePlan.cs" />
+    <Compile Include="Models\ViewModels\CourseExamResultViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseStudentListViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseTeacherViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseRelativeViewModel.cs" />
@@ -606,6 +609,7 @@
     <Content Include="Views\Course\StudentChoseCourseList.cshtml" />
     <Content Include="Views\Course\StudentAttendSummary.cshtml" />
     <Content Include="Views\Course\SelectCourseManaual.cshtml" />
+    <Content Include="Views\Course\ExamResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

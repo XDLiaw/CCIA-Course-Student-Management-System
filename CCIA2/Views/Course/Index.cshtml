@@ -270,7 +270,8 @@
                                             {
                                                 @Html.ActionLink("出席統計", "StudentAttendSummary", new { sqno = student.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })
                                             }
-                                            @Html.ActionLink("加選", "SelectCourseManaual", new { sqno = student.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })                                            
+                                            @Html.ActionLink("加選", "SelectCourseManaual", new { sqno = student.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })
+                                            @Html.ActionLink("學習評量", "ExamResult", new { sqno = student.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })                                           
                                         </td>
                                     </tr>
                                 }
