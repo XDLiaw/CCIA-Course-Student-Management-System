@@ -1,0 +1,140 @@
+﻿@model CCIA2.Models.Activity
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    @Styles.Render("~/Content/datetimepicker")
+    @Scripts.Render("~/bundles/datetimepicker")
+    <script src="/Scripts/tinymce/tinymce.min.js"></script>
+    <script src="/Scripts/tinymce/jquery.tinymce.min.js"></script>
+    <script>
+        //網頁編輯器設定
+        tinymce.init({
+            selector: 'textarea[name="activityContent"]',
+            plugins: [
+              'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
+              'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+              'save table contextmenu directionality emoticons template paste textcolor'
+            ],
+            content_css: 'css/content.css',
+            menubar: 'file edit view format tools table',
+            toolbar: [
+                'code | undo redo | cut copy paste | bold italic underline strikethrough | styleselect formatselect fontselect fontsizeselect  ',
+                'bullist numlist outdent indent | alignleft aligncenter alignright alignjustify | link searchreplace table | forecolor backcolor'
+            ],
+            height: 400
+        });
+    </script>
+    <script src="/Scripts/jquery.bpopup.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            submitAjaxSetting();
+        });
+    </script>
+    <script>
+        function submitAjaxSetting() {
+            $("#submitByAjax").click(function (event) {
+                event.preventDefault();
+                //alert(tinyMCE.activeEditor.getContent()); // 此行可以拿到網頁編輯器裡面的值
+                tinyMCE.triggerSave(); //很重要, 這行沒寫的話 tinyMCE套件 不會把資料放進teaxArea裡面
+
+                var formData = new FormData();
+                formData.append("activitytitle", $("input[name='activitytitle']").val());
+                formData.append("startDate", $("input[name='startDate']").val());
+                formData.append("endDate", $("input[name='endDate']").val());
+                formData.append("deadline", $("input[name='deadline']").val());
+                formData.append("isNeedMeal", $("input[name='isNeedMeal']").is(':checked'));
+                formData.append("activityContent", $("textarea[name='activityContent']").val());
+
+                $.ajax({
+                    url: "@Url.Action("Create")",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (res) {
+                        if (res.success) {
+                            alert("新增成功");
+                            //$('#div-bPopupWin').bPopup().close(); //不要用這個, 會無法觸發原本的onClose事件
+                            $("#btn-close-bPopupWin").trigger("click");
+                        } else {
+                            if (typeof (res.errorMessage) != 'undefined') {
+                                alert(res.errorMessage);
+                            }
+                            if (typeof (res.ModelStateErrors) != 'undefined') {
+                                $.each(res.ModelStateErrors, function (key, value) {
+                                    //alert(key + ":" + value[0]);
+                                    if (value != null) {
+                                        var container = $('span[data-valmsg-for="' + key + '"]');
+                                        container.removeClass("field-validation-valid").addClass("field-validation-error");
+                                        container.html(value[0]);
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    error: function (er) {
+                        alert("error: "+er);
+                    }
+                });
+
+                return false;
+            });
+        }
+</script>
+</head>
+<body>
+    <div class="">
+        <div class="member_bg form-horizontal">
+            <div class="form-group">
+                @Html.LabelFor(model => model.activitytitle, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-7">
+                    @Html.TextBoxFor(model => model.activitytitle, htmlAttributes: new { @class = "form-control"})
+                    @Html.ValidationMessageFor(model => model.activitytitle, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.isNeedMeal, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-1">
+                    @Html.CheckBoxFor(model => model.isNeedMeal, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.isNeedMeal, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.startDate, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.startDate, "{0:yyyy/MM/dd}", htmlAttributes: new { @class = "form-control calendarBox" })
+                    @Html.ValidationMessageFor(model => model.startDate, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.endDate, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.endDate, "{0:yyyy/MM/dd}", htmlAttributes: new { @class = "form-control calendarBox" })
+                    @Html.ValidationMessageFor(model => model.endDate, null, new { @class = "help-inline text-danger" })
+                </div>
+                @Html.LabelFor(model => model.deadline, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-2">
+                    @Html.TextBoxFor(model => model.deadline, "{0:yyyy/MM/dd}", htmlAttributes: new { @class = "form-control calendarBox" })
+                    @Html.ValidationMessageFor(model => model.deadline, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.activityContent, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-10">
+                    @Html.TextAreaFor(model => model.activityContent, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.activityContent, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <input type="button" value="送出" id="submitByAjax" class="btn btn-primary" />
+                    <input type="button" value="取消" class="btn btn-default" onclick='$("#btn-close-bPopupWin").trigger("click");' />
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

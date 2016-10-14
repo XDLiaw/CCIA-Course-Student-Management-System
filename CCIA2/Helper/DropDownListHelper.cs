@@ -244,5 +244,151 @@ namespace CCIA2.Helper
 
             return list;
         }
+
+        public static List<SelectListItem> getRoleList(bool withSelectAllOption)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = "0"
+                });
+            }
+
+            list.Add(new SelectListItem()
+            {
+                Text = "社會人士",
+                Value = "1"
+            });
+            list.Add(new SelectListItem()
+            {
+                Text = "學生",
+                Value = "2"
+            });
+
+            return list;
+        }
+
+        public static List<SelectListItem> getEducationLevelList(bool withSelectAllOption)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = "0"
+                });
+            }
+            list.Add(new SelectListItem()
+            {
+                Text = "博士",
+                Value = "博士"
+            });
+            list.Add(new SelectListItem()
+            {
+                Text = "碩士",
+                Value = "碩士"
+            });
+            list.Add(new SelectListItem()
+            {
+                Text = "大學",
+                Value = "大學"
+            }); list.Add(new SelectListItem()
+            {
+                Text = "專科",
+                Value = "專科"
+            }); list.Add(new SelectListItem()
+            {
+                Text = "高中職(含以下)",
+                Value = "高中職"
+            });
+
+            return list;
+        }
+
+        // 產業別
+        public static List<SelectListItem> getIndustryTypeList(bool withSelectAllOption)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = "0"
+                });
+            }
+
+            list.Add(new SelectListItem()
+            {
+                Text = "文創產業",
+                Value = "1"
+            });
+            list.Add(new SelectListItem()
+            {
+                Text = "其他產業",
+                Value = "2"
+            });
+
+            return list;
+        }
+
+        // 產業
+        public static List<SelectListItem> getCultureList(bool withSelectAllOption)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Text = "請選擇產業",
+                    Value = "0"
+                });
+            }
+
+            var items =
+            (
+                from c in db.TableCulture
+                select new SelectListItem
+                {
+                    Text = c.CultureName,
+                    Value = c.sqno.ToString()
+                }
+            );
+            list.AddRange(items);
+
+            return list;
+        }
+
+        // 是否出席
+        public static List<SelectListItem> getWillComeList(bool withSelectAllOption)
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            if (withSelectAllOption)
+            {
+                list.Add(new SelectListItem()
+                {
+                    Text = "全部",
+                    Value = "0"
+                });
+            }
+
+            list.Add(new SelectListItem()
+            {
+                Text = "出席",
+                Value = "Y"
+            });
+            list.Add(new SelectListItem()
+            {
+                Text = "不出席",
+                Value = "N"
+            });
+
+            return list;
+        }
+        
     }
 }

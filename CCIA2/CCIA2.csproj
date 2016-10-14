@@ -183,6 +183,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ActivityController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\CourseTeacherController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -194,9 +195,12 @@
     </Compile>
     <Compile Include="Helper\CAPTCHAImageGenerater.cs" />
     <Compile Include="Helper\DropDownListHelper.cs" />
+    <Compile Include="Helper\ExcelReport\ActivitySignUpListReport.cs" />
     <Compile Include="Helper\ExcelReport\CourseStudentListReport.cs" />
     <Compile Include="Helper\ExcelReport\MemberReport.cs" />
     <Compile Include="Helper\FileUtils.cs" />
+    <Compile Include="Models\Activity.cs" />
+    <Compile Include="Models\ActivitySignUp.cs" />
     <Compile Include="Models\CaptchaResponse.cs" />
     <Compile Include="Models\CCIAContext.cs" />
     <Compile Include="Models\Course.cs" />
@@ -226,6 +230,8 @@
     <Compile Include="Models\TableNation.cs" />
     <Compile Include="Models\TableNumber.cs" />
     <Compile Include="Models\TablePlan.cs" />
+    <Compile Include="Models\ViewModels\ActivitySignUpListViewModel.cs" />
+    <Compile Include="Models\ViewModels\ActivityViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseExamResultViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseStudentListViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseTeacherViewModel.cs" />
@@ -610,6 +616,11 @@
     <Content Include="Views\Course\StudentAttendSummary.cshtml" />
     <Content Include="Views\Course\SelectCourseManaual.cshtml" />
     <Content Include="Views\Course\ExamResult.cshtml" />
+    <Content Include="Views\Activity\Index.cshtml" />
+    <Content Include="Views\Activity\Create.cshtml" />
+    <Content Include="Views\Activity\SignUpList.cshtml" />
+    <Content Include="Views\Activity\Edit.cshtml" />
+    <Content Include="Views\Activity\EditActivitySignUp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

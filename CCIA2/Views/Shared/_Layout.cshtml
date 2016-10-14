@@ -64,10 +64,11 @@
     <div class="menu_bg hidden-xs">
         <div class="container">
             <div class="row">
-                <div class="col-md-12 nopadding text-center">
-                    <div class="menu_hover linev_left ">@Html.ActionLink("首頁", "Index", "Home", null, new { @class = "menu_link" })</div>
+                <div class="col-md-12 nopadding text-center">                 
                     @if (user != null)
                     {
+                        <div class="menu_hover linev_left ">@Html.ActionLink("首頁", "Index", "Home", null, new { @class = "menu_link" })</div>
+                        <div class="menu linev_left ">@Html.ActionLink("活動管理", "Index", "Activity", null, new { @class = "menu_link" })</div>
                         <div class="menu linev_left ">@Html.ActionLink("會員管理", "Index", "Member", null, new { @class = "menu_link" })</div>
                     }                    
                     @if (user != null && user.role == 1)

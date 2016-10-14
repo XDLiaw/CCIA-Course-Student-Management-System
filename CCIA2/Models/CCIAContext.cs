@@ -12,6 +12,9 @@ namespace CCIA2.Models
         {
         }
 
+        public virtual DbSet<Activity> activity { get; set; }
+        public virtual DbSet<ActivitySignUp> activitySignUp { get; set; }
+
         public virtual DbSet<Course> Course { get; set; }
         public virtual DbSet<CourseClass> CourseClass { get; set; }
         public virtual DbSet<CourseGroup> CourseGroup { get; set; }

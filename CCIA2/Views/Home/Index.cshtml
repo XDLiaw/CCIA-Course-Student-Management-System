@@ -1,7 +1,33 @@
 ﻿@using CCIA2.Models
-
-<h3>Home - Index</h3>
 @{
     var user = @Session[SessionKey.USER] as SysUser;
 }
-<h4>Welcome @user.name</h4>
+
+<div class="bs-component">
+    <ul class="nav nav-tabs">
+        <li class=""><a href="#tab_banner" id="tabLink-banner" class="tabLink" data-toggle="tab" aria-expanded="true">BANNER</a></li>
+        <li class=""><a href="#tab_brochure" id="tabLink-brochure" class="tabLink" data-toggle="tab" aria-expanded="true">簡章管理</a></li>
+        <li class=""><a href="#tab_attention" id="tabLink-attention" class="tabLink" data-toggle="tab" aria-expanded="true">注意事項</a></li>
+        <li class=""><a href="#tab_relativeLink" id="tabLink-relativeLink" class="tabLink" data-toggle="tab" aria-expanded="true">相關連結</a></li>
+    </ul>
+    <div class="tab-content  member_bg">
+        <div id="tab_banner" class="fade tab-pane ">
+
+        </div>
+        <div id="tab_brochure" class="fade tab-pane ">
+
+        </div>
+        <div id="tab_attention" class="fade tab-pane ">
+
+        </div>
+        <div id="tab_relativeLink" class="fade tab-pane ">
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#tabLink-banner").trigger("click");
+    });
+</script>

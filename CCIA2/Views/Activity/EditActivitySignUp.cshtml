@@ -1,0 +1,286 @@
+﻿@model CCIA2.Models.ActivitySignUp
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+    @Styles.Render("~/Content/datetimepicker")
+    @Scripts.Render("~/bundles/datetimepicker")
+    <script src="/Scripts/jquery.bpopup.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            submitAjaxSetting();
+            selectRoleChangeSetting();
+            selectIndustryTypeChangeSetting();
+            selectCultureChangeSetting();
+        });
+    </script>
+    <script>
+        function submitAjaxSetting() {
+            $("#submitByAjax").click(function (event) {
+                event.preventDefault();
+
+                var formData = new FormData();
+                formData.append("sqno", $("input[name='sqno']").val());
+                formData.append("activitysqno", $("input[name='activitysqno']").val());
+                formData.append("name", $("input[name='name']").val());
+                formData.append("mobile", $("input[name='mobile']").val());
+                formData.append("phone", $("input[name='phone']").val());
+                formData.append("email1", $("input[name='email1']").val());
+                formData.append("email2", $("input[name='email2']").val());
+                formData.append("role", $("select[name='role']").val());
+                formData.append("socEdu", $("select[name='socEdu']").val());
+                formData.append("socComp", $("input[name='socComp']").val());
+                formData.append("socCompTitle", $("input[name='socCompTitle']").val());
+                formData.append("socCompType", $("select[name='socCompType']").val());
+                formData.append("socCultureSqno", $("select[name='socCultureSqno']").val());
+                formData.append("socCompOtherCagegory", $("input[name='socCompOtherCagegory']").val());
+                formData.append("socCompOther", $("input[name='socCompOther']").val());
+                formData.append("stuSchName", $("input[name='stuSchName']").val());
+                formData.append("stuDept", $("input[name='stuDept']").val());
+                formData.append("stuYear", $("input[name='stuYear']").val());
+                formData.append("meal", $("input[name='meal']").val());
+                formData.append("isCome", $("select[name='isCome']").val());
+
+                $.ajax({
+                    url: "@Url.Action("EditActivitySignUp")",
+                    type: "POST",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (res) {
+                        if (res.success) {
+                            alert("編輯成功");
+                            //$('#div-bPopupWin').bPopup().close(); //不要用這個, 會無法觸發原本的onClose事件
+                            $("#btn-close-bPopupWin").trigger("click");
+                        } else {
+                            if (typeof (res.errorMessage) != 'undefined') {
+                                alert(res.errorMessage);
+                            }
+                            if (typeof (res.ModelStateErrors) != 'undefined') {
+                                $.each(res.ModelStateErrors, function (key, value) {
+                                    //alert(key + ":" + value[0]);
+                                    if (value != null) {
+                                        var container = $('span[data-valmsg-for="' + key + '"]');
+                                        container.removeClass("field-validation-valid").addClass("field-validation-error");
+                                        container.html(value[0]);
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    error: function (er) {
+                        alert("error: "+er);
+                    }
+                });
+
+                return false;
+            });
+        }
+</script>
+    <script>
+        function selectRoleChangeSetting() {
+            selectRoleChange();
+            $("select[name='role']").change(selectRoleChange);
+        }
+
+        function selectRoleChange() {
+            var role = $("select[name='role']").val();
+            if (role == 1) {
+                $("#soc").show();
+                $("#stu").hide();
+            }
+            if (role == 2) {
+                $("#soc").hide();
+                $("#stu").show();
+            }
+        }
+    </script>
+    <script>
+        function selectIndustryTypeChangeSetting() {
+            selectIndustryTypeChange();
+            $("select[name='socCompType']").change(selectIndustryTypeChange);
+        }
+
+        function selectIndustryTypeChange() {
+            var industryType = $("select[name='socCompType']").val();
+            if (industryType == 1) {
+                $("select[name='socCultureSqno']").parents("div.form-group").show();
+                $("input[name='socCompOtherCagegory']").parents("div.form-group").hide();
+            }
+            if (industryType == 2) {
+                $("select[name='socCultureSqno']").parents("div.form-group").hide();
+                $("input[name='socCompOtherCagegory']").parents("div.form-group").show();
+            }
+
+            $("select[name='socCultureSqno']").prop('selectedIndex', 0);
+            $("select[name='socCultureSqno']").trigger("change");
+        }
+    </script>
+    <script>
+        function selectCultureChangeSetting() {
+            selectCultureChange();
+            $("select[name='socCultureSqno']").change(selectCultureChange);
+        }
+
+        function selectCultureChange() {
+            var culture = $("select[name='socCultureSqno']").val();
+            if (culture != 16) {
+                $("input[name='socCompOther']").parents("div.form-group").hide();
+            } else {
+                $("input[name='socCompOther']").parents("div.form-group").show();
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="">
+        <div class="member_bg form-horizontal">
+            @Html.HiddenFor(model => model.sqno)
+            @Html.HiddenFor(model => model.activitysqno)
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(model => model.name, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.name, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.mobile, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(model => model.mobile, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.mobile, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.phone, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(model => model.phone, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.phone, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.email1, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(model => model.email1, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.email1, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.email2, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(model => model.email2, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.email2, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.role, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.DropDownListFor(model => model.role, (IEnumerable<SelectListItem>)ViewBag.roleList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.role, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div id="soc">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.socEdu, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.DropDownListFor(model => model.socEdu, (IEnumerable<SelectListItem>)ViewBag.educationLevelList, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.socEdu, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.socComp, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.socComp, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.socComp, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.socCompTitle, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.socCompTitle, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.socCompTitle, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.socCompType, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.DropDownListFor(model => model.socCompType, (IEnumerable<SelectListItem>)ViewBag.industryTypeList, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.socCompType, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.socCultureSqno, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.DropDownListFor(model => model.socCultureSqno, (IEnumerable<SelectListItem>)ViewBag.cultureList, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.socCultureSqno, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.socCompOtherCagegory, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.socCompOtherCagegory, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.socCompOtherCagegory, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.socCompOther, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.socCompOther, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.socCompOther, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div id="stu">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.stuSchName, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.stuSchName, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.stuSchName, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.stuDept, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.stuDept, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.stuDept, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.stuYear, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(model => model.stuYear, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.stuYear, null, new { @class = "help-inline text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.meal, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(model => model.meal, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.meal, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.isCome, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
+                <div class="col-sm-9">
+                    @Html.DropDownListFor(model => model.isCome, (IEnumerable<SelectListItem>)ViewBag.willComeList, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.isCome, null, new { @class = "help-inline text-danger" })
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-10">
+                    <input type="button" value="送出" id="submitByAjax" class="btn btn-primary" />
+                    <input type="button" value="取消" class="btn btn-default" onclick='$("#btn-close-bPopupWin").trigger("click");' />
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
