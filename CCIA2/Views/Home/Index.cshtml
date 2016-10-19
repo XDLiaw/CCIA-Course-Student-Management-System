@@ -1,33 +1,92 @@
-﻿@using CCIA2.Models
+﻿@model CCIA2.Models.ViewModels.HomePageViewModel
+@using CCIA2.Models
+@using CCIA2.Models.ViewModels
 @{
     var user = @Session[SessionKey.USER] as SysUser;
 }
 
 <div class="bs-component">
     <ul class="nav nav-tabs">
-        <li class=""><a href="#tab_banner" id="tabLink-banner" class="tabLink" data-toggle="tab" aria-expanded="true">BANNER</a></li>
-        <li class=""><a href="#tab_brochure" id="tabLink-brochure" class="tabLink" data-toggle="tab" aria-expanded="true">簡章管理</a></li>
-        <li class=""><a href="#tab_attention" id="tabLink-attention" class="tabLink" data-toggle="tab" aria-expanded="true">注意事項</a></li>
-        <li class=""><a href="#tab_relativeLink" id="tabLink-relativeLink" class="tabLink" data-toggle="tab" aria-expanded="true">相關連結</a></li>
+        <li class=""><a data-toggle="tab" aria-expanded="true" class="tabLink" id="@BannerListViewModel.tabLinkId"      href="#@BannerListViewModel.tabId"  >BANNER</a></li>
+        <li class=""><a data-toggle="tab" aria-expanded="true" class="tabLink" id="@RelativeLinkViewModel.tabLinkId"    href="#@RelativeLinkViewModel.tabId">相關連結</a></li>
+        <li class=""><a data-toggle="tab" aria-expanded="true" class="tabLink" id="@BrochureViewModel.tabLinkId"        href="#@BrochureViewModel.tabId"    >簡章管理</a></li>
+        <li class=""><a data-toggle="tab" aria-expanded="true" class="tabLink" id="@AnnouncementViewModel.tabLinkId"    href="#@AnnouncementViewModel.tabId">注意事項</a></li>
     </ul>
     <div class="tab-content  member_bg">
-        <div id="tab_banner" class="fade tab-pane ">
-
+        @*Banner*@
+        <div id="@BannerListViewModel.tabId" class="fade tab-pane ">
+            @Html.Partial("~/Views/Home/IndexBanner.cshtml")
         </div>
-        <div id="tab_brochure" class="fade tab-pane ">
 
+        @*相關連結*@
+        <div id="@RelativeLinkViewModel.tabId" class="fade tab-pane ">
+            @Html.Partial("~/Views/Home/IndexRelativeLink.cshtml")
         </div>
-        <div id="tab_attention" class="fade tab-pane ">
 
+        @*簡章*@
+        <div id="@BrochureViewModel.tabId" class="fade tab-pane ">
+            @Html.Partial("~/Views/Home/IndexBrochure.cshtml")
         </div>
-        <div id="tab_relativeLink" class="fade tab-pane ">
 
+        @*注意事項*@
+        <div id="@AnnouncementViewModel.tabId" class="fade tab-pane ">
+            @Html.Partial("~/Views/Home/IndexAnnouncement.cshtml")
         </div>
     </div>
 </div>
 
+@Html.Partial("~/Views/Shared/BPopupWin.cshtml")
+
 <script>
     $(document).ready(function () {
-        $("#tabLink-banner").trigger("click");
+        tabSetting();
+        bPopupSetting();
     });
+</script>
+@*頁籤相關設定, 讓頁籤可以在搜尋後停留在原本的頁籤*@
+<script>
+    function tabSetting() {
+        $("#@BannerListViewModel.tabLinkId").click(function () {
+            $("#@BannerListViewModel.tabId").find("form").submit();
+        });
+        $("#@RelativeLinkViewModel.tabLinkId").click(function () {
+            $("#@RelativeLinkViewModel.tabId").find("form").submit();
+        });
+        $("#@BrochureViewModel.tabLinkId").click(function () {
+            $("#@BrochureViewModel.tabId").find("form").submit();
+        });
+        $("#@AnnouncementViewModel.tabLinkId").click(function () {
+            $("#@AnnouncementViewModel.tabId").find("form").submit();
+        });
+
+        $("#" + '@Model.selectedTabLinkId').parents("li").addClass("active");
+        $("#" + '@Model.selectedTabId').addClass("active").addClass("in");
+    }
+</script>
+
+@*bPopup視窗相關設定*@
+<script>
+    function bPopupSetting() {
+        $(".bpopup").click(function (event) {
+            event.preventDefault();
+            var url = $(this).prop("href");
+            //alert(url);
+            var formObject = $(this).closest('form');
+
+            $('#div-bPopupWin').bPopup({
+                loadUrl: url, //Uses jQuery.load()
+                scrollBar: true,
+                escClose: false,
+                onClose: function () {
+                    //alert("bpopup onclose trigger");
+                    formObject.submit();
+                }
+            },
+            function () {
+                //alert('Callback fired');
+            });
+
+            return false;
+        });
+    }
 </script>

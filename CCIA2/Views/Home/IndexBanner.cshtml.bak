@@ -1,0 +1,108 @@
+﻿@model CCIA2.Models.ViewModels.HomePageViewModel
+
+@using CCIA2.Models
+@using CCIA2.Models.ViewModels
+@{
+    Layout = null;
+}
+
+
+<script>
+$(document).ready(function () {
+    bPopupSetting();
+    paginationSetting();
+});
+</script>
+<script>
+    function paginationSetting() {
+        var tabDiv = $("#" + '@BannerListViewModel.tabId');
+        tabDiv.css("background-color", "red");
+
+        tabDiv.find(".pagination input").addClass("btn btn-default btn-sm");
+
+        tabDiv.find("ul > li > input.btn-page").click(function () {
+            tabDiv.find(".PageNumber").val($(this).attr("value"));
+            return true;
+        });
+
+        tabDiv.find("ul > li > input.btn-page").eq(@Model.bannerListViewModel.bannerPagedList.PageIndex).addClass("active");
+        tabDiv.find("ul > li > input.btn-previous-page").click(function () {
+            if (@Model.bannerListViewModel.bannerPagedList.PageIndex > 0) {
+                tabDiv.find(".PageNumber").val(@Model.bannerListViewModel.bannerPagedList.PageNumber -1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+        tabDiv.find("ul > li > input.btn-next-page").click(function () {
+            if ((@Model.bannerListViewModel.bannerPagedList.PageIndex) < (@Model.bannerListViewModel.bannerPagedList.PageCount-1)) {
+                tabDiv.find(".PageNumber").val(@Model.bannerListViewModel.bannerPagedList.PageNumber + 1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+
+        tabDiv.find("input.btn-search").click(function(){
+            tabDiv.find(".PageNumber").val(1);
+            return true;
+        });
+    }
+</script>
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, htmlAttributes: new {  }))
+{
+    @Html.HiddenFor(model => model.selectedTabLinkId, new { Value = @BannerListViewModel.tabLinkId })
+    @Html.HiddenFor(model => model.selectedTabId, new { Value = @BannerListViewModel.tabId })
+    <div class="container">
+        <div class="col-sm-2 pull-right">
+            @Html.ActionLink("新增Banner", "CreateBannerAndLink", new { type = BannerAndLink.TYPE_BANNER }, htmlAttributes: new { @class = "btn btn-info bpopup", target = "_blank" })
+        </div>
+    </div>
+    <br />
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(x => Model.bannerListViewModel.bannerPagedList.FirstOrDefault().name)</th>
+                <th>@Html.DisplayNameFor(x => Model.bannerListViewModel.bannerPagedList.FirstOrDefault().startDate)</th>
+                <th>@Html.DisplayNameFor(x => Model.bannerListViewModel.bannerPagedList.FirstOrDefault().endDate)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model != null && Model.bannerListViewModel.bannerPagedList != null)
+            {
+                foreach (var item in Model.bannerListViewModel.bannerPagedList)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(x => item.name)</td>
+                        <td>@Html.DisplayFor(x => item.startDate)</td>
+                        <td>@Html.DisplayFor(x => item.endDate)</td>
+                        <td>
+                            @Html.ActionLink("編輯", "EditBannerAndLink", new { sqno = item.sqno, type = BannerAndLink.TYPE_BANNER }, htmlAttributes: new { @class = "btn btn-default bpopup" })
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @Html.HiddenFor(model => model.bannerListViewModel.pageNumber, htmlAttributes: new { @class = "PageNumber" })
+    <ul class="pagination">
+        @if (Model != null && Model != null && Model.bannerListViewModel.bannerPagedList != null)
+        {
+            <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+            for (int i = 1; i <= Model.bannerListViewModel.bannerPagedList.PageCount; i++)
+            {
+                <li><input type="submit" value=@i class="btn-page" /></li>
+            }
+            <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+            <text>共 @Model.bannerListViewModel.bannerPagedList.TotalItemCount 筆資料</text>
+        }
+    </ul>
+}
+
+

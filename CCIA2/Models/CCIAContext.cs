@@ -15,11 +15,16 @@ namespace CCIA2.Models
         public virtual DbSet<Activity> activity { get; set; }
         public virtual DbSet<ActivitySignUp> activitySignUp { get; set; }
 
+        public virtual DbSet<BannerAndLink> bannerAndLink { get; set; }
+        public virtual DbSet<BrochureAndAnnouncement> brochureAndAnnouncement { get; set; }
+
         public virtual DbSet<Course> Course { get; set; }
         public virtual DbSet<CourseClass> CourseClass { get; set; }
         public virtual DbSet<CourseGroup> CourseGroup { get; set; }
         public virtual DbSet<CourseTeacher> CourseTeacher { get; set; }
         public virtual DbSet<CourseTeacherRelation> CourseTeacherRelation { get; set; }
+
+        public virtual DbSet<DbFile> dbFile { get; set; }
 
         public virtual DbSet<Question> Question { get; set; }
         public virtual DbSet<MemberQAnswer> MemberQAnswer { get; set; }                

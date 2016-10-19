@@ -1,0 +1,106 @@
+﻿@model CCIA2.Models.BrochureAndAnnouncement
+@using CCIA2.Models
+@{
+    Layout = null;
+}
+
+
+@Styles.Render("~/Content/datetimepicker")
+@Scripts.Render("~/bundles/datetimepicker")
+
+<script src="/Scripts/tinymce/tinymce.min.js"></script>
+<script src="/Scripts/tinymce/jquery.tinymce.min.js"></script>
+<script>
+    //網頁編輯器設定
+    tinymce.init({
+        selector: 'textarea[name="content"]',
+        plugins: [
+            'advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker',
+            'searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking',
+            'save table contextmenu directionality emoticons template paste textcolor'
+        ],
+        content_css: 'css/content.css',
+        menubar: 'file edit view format tools table',
+        toolbar: [
+            'code | undo redo | cut copy paste | bold italic underline strikethrough | styleselect formatselect fontselect fontsizeselect  ',
+            'bullist numlist outdent indent | alignleft aligncenter alignright alignjustify | link searchreplace table | forecolor backcolor'
+        ],
+        height: 400
+    });
+</script>
+<script src="/Scripts/submitFormByAjax.js"></script>
+<script>
+    $(document).ready(function () {
+        submitFormByAjax($('#form-createBrochureAndAnnouncement')); //要記得引用 /Scripts/submitFormByAjax.js
+        fileBrowseSetting();
+    });
+</script>
+<script>
+    function fileBrowseSetting() {
+        $("input[type=file]").change(function () {
+            var fileName = $(this).get(0).files[0].name;
+            $("#fileName").html(fileName);
+        });
+    }
+</script>
+
+
+@using (Html.BeginForm("CreateBrochureAndAnnouncement", "Home", null, FormMethod.Post, htmlAttributes: new { @id = "form-createBrochureAndAnnouncement", enctype = "multipart/form-data" }))
+{ 
+    @Html.HiddenFor(model => model.type)
+    <div class="member_bg form-horizontal">
+        <div class="form-group">
+            <div class="col-md-2"></div>
+            <div class="col-md-10"><h2>新增</h2></div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.title, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.title, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.title, null, new { @class = "help-inline text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Abstract, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Abstract, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Abstract, null, new { @class = "help-inline text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.content, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.content, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.content, null, new { @class = "help-inline text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.dbFile, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">                    
+                <div id="fileName" class="form-control"></div>
+                <input type="button" class="btn btn-default btn-file" value="Browse" onclick="$('input[name=uploadFile]').trigger('click')" />
+                <input type="file" name="uploadFile" class="upload" , onchange="readURL(this);" style="display:none;" />
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.startDate, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.startDate, "{0:yyyy/MM/dd}", htmlAttributes: new { @class = "form-control calendarBox" })
+                @Html.ValidationMessageFor(model => model.startDate, null, new { @class = "help-inline text-danger" })
+            </div>
+            @Html.LabelFor(model => model.endDate, htmlAttributes: new { @class = "text-right col-md-2 control-label" })
+            <div class="col-md-4">
+                @Html.TextBoxFor(model => model.endDate, "{0:yyyy/MM/dd}", htmlAttributes: new { @class = "form-control calendarBox" })
+                @Html.ValidationMessageFor(model => model.endDate, null, new { @class = "help-inline text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-10">
+                <input type="submit" value="送出" class="btn btn-primary" />
+                <input type="button" value="取消" class="btn btn-default" onclick='$("#btn-close-bPopupWin").trigger("click");' />                        
+            </div>
+        </div>
+    </div>
+}
+

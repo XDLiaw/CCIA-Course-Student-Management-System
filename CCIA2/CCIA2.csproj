@@ -201,6 +201,8 @@
     <Compile Include="Helper\FileUtils.cs" />
     <Compile Include="Models\Activity.cs" />
     <Compile Include="Models\ActivitySignUp.cs" />
+    <Compile Include="Models\BannerAndLink.cs" />
+    <Compile Include="Models\BrochureAndAnnouncement.cs" />
     <Compile Include="Models\CaptchaResponse.cs" />
     <Compile Include="Models\CCIAContext.cs" />
     <Compile Include="Models\Course.cs" />
@@ -208,6 +210,7 @@
     <Compile Include="Models\CourseGroup.cs" />
     <Compile Include="Models\CourseTeacher.cs" />
     <Compile Include="Models\CourseTeacherRelation.cs" />
+    <Compile Include="Models\DbFile.cs" />
     <Compile Include="Models\LogMemberLog.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\MemberAttchFile.cs" />
@@ -237,6 +240,7 @@
     <Compile Include="Models\ViewModels\CourseTeacherViewModel.cs" />
     <Compile Include="Models\ViewModels\CourseRelativeViewModel.cs" />
     <Compile Include="Models\ViewModels\HistoryYearGroupViewModel.cs" />
+    <Compile Include="Models\ViewModels\HomePageViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberAdmitViewModel.cs" />
     <Compile Include="Models\ViewModels\MemberAppraiseViewModel.cs" />
@@ -248,6 +252,8 @@
     <Compile Include="Models\ViewModels\StudentChoseCourseListViewModel.cs" />
     <Compile Include="Models\ViewModels\StudentCourseAttendSummaryViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\BrochureAndAnnouncementService.cs" />
+    <Compile Include="Services\BannerAndLinkService.cs" />
     <Compile Include="Services\MemberService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -351,6 +357,7 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\submitFormByAjax.js" />
     <Content Include="Scripts\tinymce\jquery.tinymce.min.js" />
     <Content Include="Scripts\tinymce\license.txt" />
     <Content Include="Scripts\tinymce\plugins\advlist\plugin.js" />
@@ -621,6 +628,14 @@
     <Content Include="Views\Activity\SignUpList.cshtml" />
     <Content Include="Views\Activity\Edit.cshtml" />
     <Content Include="Views\Activity\EditActivitySignUp.cshtml" />
+    <Content Include="Views\Home\CreateBannerAndLink.cshtml" />
+    <Content Include="Views\Home\EditBannerAndLink.cshtml" />
+    <Content Include="Views\Home\IndexBanner.cshtml" />
+    <Content Include="Views\Home\IndexRelativeLink.cshtml" />
+    <Content Include="Views\Home\IndexBrochure.cshtml" />
+    <Content Include="Views\Home\CreateBrochureAndAnnouncement.cshtml" />
+    <Content Include="Views\Home\IndexAnnouncement.cshtml" />
+    <Content Include="Views\Home\EditBrochureAndAnnouncement.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

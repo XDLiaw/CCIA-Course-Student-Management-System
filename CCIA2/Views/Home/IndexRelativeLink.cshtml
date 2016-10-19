@@ -1,0 +1,104 @@
+﻿@model CCIA2.Models.ViewModels.HomePageViewModel
+
+@using CCIA2.Models
+@using CCIA2.Models.ViewModels
+@{
+    Layout = null;
+}
+
+<script>
+$(document).ready(function () {
+    bPopupSetting();
+    relativeLink_paginationSetting();
+});
+</script>
+<script>
+    function relativeLink_paginationSetting() {
+        var tabDiv = $('#@RelativeLinkViewModel.tabId');
+
+        tabDiv.find(".pagination input").addClass("btn btn-default btn-sm");
+
+        tabDiv.find("ul > li > input.btn-page").click(function () {
+            tabDiv.find(".PageNumber").val($(this).attr("value"));
+            return true;
+        });
+
+        tabDiv.find("ul > li > input.btn-page").eq(@Model.relativeLinkViewModel.relativeLinkPagedList.PageIndex).addClass("active");
+        tabDiv.find("ul > li > input.btn-previous-page").click(function () {
+            if (@Model.relativeLinkViewModel.relativeLinkPagedList.PageIndex > 0) {
+                tabDiv.find(".PageNumber").val(@Model.relativeLinkViewModel.relativeLinkPagedList.PageNumber -1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+        tabDiv.find("ul > li > input.btn-next-page").click(function () {
+            if ((@Model.relativeLinkViewModel.relativeLinkPagedList.PageIndex) < (@Model.relativeLinkViewModel.relativeLinkPagedList.PageCount-1)) {
+                tabDiv.find(".PageNumber").val(@Model.relativeLinkViewModel.relativeLinkPagedList.PageNumber + 1);
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+
+        tabDiv.find("input.btn-search").click(function(){
+            tabDiv.find(".PageNumber").val(1);
+            return true;
+        });
+    }
+</script>
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, htmlAttributes: new { }))
+{
+    @Html.HiddenFor(model => model.selectedTabLinkId, new { Value = @RelativeLinkViewModel.tabLinkId })
+    @Html.HiddenFor(model => model.selectedTabId, new { Value = @RelativeLinkViewModel.tabId })
+    <div class="container">
+        <div class="col-sm-2 pull-right">
+            @Html.ActionLink("新增相關連結", "CreateBannerAndLink", new { type = BannerAndLink.TYPE_LINK }, htmlAttributes: new { @class = "btn btn-info bpopup", target = "_blank" })
+        </div>
+    </div>
+    <br />
+
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(x => Model.relativeLinkViewModel.relativeLinkPagedList.FirstOrDefault().name)</th>
+                <th>@Html.DisplayNameFor(x => Model.relativeLinkViewModel.relativeLinkPagedList.FirstOrDefault().startDate)</th>
+                <th>@Html.DisplayNameFor(x => Model.relativeLinkViewModel.relativeLinkPagedList.FirstOrDefault().endDate)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.relativeLinkViewModel != null && Model.relativeLinkViewModel.relativeLinkPagedList != null)
+            {
+                foreach (var item in Model.relativeLinkViewModel.relativeLinkPagedList)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(x => item.name)</td>
+                        <td>@Html.DisplayFor(x => item.startDate)</td>
+                        <td>@Html.DisplayFor(x => item.endDate)</td>
+                        <td>
+                            @Html.ActionLink("編輯", "EditBannerAndLink", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default bpopup" })
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    @Html.HiddenFor(model => model.relativeLinkViewModel.pageNumber, htmlAttributes: new { @class = "PageNumber" })
+    <ul class="pagination">
+        @if (Model != null && Model != null && Model.relativeLinkViewModel.relativeLinkPagedList != null)
+        {
+            <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+            for (int i = 1; i <= Model.relativeLinkViewModel.relativeLinkPagedList.PageCount; i++)
+            {
+                <li><input type="submit" value=@i class="btn-page" /></li>
+            }
+            <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+            <text>共 @Model.relativeLinkViewModel.relativeLinkPagedList.TotalItemCount 筆資料</text>
+        }
+    </ul>
+}

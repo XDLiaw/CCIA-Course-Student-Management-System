@@ -142,6 +142,7 @@
         <div class="member_bg form-horizontal">
             @Html.HiddenFor(model => model.sqno)
             @Html.HiddenFor(model => model.activitysqno)
+            @Html.HiddenFor(model => model.meal);
 
             <div class="form-group">
                 @Html.LabelFor(model => model.name, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
@@ -259,13 +260,14 @@
                     </div>
                 </div>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 @Html.LabelFor(model => model.meal, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
                 <div class="col-sm-9">
                     @Html.TextBoxFor(model => model.meal, htmlAttributes: new { @class = "form-control" })
                     @Html.ValidationMessageFor(model => model.meal, null, new { @class = "help-inline text-danger" })
                 </div>
-            </div>
+            </div>*@
+            
             <div class="form-group">
                 @Html.LabelFor(model => model.isCome, htmlAttributes: new { @class = "text-right col-sm-2 control-label" })
                 <div class="col-sm-9">
