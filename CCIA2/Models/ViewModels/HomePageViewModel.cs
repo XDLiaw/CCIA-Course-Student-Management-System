@@ -50,7 +50,7 @@ namespace CCIA2.Models.ViewModels
         public BannerListViewModel()
         {
             this.pageNumber = 1;
-            this.pageSize = 5;
+            this.pageSize = 10;
             this.bannerPagedList = new PagedList<BannerAndLink>(null, this.pageNumber - 1, this.pageSize);
         }
     }
@@ -73,7 +73,7 @@ namespace CCIA2.Models.ViewModels
         public RelativeLinkViewModel()
         {
             this.pageNumber = 1;
-            this.pageSize = 5;
+            this.pageSize = 10;
             this.relativeLinkPagedList = new PagedList<BannerAndLink>(null, this.pageNumber-1, this.pageSize);
         }
     }
@@ -96,7 +96,7 @@ namespace CCIA2.Models.ViewModels
         public BrochureViewModel()
         {
             this.pageNumber = 1;
-            this.pageSize = 5;
+            this.pageSize = 10;
             this.pagedList = new PagedList<BrochureAndAnnouncement>(null, this.pageNumber - 1, this.pageSize);
         }
     }
@@ -119,7 +119,7 @@ namespace CCIA2.Models.ViewModels
         public AnnouncementViewModel()
         {
             this.pageNumber = 1;
-            this.pageSize = 5;
+            this.pageSize = 10;
             this.pagedList = new PagedList<BrochureAndAnnouncement>(null, this.pageNumber - 1, this.pageSize);
         }
     }
