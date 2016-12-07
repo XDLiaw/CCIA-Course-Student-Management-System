@@ -185,6 +185,22 @@ namespace CCIA2.Models
         [StringLength(50)]
         public string mrIsOpen { get; set; }
 
+        [Display(Name = "願意公開Email")]
+        [StringLength(50)]
+        public string isOpenEmail { get; set; }
+
+        [Display(Name = "願意公開手機")]
+        [StringLength(50)]
+        public string isOpenMobile { get; set; }
+
+        [Display(Name = "願意公開電話")]
+        [StringLength(50)]
+        public string isOpenPhone { get; set; }
+
+        [Display(Name = "同意透過系統服務信箱發送訊息至個人信箱，以便有需要之相關業者留言詢問")]
+        [StringLength(50)]
+        public string isAgreeSendMailtoU { get; set; }
+
         [Display(Name = "")]
         public DateTime? mrCreateDt { get; set; }
 

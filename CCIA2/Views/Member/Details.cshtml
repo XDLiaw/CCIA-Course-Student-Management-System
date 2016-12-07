@@ -270,9 +270,27 @@
     </div>
     <br />
     <div class="row">
-        @Html.LabelFor(model => model.mrIsOpen, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        @Html.LabelFor(model => model.isOpenEmail, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
         <div class="col-sm-9">
-            @Html.Raw(Model.mrIsOpen == "Y" ? "是" : "否")
+            @Html.Raw(Model.isOpenEmail == "Y" ? "是" : "否")
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.isOpenMobile, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.Raw(Model.isOpenMobile == "Y" ? "是" : "否")
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.isOpenPhone, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.Raw(Model.isOpenPhone == "Y" ? "是" : "否")
+        </div>
+    </div>
+    <div class="row">
+        @Html.LabelFor(model => model.isAgreeSendMailtoU, htmlAttributes: new { @class = "text-right col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.Raw(Model.isAgreeSendMailtoU == "Y" ? "是" : "否")
         </div>
     </div>
     <div class="row">
