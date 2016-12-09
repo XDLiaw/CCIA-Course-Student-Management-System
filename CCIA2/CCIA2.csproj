@@ -636,6 +636,9 @@
     <Content Include="Views\Home\CreateBrochureAndAnnouncement.cshtml" />
     <Content Include="Views\Home\IndexAnnouncement.cshtml" />
     <Content Include="Views\Home\EditBrochureAndAnnouncement.cshtml" />
+    <Content Include="Views\Member\index_memberType1.cshtml" />
+    <Content Include="Views\Member\index_memberType3.cshtml" />
+    <Content Include="Views\Member\index_memberType2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

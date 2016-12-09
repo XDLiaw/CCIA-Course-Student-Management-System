@@ -25,11 +25,12 @@ namespace CCIA2.Services
                 IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo && m.mrIsActive == "Y" && m.mrIsFinish == "Y");
                 if (model.searchText != null && model.searchText.Trim().Length > 0) //只要這內容不為空就忽略其他條件
                 {
-                    model.memberPagedList = queryByText(memberQuery, model.searchText)
-                        .OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
+                    memberQuery = queryByText(memberQuery, model.searchText, model.operate, model.searchText2);
+                    model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
                 }
                 else
                 {
+                    memberQuery = queryProAndSkill(memberQuery, model.searchText2);
                     if (model.step == null) // 全部階段
                     {
                         model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
@@ -101,15 +102,16 @@ namespace CCIA2.Services
             #region 歷屆會員 or 一般會員
             else if (model.memberTypeNo == 2 || model.memberTypeNo == 3)
             {
-                model.memberPagedList = db.Member
-                    .Where(m => m.mrMemberTypesqno == model.memberTypeNo)
-                    .Where(m => model.searchText == null ? true : m.mrName.Contains(model.searchText)
-                        || model.searchText == null ? true : m.mrMainEmail.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrOtherEmail.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrNumber.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrId.Equals(model.searchText))
-                    .OrderBy(m => m.mrNumber)
-                    .ToPagedList(model.pageNumber - 1, model.pageSize);
+                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo);
+                if (String.IsNullOrWhiteSpace(model.searchText) == false)
+                {
+                    memberQuery = queryByText(memberQuery, model.searchText, model.operate, model.searchText2);
+                }
+                else
+                {
+                    memberQuery = queryProAndSkill(memberQuery, model.searchText2);
+                }
+                model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
             }
             #endregion
 
@@ -125,10 +127,12 @@ namespace CCIA2.Services
                 IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo && m.mrIsActive == "Y" && m.mrIsFinish == "Y");
                 if (model.searchText != null && model.searchText.Trim().Length > 0) //只要這內容不為空就忽略其他條件
                 {
-                    memberList = queryByText(memberQuery, model.searchText).OrderBy(m => m.mrNumber).ToList();
+                    memberQuery = queryByText(memberQuery, model.searchText, model.operate, model.searchText2);
+                    memberList = memberQuery.OrderBy(m => m.mrNumber).ToList();
                 }
                 else
                 {
+                    memberQuery = queryProAndSkill(memberQuery, model.searchText2);
                     if (model.step == null) // 全部階段
                     {
                         memberList = memberQuery.OrderBy(m => m.mrNumber).ToList();
@@ -200,29 +204,62 @@ namespace CCIA2.Services
             #region 歷屆會員 or 一般會員
             else if (model.memberTypeNo == 2 || model.memberTypeNo == 3)
             {
-                memberList = db.Member
-                    .Where(m => m.mrMemberTypesqno == model.memberTypeNo)
-                    .Where(m => model.searchText == null ? true : m.mrName.Contains(model.searchText)
-                        || model.searchText == null ? true : m.mrMainEmail.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrOtherEmail.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrNumber.Equals(model.searchText)
-                        || model.searchText == null ? true : m.mrId.Equals(model.searchText))
-                    .OrderBy(m => m.mrNumber)
-                    .ToList();
+                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo);
+                if (String.IsNullOrWhiteSpace(model.searchText) == false)
+                {
+                    memberQuery = queryByText(memberQuery, model.searchText, model.operate, model.searchText2);
+                }
+                else
+                {
+                    memberQuery = queryProAndSkill(memberQuery, model.searchText2);
+                }
+                memberList = memberQuery.OrderBy(m => m.mrNumber).ToList();
             }
             #endregion
 
             return memberList;
         }
 
-        public IQueryable<Member> queryByText(IQueryable<Member> memberQuery, string searchText)
+        public IQueryable<Member> queryByText(IQueryable<Member> memberQuery, string searchText, string operate, string searchText2)
         {
-            memberQuery = memberQuery
-                .Where(m => m.mrName.Contains(searchText)
-                    || m.mrMainEmail.Equals(searchText)
-                    || m.mrOtherEmail.Equals(searchText)
-                    || m.mrNumber.Equals(searchText)
-                    || m.mrId.Equals(searchText));
+            if (String.IsNullOrWhiteSpace(searchText2))
+            {
+                memberQuery = memberQuery
+                   .Where(m => m.mrName.Contains(searchText)
+                       || m.mrMainEmail.Equals(searchText)
+                       || m.mrOtherEmail.Equals(searchText)
+                       || m.mrNumber.Equals(searchText)
+                       || m.mrId.Equals(searchText));
+            }
+            else
+            {
+                if (operate.Equals("AND"))
+                {
+                    memberQuery = memberQuery
+                        .Where(m => m.mrName.Contains(searchText)
+                            || m.mrMainEmail.Equals(searchText)
+                            || m.mrOtherEmail.Equals(searchText)
+                            || m.mrNumber.Equals(searchText)
+                            || m.mrId.Equals(searchText));
+                    memberQuery = memberQuery.Where(m => m.mrPro.Contains(searchText2) || m.mrSkill.Contains(searchText2));
+                }
+                else
+                {
+                    memberQuery = memberQuery.Where(m =>
+                        (m.mrName.Contains(searchText) || m.mrMainEmail.Equals(searchText) || m.mrOtherEmail.Equals(searchText) || m.mrNumber.Equals(searchText) || m.mrId.Equals(searchText))
+                        ||
+                        (m.mrPro.Contains(searchText2) || m.mrSkill.Contains(searchText2)));
+                }
+            }
+            return memberQuery;
+        }
+
+        public IQueryable<Member> queryProAndSkill(IQueryable<Member> memberQuery, String searchText2)
+        {
+            if (String.IsNullOrWhiteSpace(searchText2) == false)
+            {
+                memberQuery = memberQuery.Where(m => m.mrPro.Contains(searchText2) || m.mrSkill.Contains(searchText2));
+            }
             return memberQuery;
         }
 

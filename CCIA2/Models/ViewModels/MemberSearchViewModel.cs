@@ -24,6 +24,11 @@ namespace CCIA2.Models.ViewModels
         [Display(Name="全部/正取/備取")]
         public string enrollType { get; set; }
 
+        [Display(Name="")]
+        public string operate { get; set; }
+
+        public string searchText2 { get; set; }
+
         [Display(Name = "頁碼")]
         public int pageNumber { get; set; }
 

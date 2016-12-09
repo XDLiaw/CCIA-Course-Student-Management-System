@@ -19,7 +19,7 @@ namespace CCIA2.Helper
             {
                 list.Add(new SelectListItem()
                 {
-                    Text = "全部",
+                    Text = "-- 審核階段 --",
                     Value = ""
                 });
             }
@@ -37,64 +37,6 @@ namespace CCIA2.Helper
                 }
             );
             list.AddRange(items);
-
-            return list;
-        }
-
-        public static List<SelectListItem> getAppraiseResultList(int AppraiseStep)
-        {
-            //TODO 可能要取消掉這個method
-            List<SelectListItem> list = new List<SelectListItem>();
-            if (AppraiseStep == 1) //資格審
-            {
-                list.Add(new SelectListItem()
-                {
-                    Text = "通過",
-                    Value = "1"
-                });
-                list.Add(new SelectListItem()
-                {
-                    Text = "未通過",
-                    Value = "0"
-                });
-            }
-            else if (AppraiseStep == 2) //外評初審
-            {
-                // nothing;
-            }
-
-
-            else if (AppraiseStep == 3)
-            {
-                list.Add(new SelectListItem()
-                {
-                    Text = "正取",
-                    Value = "1"
-                });
-                list.Add(new SelectListItem()
-                {
-                    Text = "備取",
-                    Value = "2"
-                });
-                list.Add(new SelectListItem()
-                {
-                    Text = "未錄取",
-                    Value = "0"
-                });
-            }
-            else if (AppraiseStep == 4)
-            {
-                list.Add(new SelectListItem()
-                {
-                    Text = "已繳",
-                    Value = "1"
-                });
-                list.Add(new SelectListItem()
-                {
-                    Text = "未繳",
-                    Value = "0"
-                });
-            }
 
             return list;
         }
@@ -131,7 +73,7 @@ namespace CCIA2.Helper
             {
                 list.Add(new SelectListItem()
                 {
-                    Text = "全部",
+                    Text = "-- 組別 --",
                     Value = ""
                 });
             }
@@ -156,7 +98,7 @@ namespace CCIA2.Helper
             {
                 list.Add(new SelectListItem()
                 {
-                    Text = "全部",
+                    Text = "-- 正/備取 --",
                     Value = ""
                 });
             }
@@ -389,6 +331,23 @@ namespace CCIA2.Helper
 
             return list;
         }
-        
+
+        public static List<SelectListItem> getAndOrList()
+        {
+            List<SelectListItem> list = new List<SelectListItem>();
+            list.Add(new SelectListItem()
+            {
+                Text = "AND",
+                Value = "AND"
+            });
+            list.Add(new SelectListItem()
+            {
+                Text = "OR",
+                Value = "OR"
+            });
+
+            return list;
+        }
+
     }
 }

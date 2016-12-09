@@ -1,0 +1,441 @@
+﻿@using CCIA2.Models
+@model CCIA2.Models.ViewModels.MemberSearchViewModel
+
+@{
+    var user = @Session[SessionKey.USER] as SysUser;
+}
+
+
+@using (Html.BeginForm("Index", "Member", FormMethod.Post, htmlAttributes: new { @id = "form-memberType1" }))
+{
+    <input type="hidden" name="memberTypeNo" value="1" id="hidden-memberTypeNo" />
+    <div class="container">
+        <div class="col-sm-4">
+            @if (user.role != 2)
+            {
+                @Html.TextBoxFor(model => model.searchText, htmlAttributes: new { @class = "form-control", @id = "textBox-searchText", @placeholder = "會員編號, 姓名, Email, 身分證字號" })
+            }
+            else
+            {
+                @Html.TextBoxFor(model => model.searchText, htmlAttributes: new { @class = "form-control", @placeholder = "會員編號, 姓名, Email, 身分證字號", disabled = "disabled" })
+            }
+        </div>
+        <div class="col-sm-2">
+            @Html.DropDownListFor(model => model.operate, (IEnumerable<SelectListItem>)ViewBag.andOrList, htmlAttributes: new { @class = "form-control" })
+        </div>
+        <div class="col-sm-4">
+            @Html.TextBoxFor(model => model.searchText2, htmlAttributes: new { @class = "form-control", @id = "textBox-searchText", @placeholder = "專長, 經歷" })
+        </div>
+        <div class="col-md-2 pull-right">
+            <input type="submit" value="查詢" class="btn btn-primary btn-search" />
+        </div>
+    </div>
+    <br />
+    <div class="container">
+        <div class="col-sm-4">
+            @Html.DropDownListFor(model => model.step, (IEnumerable<SelectListItem>)ViewBag.stepList, htmlAttributes: new { @class = "form-control", id = "select-step" })
+        </div>
+        <div class="col-sm-4">
+            @if (user.role != 2)
+            {
+                @Html.DropDownListFor(model => model.group, (IEnumerable<SelectListItem>)ViewBag.groupList, htmlAttributes: new { @class = "form-control", id = "select-group" })
+            }
+            else
+            {
+                @Html.DropDownListFor(model => model.group, (IEnumerable<SelectListItem>)ViewBag.groupList, htmlAttributes: new { @class = "form-control", disabled = "disabled" })
+                <input type="hidden" name="group" value="@user.group" />
+            }
+        </div>
+        <div class="col-sm-3">
+            @Html.DropDownListFor(model => model.enrollType, (IEnumerable<SelectListItem>)ViewBag.enrollTypeList, htmlAttributes: new { @class = "form-control", id = "select-enrollType" })
+        </div>
+    </div>
+
+    <br />
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrNumber)</th>
+                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().mrName)</th>
+                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().MemberGroupApply)</th>
+                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().FirstAssignGroup)</th>
+                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().FinalGroup)</th>
+                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().firstTrailScore)</th>
+                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().secondTrailAvgScore)</th>
+                <th>@Html.DisplayNameFor(model => model.memberPagedList.FirstOrDefault().currentState)</th>
+                <th class=""><input type="button" value="下載報表" class="btn btn-info" id="btn-downloadMemberReport" /></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.memberPagedList != null)
+            {
+                foreach (var item in Model.memberPagedList)
+                {
+                    if (item.mrMemberTypesqno != 1) { continue; }
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.mrNumber)</td>
+                        <td>@Html.ActionLink(item.mrName, "Details", new { sqno = item.sqno }, htmlAttributes: new { target = "_blank" })</td>
+                        <td>@Html.DisplayFor(modelItem => item.MemberGroupApply.FirstOrDefault().First)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FirstAssignGroup)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FinalGroup)</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.firstTrailScore)
+                        @if (item.numberOfFristTrailScore > 0)
+                        {
+                            @Html.Raw("(" + item.numberOfFristTrailScore + ")")
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.secondTrailAvgScore)
+                        @if (item.numberOfSecondTrailScore > 0)
+                        {
+                            @Html.Raw("(" + item.numberOfSecondTrailScore + ")")
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.currentState)</td>
+                    <td>
+                        @if (user.role == 1)
+                        {
+                            if (item.MemberGroupResult == null || item.MemberGroupResult.Count == 0) // 待審核
+                            {
+                                @Html.ActionLink("資格審", "QualificationVerify", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
+                            }
+                            else if (item.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1 &&
+                                        item.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0 &&
+                                        item.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0) // 通過資格審
+                            {
+                                @Html.ActionLink("變更組別", "ChangeGroup", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
+                                @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
+                            }
+                            else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 2) // 完成初審
+                            {
+                                <input type="button" value="正取" class="btn btn-default btn-Admission" sqno="@item.sqno" />
+                                <input type="button" value="進入複審" class="btn btn-default btn-SecondTrail" sqno="@item.sqno" />
+                                <input type="button" value="未錄取" class="btn btn-default btn-Flunk" sqno="@item.sqno" />
+                            }
+                            else if (item.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1 &&
+                                item.MemberGroupResult.Count(res => res.AppraiseStep == 4 && res.AppraiseNo == user.accountNo) == 0 &&
+                                item.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0) // 進行複審
+                            {
+                                @Html.ActionLink("複審", "SecondTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
+                            }
+                            else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 4) // 完成複審
+                            {
+                                @Html.ActionLink("正/備取", "Admit", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
+                                <input type="button" value="未錄取" class="btn btn-default btn-Flunk" sqno="@item.sqno" />
+                            }
+                            else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 5) // 正/備取名單
+                            {
+                                if (item.MemberGroupResult.LastOrDefault().AppraiseResult == "1")
+                                {
+                                    if (Int32.Parse(item.mrRole) == 1)
+                                    {
+                                        <input type="button" value="已繳8000" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                    }
+                                    if (Int32.Parse(item.mrRole) == 2)
+                                    {
+                                        <input type="button" value="已繳4000" class="btn btn-default btn-Pay" sqno="@item.sqno" />
+                                    }
+                                    <input type="button" value="未繳保證金" class="btn btn-default btn-NotPay" sqno="@item.sqno" />
+                                }
+                                else
+                                {
+                                    <input type="button" value="遞補為正取" class="btn btn-default btn-ConvertToAdmission" sqno="@item.sqno" />
+                                    <input type="button" value="未通過" class="btn btn-default btn-Flunk" sqno="@item.sqno" />
+                                }
+                            }
+                            else if (item.MemberGroupResult.LastOrDefault().AppraiseStep == 7) // 未通過
+                            {
+                                <input type="button" value="轉為一般會員" class="btn btn-default btn-convertToGeneralMember" sqno="@item.sqno" />
+                            }
+                        }
+                        else if (user.role == 2)
+                        {
+                            if (item.MemberGroupResult.Count(res => res.AppraiseStep == 1) == 1 &&
+                                item.MemberGroupResult.Count(res => res.AppraiseStep > 1 && res.AppraiseNo == user.accountNo) == 0 &&
+                                item.MemberGroupResult.Count(res => res.AppraiseStep >= 3) == 0) // 通過資格審
+                            {
+                                @Html.ActionLink("初審", "FirstTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
+                            }
+                            else if (item.MemberGroupResult.Count(res => res.AppraiseStep == 3) == 1 &&
+                                item.MemberGroupResult.Count(res => res.AppraiseStep == 4 && res.AppraiseNo == user.accountNo) == 0 &&
+                                item.MemberGroupResult.Count(res => res.AppraiseStep >= 5) == 0) // 進行複審
+                            {
+                                @Html.ActionLink("複審", "SecondTrail", new { sqno = item.sqno }, htmlAttributes: new { @class = "btn btn-default a-newWindow" })
+                            }
+                        }
+                    </td>
+                </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    if (Model.memberTypeNo == 1)
+    {
+        @Html.HiddenFor(model => model.pageNumber, htmlAttributes: new { @id = "PageNumber" })
+        <ul class="pagination">
+            @if (Model != null && Model.memberPagedList != null)
+            {
+                <li class=""><input type="submit" value=&laquo; class="btn-previous-page" /></li>
+                for (int i = 1; i <= Model.memberPagedList.PageCount; i++)
+                {
+                    <li><input type="submit" value=@i class="btn-page" /></li>
+                }
+                <li class=""><input type="submit" value=&raquo; class="btn-next-page" /></li>
+                <text>共 @Model.memberPagedList.TotalItemCount 筆資料</text>
+            }
+        </ul>
+    }
+}
+
+@* 當審查popup視窗關閉時，重新搜尋 *@
+<script>
+    $(document).ready(function () {
+        $("#form-memberType1").find("a.a-newWindow").click(function(event) {
+            event.preventDefault();
+            var popup = window.open($(this).prop("href"), "_blank");
+            //var popup = window.open($(this).prop("href"), "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=800,height=600");
+            var loop = setInterval(function() {
+                if(popup.closed) {
+                    clearInterval(loop);
+                    $("#form-memberType1").submit();
+                }
+            }, 500);
+
+            return false;
+        });
+    });
+</script>
+
+@* 搜尋條件區塊的連動控制 *@
+<script>
+    $(document).ready(function () {
+        // 第一個文字輸入方塊若有值則使[審核階段]下拉選單失效
+        $("#form-memberType1").find("input[name=searchText]").on('change', function () {
+            var inputVal = $(this).val();
+            if (inputVal.length > 0) {
+                //$("#form-memberType1").find("#select-step").addClass("hidden");
+                $("#form-memberType1").find("#select-step").val("");
+                $("#form-memberType1").find("#select-step").trigger("change");
+                $("#form-memberType1").find("#select-step").attr("disabled", "disabled");
+            } else {
+                //$("#form-memberType1").find("#select-step").removeClass("hidden");
+                $("#form-memberType1").find("#select-step").removeAttr("disabled");
+            }
+        });
+        $("#form-memberType1").find("input[name=searchText]").trigger("change");
+
+        // 階段下拉選單不為全部時強制設定邏輯下拉選單為AND
+        $("#form-memberType1").find("#select-step").on('change', function () {
+            var selectState = $("#form-memberType1").find("#select-step").val();
+            if (selectState != "") {
+                $("#form-memberType1").find("select[name='operate']").val("AND");
+                $("#form-memberType1").find("select[name='operate']").attr("disabled", "disabled");
+            } else {
+                $("#form-memberType1").find("select[name='operate']").removeAttr("disabled");
+            }
+        });
+
+        // 控制顯示 組別 下拉選單
+        var userRole = parseInt($("#userRole").val());
+        $("#form-memberType1").find("#select-step").on('change', function () {
+            var selectState = $("#form-memberType1").find("#select-step").val();
+            if (selectState == 1 || selectState == 2 || selectState == 4 || selectState == 5 || selectState == 6) {
+                //$("#form-memberType1").find("#select-group").removeClass("hidden");
+                $("#form-memberType1").find("#select-group").removeAttr("disabled");
+            } else {
+                //$("#form-memberType1").find("#select-group").addClass("hidden");
+                $("#form-memberType1").find("#select-group").attr("disabled", "disabled");
+                $("#form-memberType1").find("#select-group").val("");
+            }
+        });
+
+        // 控制顯示下拉選單(全部/正取/備取)
+        $("#form-memberType1").find("#select-step").on('change', function () {
+            var selectState = $("#form-memberType1").find("#select-step").val();
+            if (selectState == 5) {
+                //$("#form-memberType1").find("#select-enrollType").removeClass("hidden");
+                $("#form-memberType1").find("#select-enrollType").removeAttr("disabled");
+            } else {
+                //$("#form-memberType1").find("#select-enrollType").addClass("hidden");
+                $("#form-memberType1").find("#select-enrollType").attr("disabled", "disabled");
+                $("#form-memberType1").find("#select-enrollType").val("");
+            }
+        });
+        $("#form-memberType1").find("#select-step").trigger("change");
+    });
+</script>
+
+@* 初審直接正取 Button *@
+<script>
+    $(document).ready(function () {
+        $("#form-memberType1").find(".btn-Admission").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno")};
+                $.post(
+                    "@Url.Content("~/Member/Admission")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+    });
+</script>
+
+@* 進入複審 Button *@
+<script>
+    $(document).ready(function () {
+        $("#form-memberType1").find(".btn-SecondTrail").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno")};
+                $.post(
+                    "@Url.Content("~/Member/IntoSecondTrail")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+    });
+</script>
+
+@* 未錄取 Button *@
+<script>
+    $(document).ready(function () {
+        $("#form-memberType1").find(".btn-Flunk").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno")};
+                $.post(
+                    "@Url.Content("~/Member/Flunk")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+    });
+</script>
+ 
+@* 備取轉正取 Button *@
+<script>
+    $(document).ready(function () {
+        $("#form-memberType1").find(".btn-ConvertToAdmission").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno"), hasPaiedDeposit : true};
+                $.post(
+                    "@Url.Content("~/Member/ConvertToAdmission")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+    });
+</script>
+
+@* 已繳/未繳 保證金 Button *@
+<script>
+    $(document).ready(function () {
+        // 已繳保證金
+        $("#form-memberType1").find(".btn-Pay").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno"), hasPaiedDeposit : true};
+                $.post(
+                    "@Url.Content("~/Member/PayDeposit")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+
+        // 未繳保證金
+        $("#form-memberType1").find(".btn-NotPay").click(function() {
+            if(confirm("送出後將無法再修改，確定要送出?"))
+            {
+                var data = {sqno : $(this).attr("sqno"), hasPaiedDeposit : false};
+                $.post(
+                    "@Url.Content("~/Member/PayDeposit")",
+                    data,
+                    function (res) {
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert(res.message);
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+    });
+</script>
+
+@* 轉為一般會員 Button *@
+<script>
+    $(document).ready(function () {
+        $("#form-memberType1").find(".btn-convertToGeneralMember").on('click', function() {
+            if(confirm("確定要轉為一般會員?轉換後將無法再修改!"))
+            {
+                var data = {memberSqno : $(this).attr("sqno")};
+                $.post(
+                    "@Url.Content("~/Member/convertToGeneralMember")",
+                    data,
+                    function (res) {
+                        //alert(JSON.stringify(res));
+                        if (typeof(res.errorMessage) != 'undefined') {
+                            alert(res.errorMessage);
+                        } else {
+                            alert("轉換完成");
+                            $("#form-memberType1").submit();
+                        }
+                    },
+                    "json"
+                );
+            }
+        });
+    });
+</script>

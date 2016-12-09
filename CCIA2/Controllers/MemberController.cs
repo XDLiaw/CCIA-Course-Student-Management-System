@@ -59,6 +59,7 @@ namespace CCIA2.Controllers
             ViewBag.stepList = DropDownListHelper.getApplyStepListWithAll();
             ViewBag.groupList = DropDownListHelper.getAppraiseGroupNameList(true);
             ViewBag.enrollTypeList = DropDownListHelper.getEnrollTypeList(true);
+            ViewBag.andOrList = DropDownListHelper.getAndOrList();
             return View("Index", model);
         }
 
