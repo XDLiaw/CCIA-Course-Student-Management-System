@@ -19,11 +19,12 @@ namespace CCIA2.Services
 
         public MemberSearchViewModel searchNPagging(MemberSearchViewModel model, SysUser user)
         {
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo && m.mrIsActive == "Y" && m.mrIsFinish == "Y");
+
             #region 經紀仲介學員
             if (model.memberTypeNo == 1) 
             {
-                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo && m.mrIsActive == "Y" && m.mrIsFinish == "Y");
-                if (model.searchText != null && model.searchText.Trim().Length > 0) //只要這內容不為空就忽略其他條件
+                 if (model.searchText != null && model.searchText.Trim().Length > 0) //只要這內容不為空就忽略其他條件
                 {
                     memberQuery = queryByText(memberQuery, model.searchText, model.operate, model.searchText2);
                     model.memberPagedList = memberQuery.OrderBy(m => m.mrNumber).ToPagedList(model.pageNumber - 1, model.pageSize);
@@ -102,7 +103,6 @@ namespace CCIA2.Services
             #region 歷屆會員 or 一般會員
             else if (model.memberTypeNo == 2 || model.memberTypeNo == 3)
             {
-                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo);
                 if (String.IsNullOrWhiteSpace(model.searchText) == false)
                 {
                     memberQuery = queryByText(memberQuery, model.searchText, model.operate, model.searchText2);
@@ -120,11 +120,12 @@ namespace CCIA2.Services
 
         public List<Member> search(MemberSearchViewModel model, SysUser user)
         {
+            IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo && m.mrIsActive == "Y" && m.mrIsFinish == "Y");
             List<Member> memberList = null;
+
             #region 經紀仲介學員
             if (model.memberTypeNo == 1)
             {
-                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo && m.mrIsActive == "Y" && m.mrIsFinish == "Y");
                 if (model.searchText != null && model.searchText.Trim().Length > 0) //只要這內容不為空就忽略其他條件
                 {
                     memberQuery = queryByText(memberQuery, model.searchText, model.operate, model.searchText2);
@@ -204,7 +205,6 @@ namespace CCIA2.Services
             #region 歷屆會員 or 一般會員
             else if (model.memberTypeNo == 2 || model.memberTypeNo == 3)
             {
-                IQueryable<Member> memberQuery = db.Member.Where(m => m.mrMemberTypesqno == model.memberTypeNo);
                 if (String.IsNullOrWhiteSpace(model.searchText) == false)
                 {
                     memberQuery = queryByText(memberQuery, model.searchText, model.operate, model.searchText2);
